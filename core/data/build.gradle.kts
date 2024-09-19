@@ -70,6 +70,5 @@ dependencies {
     implementation(libs.bundles.retrofit)
     implementation(libs.timber)
     implementation(libs.androidx.appCompat)
-    implementation(libs.materialDesign)
     implementation(libs.androidx.constraintLayout)
 }

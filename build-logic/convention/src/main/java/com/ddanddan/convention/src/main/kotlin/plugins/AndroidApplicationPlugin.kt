@@ -152,6 +152,8 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 kapt(libs.getLibrary("hiltWorkManagerCompiler"))
 
                 implementation(libs.getBundle("appModuleLibraryEtc"))
+
+                implementation(libs.getLibrary("play-services-location"))
             }
         }
 }
