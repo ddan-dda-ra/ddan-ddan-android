@@ -30,7 +30,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 apply("com.android.application")
                 apply("androidx.navigation.safeargs")
                 apply("com.google.android.gms.oss-licenses-plugin")
-                apply("com.google.gms.google-services")
+//                apply("com.google.gms.google-services")
 //                apply("com.google.firebase.appdistribution")
 //                apply("com.google.firebase.crashlytics")
             }
@@ -62,26 +62,16 @@ class AndroidApplicationPlugin : Plugin<Project> {
                             "BASE_URL",
                             gradleLocalProperties(rootDir).getProperty("base.url"),
                         )
-                        buildConfigField(
-                            "String",
-                            "KAKAO_REDIRECT_URL",
-                            gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
-                        )
-                        buildConfigField(
-                            "String",
-                            "NAVER_REDIRECT_URL",
-                            gradleLocalProperties(rootDir).getProperty("naver.redirect"),
-                        )
-                        buildConfigField(
-                            "String",
-                            "KAKAO_API_KEY",
-                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
-                        )
-                        buildConfigField(
-                            "String",
-                            "NAVER_API_KEY",
-                            gradleLocalProperties(rootDir).getProperty("naver.key"),
-                        )
+//                        buildConfigField(
+//                            "String",
+//                            "KAKAO_REDIRECT_URL",
+//                            gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
+//                        )
+//                        buildConfigField(
+//                            "String",
+//                            "KAKAO_API_KEY",
+//                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
+//                        )
                     }
 
                     release {
@@ -90,26 +80,16 @@ class AndroidApplicationPlugin : Plugin<Project> {
                             "BASE_URL",
                             gradleLocalProperties(rootDir).getProperty("base.url"),
                         )
-                        buildConfigField(
-                            "String",
-                            "KAKAO_REDIRECT_URL",
-                            gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
-                        )
-                        buildConfigField(
-                            "String",
-                            "NAVER_REDIRECT_URL",
-                            gradleLocalProperties(rootDir).getProperty("naver.redirect"),
-                        )
-                        buildConfigField(
-                            "String",
-                            "KAKAO_API_KEY",
-                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
-                        )
-                        buildConfigField(
-                            "String",
-                            "NAVER_API_KEY",
-                            gradleLocalProperties(rootDir).getProperty("naver.key"),
-                        )
+//                        buildConfigField(
+//                            "String",
+//                            "KAKAO_REDIRECT_URL",
+//                            gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
+//                        )
+//                        buildConfigField(
+//                            "String",
+//                            "KAKAO_API_KEY",
+//                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
+//                        )
 
                         isMinifyEnabled = false
                         proguardFiles(
