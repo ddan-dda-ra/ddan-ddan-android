@@ -17,7 +17,7 @@ composePagingVersion="1.0.0-alpha18"
 mdcVersion="1.1.16"
 composeAppcompatVersion="0.28.0"
 composeLifecycleVersion="2.3.1"
-uiPreviewCompose ="1.2.1"
+uiPreviewCompose ="1.7.2"
 pager-google="0.20.1"
 
 ## AndroidX
@@ -34,7 +34,7 @@ activityKtxVersion = "1.7.2"
 fragmentKtxVersion = "1.5.7"
 pagingVersion = "3.1.1"
 lifecycleVersion = "2.6.1"
-ossVersion = "17.0.0"
+ossVersion = "17.1.0"
 splashVersion = "1.0.1"
 composeVersion = "1.4.3"
 workManagerVersion = "2.8.1"
@@ -192,9 +192,8 @@ compose-page-indicator = {group="com.google.accompanist", name="accompanist-page
 jUnit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 androidTest = { group = "androidx.test.ext", name = "junit", version.ref = "androidTestVersion" }
 espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoVersion" }
-androidx-ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android", version = "1.5.4" }
+androidx-ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android", version ="uiPreviewCompose" }
 ui-tooling-compose = {group = "androidx.compose.ui", name="ui-tooling", version.ref="uiPreviewCompose"}
-activity = { group = "androidx.activity", name = "activity", version.ref = "activityVersion" }
 
 # 사용될 플러그인
 [plugins]
@@ -223,6 +222,7 @@ androidx = [
     "androidx-navigationFragment",
     "androidx-navigationUi",
     "androidx-navigationDynamic",
+    "androidx-ui-text-android",
     "billing",
 ]
 
@@ -265,7 +265,8 @@ appModuleLibraryEtc = [
     "circular-progressBar",
     "circleIndicator",
     "shimmer",
-    "amplitude"
+    "amplitude",
+    "flexbox"
 ]
 okhttp = ["okhttp", "okhttp-logging-interceptor"]
 firebase = ["firebase-messaging"]

@@ -1,5 +1,6 @@
 package plugins
 
+import com.ddanddan.convention.src.main.kotlin.ext.getLibrary
 import com.ddanddan.convention.src.main.kotlin.ext.implementation
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -17,6 +18,6 @@ fun Project.configureAndroidCommonPlugin() {
 
     val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
     dependencies {
-        implementation(libs.findLibrary("materialDesign").get())
+        implementation(libs.getLibrary("materialDesign"))
     }
 }
