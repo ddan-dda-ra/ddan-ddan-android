@@ -1,8 +1,7 @@
 package com.ddanddan.ddanddan.presentation
 
 import android.os.Bundle
-import android.util.Log
-import com.ddanddan.base.BindingActivity
+import com.ddanddan.ui.base.BindingActivity
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
