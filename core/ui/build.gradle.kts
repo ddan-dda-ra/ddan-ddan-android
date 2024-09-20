@@ -23,4 +23,5 @@ dependencies {
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.constraintLayout)
     implementation(libs.bundles.compose)
+    debugImplementation(libs.ui.tooling.compose)
 }

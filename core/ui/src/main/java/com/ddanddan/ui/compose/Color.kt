@@ -36,13 +36,20 @@ data class ColorPalette(
     val color_text_button_secondary_default: Color = Color.Unspecified,
     val color_text_button_alternative: Color = Color.Unspecified,
 
-    val color_outline_level04_active: Color = Color.Unspecified,
+    val color_outline_level01_default: Color = Color.Unspecified,
+    val color_outline_level01_active: Color = Color.Unspecified,
+    val color_outline_level01_error: Color = Color.Unspecified,
+    val color_outline_level02: Color = Color.Unspecified,
     val color_outline_level03: Color = Color.Unspecified,
+    val color_outline_level04_active: Color = Color.Unspecified,
+    val color_outline_level04_disabled: Color = Color.Unspecified,
 
-    val color_icon_level03: Color = Color.Unspecified,
-    val color_icon_level02_disabled: Color = Color.Unspecified,
-    val color_icon_level02_active: Color = Color.Unspecified,
     val color_icon_level01: Color = Color.Unspecified,
+    val color_icon_level02_active: Color = Color.Unspecified,
+    val color_icon_level02_disabled: Color = Color.Unspecified,
+    val color_icon_level02_alternative: Color = Color.Unspecified,
+    val color_icon_level03: Color = Color.Unspecified,
+    val color_icon_level04: Color = Color.Unspecified,
 
     val Gray950: Color = Color.Unspecified,
     val Gray900: Color = Color.Unspecified,
@@ -56,23 +63,32 @@ data class ColorPalette(
     val Gray50: Color = Color.Unspecified,
 
     val Error300: Color = Color.Unspecified,
-    val TMTMBlue200: Color = Color.Unspecified,
-    val TMTMBlue400: Color = Color.Unspecified,
-    val TMTMBlue500: Color = Color.Unspecified,
+    val DDanGreen600: Color = Color.Unspecified,
+    val DDanGreen500: Color = Color.Unspecified,
+    val DDanGreen400: Color = Color.Unspecified,
+    val DDanGreen300: Color = Color.Unspecified,
+    val DDanGreen200: Color = Color.Unspecified,
+    val DDanGreen100: Color = Color.Unspecified,
 
     val color_button_active: Color = Color.Unspecified,
+    val color_button_pressed01: Color = Color.Unspecified,
+    val color_button_pressed02: Color = Color.Unspecified,
     val color_button_disabled: Color = Color.Unspecified,
+    val color_button_default01: Color = Color.Unspecified,
+    val color_button_default02: Color = Color.Unspecified,
     val color_button_alternative: Color = Color.Unspecified,
 
     val GreyWhite: Color = Color.Unspecified,
-    val ColorDivider: Color = Color.Unspecified,
+
+    val color_divider_level01: Color = Color.Unspecified,
+    val color_divider_level02: Color = Color.Unspecified,
+    val color_divider_level03: Color = Color.Unspecified,
 
     val elevation_color_elevation_level01: Color = Color.Unspecified,
     val elevation_color_elevation_level02: Color = Color.Unspecified,
+    val elevation_color_elevation_alternative: Color = Color.Unspecified,
 
-    val color_background: Color = Color.Unspecified,
-    val color_outline_level04_disabled: Color = Color.Unspecified,
-    val color_outline_level01_error: Color = Color.Unspecified,
+    val color_background: Color = Color.Unspecified
 )
 
 
@@ -88,25 +104,50 @@ val ColorPalette_Dark = ColorPalette(
     color_text_body_quinary = Color(color = 0xFF444444), // gray300
 
     color_text_caption_primary_default = Color(color = 0xFFF5F5F5), // gray800
-    color_text_caption_primary_error = Color(color = 0xFFC4E6D), // error300
+    color_text_caption_primary_error = Color(color = 0xFFFC4E6D), // error300
     color_text_caption_secondary_default = Color(color = 0xFFE9E9E9), // gray600
     color_text_caption_teritary_default = Color(color = 0xFF828282), // gray400
     color_text_caption_quaternary_default = Color(color = 0xFF444444), // gray300
 
-    color_text_button_primary_default = Color(color = 0xFFFFFFFF),
+    color_text_button_primary_default = Color(color = 0xFF212121),
     color_text_button_primary_default02 = Color(color = 0xFFF5F5F5),
-    color_text_button_primary_press = Color(color = 0xFF96D7FF), // tmtm blue 200
+    color_text_button_primary_press = Color(color = 0xFF71F0BF), // ddanddan green 300
     color_text_button_primary_disabled = Color(color = 0xFF444444),
-    color_text_button_secondary_default = Color(color = 0xFF36B2FF),
+    color_text_button_secondary_default = Color(color = 0xFF13E695),
     color_text_button_alternative = Color(color = 0xFFFFFFFF),
 
-    color_outline_level04_active = Color(color = 0xFFF5F5F5),
+    color_outline_level01_default =  Color(color =0xFF212121),
+    color_outline_level01_active =  Color(color =0xFF13E695),
+    color_outline_level01_error =  Color(color =0xFFFC4E6D),
+    color_outline_level02 = Color(color = 0xFF292929),
     color_outline_level03 = Color(color = 0xFF333333),
+    color_outline_level04_active = Color(color = 0xFFF5F5F5),
+    color_outline_level04_disabled = Color(color = 0xFF333333),
 
-    color_icon_level03 = Color(color = 0xFF828282),
-    color_icon_level02_disabled = Color(color = 0xFF333333),
-    color_icon_level02_active = Color(color = 0xFF36B2FF),
     color_icon_level01 = Color(color = 0xFFF5F5F5),
+    color_icon_level02_active = Color(color = 0xFF13E695),
+    color_icon_level02_disabled = Color(color = 0xFF333333),
+    color_icon_level02_alternative = Color(color = 0xFFFC4E6D),
+    color_icon_level03 = Color(color = 0xFF828282),
+    color_icon_level04 = Color(color = 0xFF444444),
+
+    color_button_active = Color(color = 0xFF13E695),
+    color_button_pressed01 = Color(color = 0xFF10E090),
+    color_button_pressed02 = Color(color = 0xFF71F0BF),
+    color_button_disabled = Color(color = 0xFF292929),
+    color_button_default01 = Color(color = 0xFF212121),
+    color_button_default02 = Color(color = 0xFFF5F5F5),
+    color_button_alternative = Color(color = 0xFF575757),
+
+    color_divider_level01 = Color(color = 0xFF191919),
+    color_divider_level02 = Color(color = 0xFF212121),
+    color_divider_level03 = Color(color = 0xFF333333),
+
+    elevation_color_elevation_level01 = Color(color = 0xFF212121),
+    elevation_color_elevation_level02 = Color(color = 0xFF333333),
+    elevation_color_elevation_alternative = Color(color = 0xFF13E695),
+
+    color_background = Color(color = 0xFF111111),
 
     Gray950 = Color(color = 0xFFFFFFFF), // light gray 950
     Gray900 = Color(color = 0xFFFFFFFF), // light gray 900
@@ -120,26 +161,15 @@ val ColorPalette_Dark = ColorPalette(
     Gray50 = Color(color = 0xFF1111111), // light gray 50
 
     Error300 = Color(color = 0xFFFC4E6D),
-    TMTMBlue200 = Color(color = 0xFF96D7FF),
-    TMTMBlue400 = Color(color = 0xFF36B2FF),
-    TMTMBlue500 = Color(color = 0xFF0FA4FF),
+    DDanGreen600 = Color(color = 0xFF10E090),
+    DDanGreen500 = Color(color = 0xFF13E695),
+    DDanGreen400 = Color(color = 0xFF42EBAA),
+    DDanGreen300 = Color(color = 0xFF71F0BF),
+    DDanGreen200 = Color(color = 0xFFA1F5D5),
+    DDanGreen100 = Color(color = 0xFFD0FAEA),
 
-    color_button_active = Color(color = 0xFF36B2FF),
-    color_button_disabled = Color(color = 0xFF292929),
-    color_button_alternative = Color(color = 0xFF575757),
-
-    GreyWhite = Color(color = 0xFF1111111),
-    ColorDivider = Color(color = 0xFF212121),
-
-    elevation_color_elevation_level01 = Color(color = 0xFF212121),
-    elevation_color_elevation_level02 = Color(color = 0xFF333333),
-
-    color_background = Color(color = 0xFF111111),
-
-    color_outline_level04_disabled = Color(color = 0xFF333333),
-    color_outline_level01_error =  Color(color =0xFFFC4E6D)
+    GreyWhite = Color(color = 0xFF1111111)
 )
-
 
 val ColorPalette_Light = ColorPalette(
     //headline
@@ -162,26 +192,51 @@ val ColorPalette_Light = ColorPalette(
     color_text_caption_quaternary_default = Color(color = 0xFFC9C9C9), // gray300
 
     //button
-    color_text_button_primary_default = Color(color = 0xFFFFFFFF),
+    color_text_button_primary_default = Color(color = 0xFF212121),
     color_text_button_primary_default02 = Color(color = 0xFF444444),
-    color_text_button_primary_press = Color(color = 0xFF96D1FF), // tmtm blue 200
+    color_text_button_primary_press = Color(color = 0xFF85F4CA), // tmtm blue 200
     color_text_button_primary_disabled = Color(color = 0xFFC9C9C9),
-    color_text_button_secondary_default = Color(color = 0xFF44AEFF),
+    color_text_button_secondary_default = Color(color = 0xFF33EDA7),
     color_text_button_alternative = Color(color = 0xFF212121),
 
     //outline
+    color_outline_level01_default =  Color(color =0xFFF5F5F5),
+    color_outline_level01_active =  Color(color =0xFF33EDA7),
+    color_outline_level01_error =  Color(color =0xFFFC4E6D),
+    color_outline_level02 = Color(color = 0xFFF0F0F0),
     color_outline_level03 = Color(color = 0xFFE9E9E9),
     color_outline_level04_active = Color(color = 0xFF212121),
+    color_outline_level04_disabled = Color(color = 0xFFE9E9E9),
 
     //icon
-    color_icon_level03 = Color(color = 0xFFC9C9C9),
-    color_icon_level02_disabled = Color(color = 0xFFDFDFDF),
-    color_icon_level02_active = Color(color = 0xFF44AEFF),
     color_icon_level01 = Color(color = 0xFF212121),
+    color_icon_level02_active = Color(color = 0xFF33EDA7),
+    color_icon_level02_disabled = Color(color = 0xFFDFDFDF),
+    color_icon_level02_alternative = Color(color = 0xFFFC4E6D),
+    color_icon_level03 = Color(color = 0xFFC9C9C9),
+    color_icon_level04 = Color(color = 0xFFF5F5F5),
 
+    color_button_active = Color(color = 0xFF33EDA7),
+    color_button_pressed01 = Color(color = 0xFF11E898),
+    color_button_pressed02 = Color(color = 0xFF85F4CA),
+    color_button_disabled = Color(color = 0xFFE9E9E9),
+    color_button_default01 = Color(color = 0xFFF5F5F5),
+    color_button_default02 = Color(color = 0xFF444444),
+    color_button_alternative = Color(color = 0xFFE9E9E9),
+
+    color_divider_level01 = Color(color = 0xFFF5F5F5),
+    color_divider_level02 = Color(color = 0xFFF0F0F0),
+    color_divider_level03 = Color(color = 0xFFE9E9E9),
+
+    elevation_color_elevation_level01 = Color(color = 0xFFF5F5F5), // elevation level 1
+    elevation_color_elevation_level02 = Color(color = 0xFFE9E9E9), // elevation level 2
+    elevation_color_elevation_alternative = Color(color = 0xFF33EDA7), // elevation level 2
+
+    color_background = Color(color = 0xFFFFFFFF), // background color
 
     Gray950 = Color(color = 0xFF191919), // light gray 950
     Gray900 = Color(color = 0xFF212121), // light gray 900
+    Gray800 = Color(color = 0xFF333333), // light gray 800
     Gray700 = Color(color = 0xFF444444), // light gray 700
     Gray550 = Color(color = 0xFF6E6E6E), // light gray 550
     Gray500 = Color(color = 0xFF828282), // light gray 500
@@ -191,24 +246,14 @@ val ColorPalette_Light = ColorPalette(
     Gray50 = Color(color = 0xFFF5F5F5), // light gray 50
     Error300 = Color(color = 0xFFFC4E6D), // error 300
 
-    TMTMBlue200 = Color(color = 0xFF96D7FF), // tmtm blue 200
-    TMTMBlue400 = Color(color = 0xFF444AEFF), // tmtm blue 400
-    TMTMBlue500 = Color(color = 0xFF1A9CFF), // tmtm blue 500
-
-    color_button_active = Color(color = 0xFF44AEFF), // button active
-    color_button_disabled = Color(color = 0xFFE9E9E9), // button disabled
-    color_button_alternative = Color(color = 0xFFE9E9E9), // button alternative
+    DDanGreen600 = Color(color = 0xFF11E898),
+    DDanGreen500 = Color(color = 0xFF33EDA7),
+    DDanGreen400 = Color(color = 0xFF5CF1B9),
+    DDanGreen300 = Color(color = 0xFF85F4CA),
+    DDanGreen200 = Color(color = 0xFFADF8DC),
+    DDanGreen100 = Color(color = 0xFFD6FBED),
 
     GreyWhite = Color(color = 0xFFFFFFFF), // grey white
-    ColorDivider = Color(color = 0xFFF0F0F0), // color divider
-
-    elevation_color_elevation_level01 = Color(color = 0xFFF5F5F5), // elevation level 1
-    elevation_color_elevation_level02 = Color(color = 0xFFE9E9E9), // elevation level 2
-
-    color_background = Color(color = 0xFFFFFFFF), // background color
-    color_outline_level04_disabled = Color(color = 0xFFE9E9E9), // outline level 4 disabled
-    color_outline_level01_error = Color(color = 0xFFFC4E6D), // outline level 1 error
-    Gray800 = Color(color = 0xFF333333) // light gray 800
 )
 
 val DDanDDanColorPalette = staticCompositionLocalOf { ColorPalette() }
