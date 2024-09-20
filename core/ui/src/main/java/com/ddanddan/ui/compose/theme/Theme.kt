@@ -1,13 +1,19 @@
 package com.ddanddan.ui.compose.theme
 
+import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import com.ddanddan.ui.compose.ColorPalette_Dark
+import com.ddanddan.ui.compose.ColorPalette_Light
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanDimen
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -47,13 +53,22 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun DDanDDanTheme(
-    // Dynamic color is available on Android 12+
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val CustomColorPalette = if(darkTheme) ColorPalette_Dark else ColorPalette_Light
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+        }
+    }
+
     val customColorPalette = ColorPalette_Dark
 
     CompositionLocalProvider(
-        DDanDDanColorPalette provides customColorPalette,
+        DDanDDanColorPalette provides CustomColorPalette,
         DDanDDanTypo provides Type(),
         DDanDDanDimen provides Dimen()
     ) {
