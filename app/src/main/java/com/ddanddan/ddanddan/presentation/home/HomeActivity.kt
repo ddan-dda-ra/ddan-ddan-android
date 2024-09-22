@@ -16,7 +16,20 @@ class HomeActivity: ComponentActivity() {
             DDanDDanTheme {
                 Surface(modifier = Modifier.fillMaxSize(),
                     color = ColorPalette_Dark.color_background) {
-                    HomeScreen()
+                    HomeScreen(
+                        onStorageClick = {
+                            // TODO 보관함 클릭 로직
+                        },
+                        onSettingClick = {
+                            // TODO 설정 클릭 로직
+                        },
+                        onEatClick = {
+                            // TODO 먹이주기 클릭 로직
+                        },
+                        onPlayClick = {
+                            // TODO 놀아주기 클릭 로직
+                        }
+                    )
                 }
             }
         }

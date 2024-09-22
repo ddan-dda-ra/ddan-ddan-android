@@ -18,10 +18,15 @@ import androidx.compose.ui.unit.dp
 import com.ddanddan.ddanddan.R
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onStorageClick: () -> Unit = {},
+    onSettingClick: () -> Unit = {},
+    onEatClick: () -> Unit = {},
+    onPlayClick: () -> Unit = {}
+) {
     Column {
         Spacer(modifier = Modifier.padding(top = 20.dp))
-        HomeTopScreen()
+        HomeTopScreen(onStorageClick, onSettingClick)
         Spacer(modifier = Modifier.padding(top = 16.dp))
         HomeCalorieScreen()
         Spacer(modifier = Modifier.padding(top = 14.dp))
@@ -40,7 +45,7 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.padding(top = 32.dp))
         HomeProgressbarScreen(progress = 0.25f, progressColor = Color(0xFFFD85FF), level = 5)
         Spacer(modifier = Modifier.padding(top = 20.dp))
-        HomeBottomScreen()
+        HomeBottomScreen(onEatClick, onPlayClick)
     }
 }
 
