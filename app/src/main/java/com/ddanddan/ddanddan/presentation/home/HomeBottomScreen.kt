@@ -18,28 +18,32 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ddanddan.ui.compose.ColorPalette_Dark
 import com.ddanddan.ui.compose.DDanDDanTypo
 
 @Composable
-fun HomeBottomScreen() {
+fun HomeBottomScreen(
+    onEatClick: () -> Unit = {},
+    onPlayClick: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ActionButton(modifier = Modifier.weight(1f), text = "먹이주기", count = "2개 보유")
+        ActionButton(modifier = Modifier.weight(1f), text = "먹이주기", count = "2개 보유", onClick = onEatClick)
         Spacer(modifier = Modifier.width(12.dp))
-        ActionButton(modifier = Modifier.weight(1f), text = "놀아주기", count = "1개 보유")
+        ActionButton(modifier = Modifier.weight(1f), text = "놀아주기", count = "1개 보유", onClick = onPlayClick)
     }
 }
 
 @Composable
-fun ActionButton(text: String, count: String, modifier: Modifier = Modifier) {
+fun ActionButton(text: String, count: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Button(
-        onClick = { /* TODO */ },
+        onClick = { onClick() },
         modifier = modifier
             .height(IntrinsicSize.Min)
             .border(
@@ -70,4 +74,13 @@ fun ActionButton(text: String, count: String, modifier: Modifier = Modifier) {
             )
         }
     }
+}
+
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF111111
+)
+@Composable
+fun HomeBottomScreenPreview() {
+    HomeBottomScreen()
 }
