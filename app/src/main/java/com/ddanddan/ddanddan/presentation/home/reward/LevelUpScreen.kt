@@ -65,11 +65,3 @@ fun LevelUpScreen() {
         )
     }
 }
-
-@Composable
-@Preview(showBackground = true, backgroundColor = 0xFF111111)
-fun LevelUpScreenPreview() {
-    DDanDDanTheme(true) {
-        LevelUpScreen()
-    }
-}
