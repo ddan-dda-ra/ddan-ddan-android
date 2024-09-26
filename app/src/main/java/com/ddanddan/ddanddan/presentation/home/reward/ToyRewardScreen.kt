@@ -4,12 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,29 +28,38 @@ import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.theme.DDanDDanTheme
 
 @Composable
-fun ToyAcquireScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-    ) {
-        Spacer(modifier = Modifier.height(84.dp))
-
-        Text(
+fun ToyRewardScreen() {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            BottomButton(btnText = "획득하기")
+        },
+        backgroundColor = DDanDDanColorPalette.current.color_background
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 65.dp),
-            textAlign = TextAlign.Center,
-            text = "3일 내내 운동을\n 열심히 하셨네요!",
-            fontFamily = NeoDgm,
-            fontSize = 24.sp,
-            color = DDanDDanColorPalette.current.color_text_headline_primary
-        )
+                .padding(horizontal = 20.dp)
+                .padding(paddingValues),
+        ) {
+            Spacer(modifier = Modifier.height(84.dp))
 
-        Spacer(modifier = Modifier.height(80.dp))
-        ToyItem(title = "타이틀입니다.", content = "설명입니다.", imageSource = R.drawable.ic_storage)
-        Spacer(modifier = Modifier.height(8.dp))
-        ToyItem(title = "타이틀입니다.", content = "설명입니다.", imageSource = R.drawable.ic_storage)
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 65.dp),
+                textAlign = TextAlign.Center,
+                text = "3일 내내 운동을\n 열심히 하셨네요!",
+                fontFamily = NeoDgm,
+                fontSize = 24.sp,
+                color = DDanDDanColorPalette.current.color_text_headline_primary
+            )
+
+            Spacer(modifier = Modifier.height(80.dp))
+            ToyItem(title = "타이틀입니다.", content = "설명입니다.", imageSource = R.drawable.ic_storage)
+            Spacer(modifier = Modifier.height(8.dp))
+            ToyItem(title = "타이틀입니다.", content = "설명입니다.", imageSource = R.drawable.ic_storage)
+        }
     }
 }
 
@@ -90,13 +101,5 @@ fun ToyItem(title: String, content: String, imageSource: Int) {
             }
         }
 
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
-@Composable
-fun ToyAcquireScreenPreview() {
-    DDanDDanTheme(true) {
-        ToyAcquireScreen()
     }
 }
