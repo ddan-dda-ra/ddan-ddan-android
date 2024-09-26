@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ddanddan.ui.compose.ColorPalette_Dark
+import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 
 @Composable
@@ -47,12 +48,12 @@ fun ActionButton(text: String, count: String, modifier: Modifier = Modifier, onC
         modifier = modifier
             .height(IntrinsicSize.Min)
             .border(
-                border = BorderStroke(2.dp, ColorPalette_Dark.Gray200),
+                border = BorderStroke(2.dp, DDanDDanColorPalette.current.Gray200),
                 shape = RoundedCornerShape(8.dp)
             ),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = ColorPalette_Dark.elevation_color_elevation_level01,
-            contentColor = ColorPalette_Dark.Gray500
+            backgroundColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+            contentColor = DDanDDanColorPalette.current.Gray500
         ),
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -64,13 +65,13 @@ fun ActionButton(text: String, count: String, modifier: Modifier = Modifier, onC
             Text(
                 text = text,
                 style = DDanDDanTypo.current.HeadLine6,
-                color = ColorPalette_Dark.color_text_headline_primary
+                color = DDanDDanColorPalette.current.color_text_headline_primary
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = count,
                 style = DDanDDanTypo.current.Body3,
-                color = ColorPalette_Dark.Gray500
+                color = DDanDDanColorPalette.current.Gray500
             )
         }
     }

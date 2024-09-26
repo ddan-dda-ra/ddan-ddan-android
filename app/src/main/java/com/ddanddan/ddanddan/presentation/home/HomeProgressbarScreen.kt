@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ddanddan.ui.compose.ColorPalette_Dark
+import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
 
@@ -52,12 +53,12 @@ fun HomeProgressbarScreen(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
-                    .background(ColorPalette_Dark.Gray200)
+                    .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
                     text = "LV.$level",
-                    color = Color.White,
+                    color = DDanDDanColorPalette.current.color_text_headline_primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400),
                     fontFamily = NeoDgm
@@ -66,7 +67,7 @@ fun HomeProgressbarScreen(
 
             Text(
                 text = "${(progress * 100).toInt()}%",
-                color = Color.White,
+                color = DDanDDanColorPalette.current.color_text_headline_primary,
                 style = DDanDDanTypo.current.SubTitle1
             )
         }
@@ -89,7 +90,8 @@ fun DDanDDanProgressbar(
 ) {
     val defaultSegmentColor = Color.Transparent
     val filledSegments = (progress * totalSegments).toInt()
-    val strokeColor = Color(0xFF1A1A1A)
+    val strokeColor = DDanDDanColorPalette.current.color_divider_level03
+
 
     // 프로그레스 바
     Box(
@@ -106,7 +108,7 @@ fun DDanDDanProgressbar(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(ColorPalette_Dark.color_background),
+                    .background(DDanDDanColorPalette.current.color_background),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 repeat(totalSegments) { index ->
@@ -120,10 +122,11 @@ fun DDanDDanProgressbar(
             }
         }
 
+        val color = DDanDDanColorPalette.current.color_background
+
         Canvas(modifier = Modifier.fillMaxSize()) {
             val cornerSize = 4.dp.toPx()
             val strokeWidth = 4.dp.toPx()
-            val color = ColorPalette_Dark.color_background
 
             drawRect(
                 color,
