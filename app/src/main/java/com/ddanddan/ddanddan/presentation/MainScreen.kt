@@ -7,10 +7,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.HomeScreen
-import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionScreen
 import com.ddanddan.ddanddan.presentation.home.reward.LevelUpOrNetPetScreen
 import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
+import com.ddanddan.ddanddan.presentation.setting.SettingScreen
 
 @Composable
 fun MainScreen(
@@ -45,7 +45,7 @@ fun MainScreen(
 //            )
         }
         composable(DDanDDanRoute.SETTING.route) {
-            // TODO 설정 화면
+            SettingScreen()
         }
         composable(DDanDDanRoute.TOY_REWARD.route) {
             ToyRewardScreen()

@@ -1,2 +1,10 @@
 <resources>
+    <string name="setting_topbar_title">설정</string>
+    <string name="setting_title_text1">내 별명 수정</string>
+    <string name="setting_title_text2">목표 칼로리 수정</string>
+    <string name="setting_title_text3">푸시 알림</string>
+    <string name="setting_title_text4">약관 및 개인정보 처리 동의</string>
+    <string name="setting_title_text5">탈퇴하기</string>
+    <string name="setting_title_text6">로그아웃</string>
+    <string name="setting_version_text">앱 버전</string>
 </resources>
