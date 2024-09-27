@@ -9,14 +9,14 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun DdanMarginVerticalSpacer(
+fun DDanMarginVerticalSpacer(
     size: Int
 ) {
     Spacer(modifier = Modifier.width(0.dp).height(size.dp))
 }
 
 @Composable
-fun DdanMarginHorizontalSpacer(
+fun DDanMarginHorizontalSpacer(
     size: Int
 ) {
     Spacer(modifier = Modifier.height(0.dp).width(size.dp))

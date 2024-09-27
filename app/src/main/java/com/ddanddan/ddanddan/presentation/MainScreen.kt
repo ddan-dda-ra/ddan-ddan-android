@@ -45,7 +45,7 @@ fun MainScreen(
 //            )
         }
         composable(DDanDDanRoute.SETTING.route) {
-            SettingScreen()
+            SettingScreen(navController)
         }
         composable(DDanDDanRoute.TOY_REWARD.route) {
             ToyRewardScreen()

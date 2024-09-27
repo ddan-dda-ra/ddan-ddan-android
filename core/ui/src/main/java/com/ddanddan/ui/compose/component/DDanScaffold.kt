@@ -57,7 +57,11 @@ fun DdanScaffold(
                 ),
                 navigationIcon = {
                     IconButton(
-                        onClick = { if (onClick != null) { onClick() } },
+                        onClick = {
+                            if (onClick != null) {
+                                onClick()
+                            }
+                        },
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_left_l),
@@ -65,6 +69,11 @@ fun DdanScaffold(
                             tint = DDanColorPalette.current.color_icon_level01,
                         )
                     }
+                }
             )
         },
+        content = { it ->
+            content(it)
         }
+    )
+}
