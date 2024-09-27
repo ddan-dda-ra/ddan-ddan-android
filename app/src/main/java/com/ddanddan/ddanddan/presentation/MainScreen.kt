@@ -37,12 +37,12 @@ fun MainScreen(
             )
         }
         composable(DDanDDanRoute.PET_COLLECTION.route) {
-//            PetCollectionScreen(
-//                navController = navController,
-//                onConfirmClick = {
-//                    // 선택 완료 클릭
-//                }
-//            )
+            PetCollectionScreen(
+                navController = navController,
+                onConfirmClick = {
+                    // 선택 완료 클릭
+                }
+            )
         }
         composable(DDanDDanRoute.SETTING.route) {
             // TODO 설정 화면
