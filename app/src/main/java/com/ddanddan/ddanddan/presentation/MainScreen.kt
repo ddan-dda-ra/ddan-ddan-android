@@ -11,6 +11,7 @@ import com.ddanddan.ddanddan.presentation.home.reward.LevelUpOrNetPetScreen
 import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
 import com.ddanddan.ddanddan.presentation.setting.SettingScreen
+import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionScreen
 
 @Composable
 fun MainScreen(

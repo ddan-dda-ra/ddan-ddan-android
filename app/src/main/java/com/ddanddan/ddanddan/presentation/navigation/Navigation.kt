@@ -7,5 +7,7 @@ enum class DDanDDanRoute(val route: String) {
     LEVEL_UP("level_up"),
     TOY_REWARD("toy_reward"),
     NET_PET("net_pet"),
-    SETTING("setting")
+    SETTING("setting"),
+    EDIT_TARGET("edit_target"),
+    EDIT_NICKNAME("edit_nickname")
 }
