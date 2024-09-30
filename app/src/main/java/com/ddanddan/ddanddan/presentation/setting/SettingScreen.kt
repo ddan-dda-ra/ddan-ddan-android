@@ -33,13 +33,19 @@ import com.ddanddan.ui.compose.component.DdanScaffold
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
-    navController: NavController,
+    onTopBarBackClick: () -> Unit = {},
+    onNickNameClick: () -> Unit = {},
+    onCaloriesClick: () -> Unit = {},
+    onAlarmClick: () -> Unit = {},
+    onAgreeClick: () -> Unit = {},
+    onSignOutClick: () -> Unit = {},
+    onLogOutClick: () -> Unit = {},
     viewModel: SettingViewModel = hiltViewModel(),
 ) {
     DdanScaffold(
         topbarText = stringResource(id = com.ddanddan.base.R.string.setting_topbar_title),
         onClick = {
-            navController.popBackStack()
+            onTopBarBackClick()
         }
     ) {
         Column(
@@ -56,10 +62,10 @@ fun SettingScreen(
                 onIntent = { intent ->
                     when(intent) {
                         SettingIntent.EditNickname -> {
-                            navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
+                            onNickNameClick()
                         }
                         else -> {
-                            navController.navigate(DDanDDanRoute.EDIT_TARGET.route)
+                            onCaloriesClick()
                         }
                     }
                 }
@@ -70,13 +76,13 @@ fun SettingScreen(
                 onIntent = { intent ->
                     when(intent) {
                         SettingIntent.AgreeToTerms -> {
-                            navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
+                            onAgreeClick()
                         }
                         SettingIntent.DeleteAccount -> {
-                            navController.navigate(DDanDDanRoute.EDIT_TARGET.route)
+                            onSignOutClick()
                         }
                         else -> {
-                            navController.navigate(DDanDDanRoute.EDIT_TARGET.route)
+                            onLogOutClick()
                         }
                     }
                 }
@@ -145,5 +151,5 @@ fun SettingTitle(title: String, onClick: ()-> Unit) {
 @Composable
 fun SettingPreview() {
     val navController = rememberNavController()
-    SettingScreen(navController = navController)
+    SettingScreen()
 }

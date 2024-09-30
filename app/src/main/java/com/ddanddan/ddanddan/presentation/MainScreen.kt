@@ -46,7 +46,29 @@ fun MainScreen(
             )
         }
         composable(DDanDDanRoute.SETTING.route) {
-            SettingScreen(navController)
+            SettingScreen(
+                onTopBarBackClick = {
+                    navController.popBackStack()
+                },
+                onNickNameClick = {
+                    navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
+                },
+                onCaloriesClick = {
+                    navController.navigate(DDanDDanRoute.EDIT_TARGET.route)
+                },
+                onAlarmClick = {
+                    //pushAlarm
+                },
+                onAgreeClick = {
+                    //동의 Webview
+                },
+                onSignOutClick = {
+                    //탈퇴하기
+                },
+                onLogOutClick = {
+                    //로그아웃
+                }
+            )
         }
         composable(DDanDDanRoute.TOY_REWARD.route) {
             ToyRewardScreen()
