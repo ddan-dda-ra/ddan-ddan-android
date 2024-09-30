@@ -7,10 +7,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.HomeScreen
-import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionScreen
 import com.ddanddan.ddanddan.presentation.home.reward.LevelUpOrNetPetScreen
 import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
+import com.ddanddan.ddanddan.presentation.setting.SettingScreen
+import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionScreen
 
 @Composable
 fun MainScreen(
@@ -45,7 +46,29 @@ fun MainScreen(
             )
         }
         composable(DDanDDanRoute.SETTING.route) {
-            // TODO 설정 화면
+            SettingScreen(
+                onTopBarBackClick = {
+                    navController.popBackStack()
+                },
+                onNickNameClick = {
+                    navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
+                },
+                onCaloriesClick = {
+                    navController.navigate(DDanDDanRoute.EDIT_TARGET.route)
+                },
+                onAlarmClick = {
+                    //pushAlarm
+                },
+                onAgreeClick = {
+                    //동의 Webview
+                },
+                onSignOutClick = {
+                    //탈퇴하기
+                },
+                onLogOutClick = {
+                    //로그아웃
+                }
+            )
         }
         composable(DDanDDanRoute.TOY_REWARD.route) {
             ToyRewardScreen()
