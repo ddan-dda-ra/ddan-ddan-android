@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.ddanddan.ddanddan.BuildConfig.DEBUG
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -16,10 +17,10 @@ class MyApp : Application(), LifecycleObserver {
         super.onCreate()
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        if (BuildConfig.DEBUG) {
+        if (DEBUG) {
             Timber.plant(Timber.DebugTree())
+            FlipperUtil.init(this)
         }
-//        setUpFlipper()
         appContext = applicationContext
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
