@@ -2,6 +2,7 @@ package com.ddanddan.ddanddan.di
 
 import com.ddanddan.data.interceptor.AuthInterceptor
 import com.ddanddan.ddanddan.BuildConfig.BASE_URL
+import com.ddanddan.ddanddan.FlipperUtil
 import com.ddanddan.ddanddan.di.qualifier.Auth
 import com.ddanddan.ddanddan.di.qualifier.Logger
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -48,9 +49,9 @@ object RetrofitModule {
         @Logger loggingInterceptor: Interceptor,
         @Auth authInterceptor: Interceptor,
     ): OkHttpClient = OkHttpClient.Builder()
+        .addNetworkInterceptor(FlipperUtil.flipperInterceptor)
         .addInterceptor(loggingInterceptor)
         .addInterceptor(authInterceptor)
-//        .addFlipperNetworkPlugin()
         .build()
 
     @Provides
