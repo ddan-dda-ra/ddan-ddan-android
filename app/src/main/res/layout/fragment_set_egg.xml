@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        >
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="51sp"
+            android:text="마음에 드는\n알을 선택해 주세요"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/neodgm"
+            android:textSize="24sp"
+            android:lineSpacingExtra="3sp"
+            android:textColor="#F5F5F5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gl_egg"
+            android:rowCount="2"
+            android:columnCount="2"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.3"
+            >
+
+            <ImageView
+                android:id="@+id/iv_pink"
+                android:background="@drawable/sel_egg_background"
+                android:src="@drawable/ic_egg_pink"
+                android:paddingTop="40dp"
+                android:paddingBottom="24.29dp"
+                android:paddingHorizontal="34.29dp"
+                android:layout_margin="15dp"
+                />
+
+            <ImageView
+                android:id="@+id/iv_green"
+                android:background="@drawable/sel_egg_background"
+                android:src="@drawable/ic_egg_green"
+                android:paddingTop="40dp"
+                android:paddingBottom="24.29dp"
+                android:paddingHorizontal="34.29dp"
+                android:layout_margin="15dp"
+                />
+
+            <ImageView
+                android:id="@+id/iv_purple"
+                android:background="@drawable/sel_egg_background"
+                android:src="@drawable/ic_egg_purple"
+                android:paddingTop="40dp"
+                android:paddingBottom="24.29dp"
+                android:paddingHorizontal="34.29dp"
+                android:layout_margin="15dp"
+                />
+
+            <ImageView
+                android:id="@+id/iv_blue"
+                android:background="@drawable/sel_egg_background"
+                android:src="@drawable/ic_egg_blue"
+                android:paddingTop="40dp"
+                android:paddingBottom="24.29dp"
+                android:paddingHorizontal="34.29dp"
+                android:layout_margin="15dp"
+                />
+
+        </GridLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
