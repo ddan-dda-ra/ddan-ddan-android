@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AlertDialog
+import com.ddanddan.ddanddan.BuildConfig
+import com.ddanddan.ddanddan.BuildConfig.KAKAO_APP_KEY
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivitySplashBinding
 import com.ddanddan.ddanddan.presentation.onboarding.OnboardingActivity
 import com.ddanddan.ddanddan.presentation.signin.SignInActivity
 import com.ddanddan.ddanddan.util.NetworkManager
 import com.ddanddan.ui.base.BindingActivity
+import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,6 +23,7 @@ class SplashActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        KakaoSdk.init(applicationContext, KAKAO_APP_KEY)
         checkNetwork()
     }
 

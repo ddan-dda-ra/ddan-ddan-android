@@ -67,11 +67,14 @@ class AndroidApplicationPlugin : Plugin<Project> {
 //                            "KAKAO_REDIRECT_URL",
 //                            gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
 //                        )
-//                        buildConfigField(
-//                            "String",
-//                            "KAKAO_API_KEY",
-//                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
-//                        )
+                        buildConfigField(
+                            "String",
+                            "KAKAO_APP_KEY",
+                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
+                        )
+
+                        manifestPlaceholders["KAKAO_APP_KEY"] =
+                            gradleLocalProperties(rootDir).getProperty("kakaoAppKey")
                     }
 
                     release {
@@ -85,11 +88,14 @@ class AndroidApplicationPlugin : Plugin<Project> {
 //                            "KAKAO_REDIRECT_URL",
 //                            gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
 //                        )
-//                        buildConfigField(
-//                            "String",
-//                            "KAKAO_API_KEY",
-//                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
-//                        )
+                        buildConfigField(
+                            "String",
+                            "KAKAO_APP_KEY",
+                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
+                        )
+
+                        manifestPlaceholders["KAKAO_APP_KEY"] =
+                            gradleLocalProperties(rootDir).getProperty("kakaoAppKey")
 
                         isMinifyEnabled = false
                         proguardFiles(
@@ -144,7 +150,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 implementation(libs.getBundle("compose"))
 
 //                // kakao
-//                implementation(libs.getBundle("kakao"))
+                implementation(libs.getBundle("kakao"))
 
                 // hilt
                 implementation(libs.getLibrary("hilt"))
