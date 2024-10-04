@@ -7,6 +7,8 @@ import android.os.Looper
 import androidx.appcompat.app.AlertDialog
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivitySplashBinding
+import com.ddanddan.ddanddan.presentation.onboarding.OnboardingActivity
+import com.ddanddan.ddanddan.presentation.signin.SignInActivity
 import com.ddanddan.ddanddan.util.NetworkManager
 import com.ddanddan.ui.base.BindingActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,7 +52,7 @@ class SplashActivity
     }
 
     private fun startOnBoarding() {
-        startActivity(Intent(this, OnBoardingActivity::class.java))
+        startActivity(Intent(this, OnboardingActivity::class.java))
         finish()
     }
 

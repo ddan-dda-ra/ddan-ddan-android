@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivityOnboardingBinding
 import com.ddanddan.ddanddan.presentation.onboarding.adapter.OnboardingViewPagerAdapter
+import com.ddanddan.ddanddan.presentation.signin.SignInActivity
 import com.ddanddan.ddanddan.util.PermissionUtils
 import com.ddanddan.ddanddan.util.custom.dialog.CommonDialogConfig
 import com.ddanddan.ddanddan.util.custom.dialog.CommonDialogFragment
