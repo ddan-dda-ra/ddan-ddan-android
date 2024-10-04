@@ -14,6 +14,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivitySignupBinding
+import com.ddanddan.ddanddan.presentation.signup.goal.SetGoalFragment
 import com.ddanddan.ddanddan.presentation.signup.name.GetNameFragment
 import com.ddanddan.ddanddan.util.SigninUtils.EXTRA_KEY_OAUTHID
 import com.ddanddan.ui.base.BindingActivity
