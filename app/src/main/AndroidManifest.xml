@@ -17,6 +17,9 @@
         android:theme="@style/Theme.DdanDdan"
         tools:targetApi="34">
         <activity
+            android:name=".presentation.splash.SplashActivity"
+            android:exported="true" />
+        <activity
             android:name=".presentation.MainActivity"
             android:exported="true">
             <intent-filter>

@@ -81,6 +81,7 @@ leakCanaryVersion = "2.11"
 
 jvmVersion = "17"
 activityVersion = "1.9.0"
+activity = "1.9.2"
 
 [libraries]
 # gradle
@@ -194,6 +195,7 @@ androidTest = { group = "androidx.test.ext", name = "junit", version.ref = "andr
 espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoVersion" }
 androidx-ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android", version ="uiPreviewCompose" }
 ui-tooling-compose = {group = "androidx.compose.ui", name="ui-tooling", version.ref="uiPreviewCompose"}
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 
 # 사용될 플러그인
 [plugins]
