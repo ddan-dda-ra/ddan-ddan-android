@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivitySigninBinding
+import com.ddanddan.ddanddan.presentation.signup.SignUpActivity
 import com.ddanddan.ui.base.BindingActivity
 import dagger.hilt.android.AndroidEntryPoint
 
