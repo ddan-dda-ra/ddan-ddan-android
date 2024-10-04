@@ -17,6 +17,9 @@
         android:theme="@style/Theme.DdanDdan"
         tools:targetApi="34">
         <activity
+            android:name=".presentation.onboarding.OnboardingActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.splash.SplashActivity"
             android:exported="true" />
         <activity
