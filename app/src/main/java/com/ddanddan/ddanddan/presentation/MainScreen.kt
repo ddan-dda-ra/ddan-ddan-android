@@ -39,7 +39,7 @@ fun MainScreen(
         }
         composable(DDanDDanRoute.PET_COLLECTION.route) {
             PetCollectionScreen(
-                navController = navController,
+                navigatePopUp = navController::popBackStack,
                 onConfirmClick = {
                     // 선택 완료 클릭
                 }
