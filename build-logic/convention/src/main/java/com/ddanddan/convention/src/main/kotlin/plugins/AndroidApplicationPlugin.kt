@@ -146,6 +146,12 @@ class AndroidApplicationPlugin : Plugin<Project> {
 //                // kakao
 //                implementation(libs.getBundle("kakao"))
 
+                // Orbit
+                implementation(libs.getLibrary("orbit-core"))
+                implementation(libs.getLibrary("orbit-viewmodel"))
+                implementation(libs.getLibrary("orbit-compose"))
+                testImplementation(libs.getLibrary("orbit-test"))
+
                 // hilt
                 implementation(libs.getLibrary("hilt"))
                 kapt(libs.getLibrary("hiltAndroidCompiler"))

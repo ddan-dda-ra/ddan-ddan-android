@@ -63,6 +63,8 @@ amplitudeVersion = "2.23.2"
 
 inAppUpdateVersion = "2.1.0"
 
+orbitVersion = "6.1.1"
+
 gradlePlugin = "8.1.2"
 googleServicePlugin = "4.3.15"
 googleAppdistributionPlugin = "4.0.0"
@@ -162,6 +164,12 @@ ossLicense = { group = "com.google.android.gms", name = "play-services-oss-licen
 flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexboxVersion" }
 
 inAppUpdate = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "inAppUpdateVersion" }
+
+# Orbit
+orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbitVersion" }
+orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbitVersion" }
+orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbitVersion" }
+orbit-test = { group = "org.orbit-mvi", name = "orbit-test", version.ref = "orbitVersion" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseVersion" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx"}

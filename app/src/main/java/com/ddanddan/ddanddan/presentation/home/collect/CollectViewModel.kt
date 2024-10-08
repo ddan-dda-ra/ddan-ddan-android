@@ -1,33 +1,46 @@
 package com.ddanddan.ddanddan.presentation.home.collect
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.ddanddan.domain.usecase.GetPetListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class CollectViewModel @Inject constructor(): ViewModel() {
-    private val _snackBarEvent = MutableSharedFlow<SnackBarEvent>()
-    val snackBarEvent = _snackBarEvent.asSharedFlow()
+class CollectViewModel @Inject constructor(
+    private val getPetListUseCase: GetPetListUseCase
+) : ContainerHost<PetCollectionState, PetCollectionSideEffect>, ViewModel() {
+    override val container =
+        container<PetCollectionState, PetCollectionSideEffect>(PetCollectionState())
 
-    fun showSnackBarEvent(msg: String) {
-        viewModelScope.launch {
-            _snackBarEvent.emit(SnackBarEvent.ShowSnackBarMsg(msg))
-        }
+    fun showSnackBarEvent(msg: String) = intent {
+        postSideEffect(PetCollectionSideEffect.SnackBarMsg(msg))
     }
 
-    fun defaultSnackBarEvent() {
-        viewModelScope.launch {
-            _snackBarEvent.emit(SnackBarEvent.Default)
+    fun onBackButtonClicked() = intent {
+        postSideEffect(PetCollectionSideEffect.NavigatePopUp)
+    }
+
+    fun getPetList() = intent {
+        reduce {
+            state.copy(isLoading = true)
+        }
+        getPetListUseCase()
+            .onSuccess {
+                reduce {
+                    state.copy(pets = it)
+                }
+            }.onFailure {
+                postSideEffect(PetCollectionSideEffect.ToastNetworkError)
+            }
+        reduce {
+            state.copy(
+                isLoading = false
+            )
         }
     }
-}
-
-sealed interface SnackBarEvent {
-    object Default: SnackBarEvent
-    data class ShowSnackBarMsg(val msg: String): SnackBarEvent
-
 }

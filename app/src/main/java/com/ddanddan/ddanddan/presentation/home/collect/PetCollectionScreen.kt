@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.presentation.home.collect
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,20 +33,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.reward.BottomButton
+import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.enum.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanSnackBar
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PetCollectionScreen(
     viewModel: CollectViewModel = hiltViewModel(),
-    navController: NavHostController,
+    navigatePopUp: () -> Unit = {},
     onConfirmClick: () -> Unit = {}
 ) {
+    val petCollectionState by viewModel.collectAsState()
+
     val selectIndex = remember {
         mutableIntStateOf(0)
     }
@@ -52,15 +59,20 @@ fun PetCollectionScreen(
     val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        viewModel.snackBarEvent.collect { event ->
-            when (event) {
-                is SnackBarEvent.ShowSnackBarMsg -> {
-                    snackBarHostState.showSnackbar(event.msg)
-                }
-                is SnackBarEvent.Default-> {
-                    snackBarHostState.currentSnackbarData?.dismiss()
+        viewModel.getPetList()
+    }
 
-                }
+    viewModel.collectSideEffect { sideEffect ->
+        when(sideEffect) {
+            is PetCollectionSideEffect.NavigatePopUp -> {
+                navigatePopUp()
+            }
+            is PetCollectionSideEffect.ToastNetworkError -> {
+                Toast.makeText(context, "네트워크 에러가 발생하였습니다.", Toast.LENGTH_SHORT).show()
+            }
+
+            is PetCollectionSideEffect.SnackBarMsg -> {
+                snackBarHostState.showSnackbar(sideEffect.msg)
             }
         }
     }
@@ -79,7 +91,7 @@ fun PetCollectionScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { viewModel.onBackButtonClicked() }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
@@ -108,20 +120,21 @@ fun PetCollectionScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            items(9) { index ->
-                Box(
-                    modifier = Modifier
-                        .aspectRatio(1f)
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
-                ) {
-                    // TODO index에 따라서 뭐가 올지 추후 작업
-                    PetItem(index, selectIndex.intValue, {
-                        selectIndex.intValue = it
-                    }, {
-                        viewModel.showSnackBarEvent("새로운 펫을 준비중이에요")
-                    })
+            if (petCollectionState.pets.isNotEmpty()) {
+                items(9) { index ->
+                    Box(
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .padding(4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
+                    ) {
+                        PetItem(petCollectionState.pets.getOrNull(index), selectIndex.intValue, {
+                            selectIndex.intValue = it
+                        }, {
+                            viewModel.showSnackBarEvent("새로운 펫을 준비중이에요")
+                        })
+                    }
                 }
             }
         }
@@ -130,22 +143,23 @@ fun PetCollectionScreen(
 
 @Composable
 fun PetItem(
-    index: Int,
+    pet: Pet?,
     selectIndex: Int,
     onSelectIndex: (Int) -> Unit = {},
     onOtherItemClick: () -> Unit = {}
 ) {
-    val imageRes = when (index) {
-        0 -> R.drawable.ic_cat
-        1 -> R.drawable.ic_cat
-        2 -> R.drawable.ic_cat
-        3 -> R.drawable.ic_cat
+    val imageRes = when (pet?.type) {
+        PetTypeEnum.CAT -> R.drawable.ic_cat
+        PetTypeEnum.DOG -> R.drawable.ic_cat
+        PetTypeEnum.PENGUIN -> R.drawable.ic_cat
+        PetTypeEnum.HAMSTER -> R.drawable.ic_cat
         else -> R.drawable.ic_question
     }
+    val index = PetTypeEnum.values().indexOf(pet?.type)
     Box(modifier = Modifier
         .fillMaxSize()
         .clickable {
-            if (index in 0..3) {
+            if (pet != null) {
                 onSelectIndex(index)
             } else {
                 onOtherItemClick()
