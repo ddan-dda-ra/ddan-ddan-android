@@ -1,6 +1,6 @@
 package com.ddanddan.ddanddan.di
 
-import com.ddanddan.data.service.HomeService
+import com.ddanddan.data.service.PetService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 object ServiceModule {
     @Singleton
     @Provides
-    fun provideHomeService(retrofit: Retrofit): HomeService = retrofit.create(HomeService::class.java)
+    fun providePetService(retrofit: Retrofit): PetService = retrofit.create(PetService::class.java)
 }
