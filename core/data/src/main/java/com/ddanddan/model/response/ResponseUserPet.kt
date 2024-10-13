@@ -1,6 +1,6 @@
 package com.ddanddan.model.response
 
-import com.ddanddan.domain.entity.Play
+import com.ddanddan.domain.entity.UserPet
 import kotlinx.serialization.Serializable
 
 /**
@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
  * @property pet Pet 정보
  */
 @Serializable
-data class ResponsePlay(
+data class ResponseUserPet(
     val user: ResponseUser,
     val pet: ResponsePet
 ) {
-    fun toPlay() = Play(user.toUser(), pet.toPet())
+    fun toUserPet() = UserPet(user.toUser(), pet.toPet())
 }
