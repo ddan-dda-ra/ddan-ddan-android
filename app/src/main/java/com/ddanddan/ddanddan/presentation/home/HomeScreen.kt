@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toImage
+import com.ddanddan.ui.compose.DDanDDanColorPalette
+import com.ddanddan.ui.compose.component.DDanSnackBar
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -28,11 +33,11 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     onStorageClick: () -> Unit = {},
-    onSettingClick: () -> Unit = {},
-    onEatClick: () -> Unit = {},
-    onPlayClick: () -> Unit = {}
+    onSettingClick: () -> Unit = {}
 ) {
     val homeState by homeViewModel.collectAsState()
+
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val context = LocalContext.current
 
@@ -41,36 +46,67 @@ fun HomeScreen(
             is HomeSideEffect.ToastNetworkError -> {
                 Toast.makeText(context, "네트워크 에러가 발생하였습니다.", Toast.LENGTH_SHORT).show()
             }
-            is HomeSideEffect.SnackBarMsg -> TODO()
+
+            is HomeSideEffect.SnackBarMsg -> {
+                snackBarHostState.showSnackbar(sideEffect.msg)
+            }
         }
     }
-
-    Column {
-        Spacer(modifier = Modifier.padding(top = 20.dp))
-        HomeTopScreen(onStorageClick, onSettingClick)
-        Spacer(modifier = Modifier.padding(top = 16.dp))
-        HomeCalorieScreen()
-        Spacer(modifier = Modifier.padding(top = 14.dp))
-        Box(
+    Scaffold(
+        containerColor = DDanDDanColorPalette.current.color_background,
+        snackbarHost = {
+            DDanSnackBar(snackBarHostState = snackBarHostState)
+        }) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            contentAlignment = Alignment.Center
+                .padding(paddingValues)
         ) {
-            Image(
-                painter = painterResource(homeState.userPet?.pet?.type.toImage()),
-                contentDescription = "동물 이미지",
-                modifier = Modifier.wrapContentSize()
+            Spacer(modifier = Modifier.padding(top = 20.dp))
+            HomeTopScreen(onStorageClick, onSettingClick)
+            Spacer(modifier = Modifier.padding(top = 16.dp))
+            HomeCalorieScreen(homeState.user?.purposeCalorie.toString())
+            Spacer(modifier = Modifier.padding(top = 14.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(homeState.pet?.type.toImage()),
+                    contentDescription = "동물 이미지",
+                    modifier = Modifier.wrapContentSize()
+                )
+            }
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+            HomeProgressbarScreen(homeState)
+            Spacer(modifier = Modifier.padding(top = 20.dp))
+            HomeBottomScreen(
+                foodCount = homeState.user?.foodQuantity ?: 0,
+                toyCount = homeState.user?.toyQuantity ?: 0,
+                onEatClick = {
+                    homeState.pet?.let {
+                        if ((homeState.user?.foodQuantity ?: 0) > 0) {
+                            homeViewModel.postFoodPet(it.id)
+                        } else {
+                            homeViewModel.showSnackBarEvent("먹이주기 개수가 부족합니다.")
+                        }
+                    } ?: run {
+                        homeViewModel.showSnackBarEvent("펫 아이디에 오류가 발생했습니다.")
+                    }
+                }, onPlayClick = {
+                    homeState.pet?.let {
+                        if ((homeState.user?.toyQuantity ?: 0) > 0) {
+                            homeViewModel.postPlayPet(it.id)
+                        } else {
+                            homeViewModel.showSnackBarEvent("놀아주기 개수가 부족합니다.")
+                        }
+                    } ?: run {
+                        homeViewModel.showSnackBarEvent("펫 아이디에 오류가 발생했습니다.")
+                    }
+                }
             )
         }
-        Spacer(modifier = Modifier.padding(top = 32.dp))
-        HomeProgressbarScreen(progress = 0.25f, progressColor = Color(0xFFFD85FF), level = 5)
-        Spacer(modifier = Modifier.padding(top = 20.dp))
-        HomeBottomScreen(onEatClick = {
-            homeViewModel.postFoodPet("dog")
-        }, onPlayClick = {
-            homeViewModel.postPlayPet("dog")
-        })
     }
 }
 
