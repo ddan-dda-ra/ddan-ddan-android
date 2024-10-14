@@ -20,12 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ui.compose.ColorPalette_Dark
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 
 @Composable
 fun HomeBottomScreen(
+    foodCount: Int = 0,
+    toyCount: Int = 0,
     onEatClick: () -> Unit = {},
     onPlayClick: () -> Unit = {}
 ) {
@@ -35,9 +38,9 @@ fun HomeBottomScreen(
             .padding(horizontal = 32.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ActionButton(modifier = Modifier.weight(1f), text = "먹이주기", count = "2개 보유", onClick = onEatClick)
+        ActionButton(modifier = Modifier.weight(1f), text = "먹이주기", count = "${foodCount}개 보유", onClick = onEatClick)
         Spacer(modifier = Modifier.width(12.dp))
-        ActionButton(modifier = Modifier.weight(1f), text = "놀아주기", count = "1개 보유", onClick = onPlayClick)
+        ActionButton(modifier = Modifier.weight(1f), text = "놀아주기", count = "${toyCount}개 보유", onClick = onPlayClick)
     }
 }
 

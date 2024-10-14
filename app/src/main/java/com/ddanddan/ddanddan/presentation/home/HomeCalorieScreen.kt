@@ -16,7 +16,9 @@ import androidx.compose.ui.unit.sp
 import com.ddanddan.ui.compose.NeoDgm
 
 @Composable
-fun HomeCalorieScreen() {
+fun HomeCalorieScreen(
+    purposeCalorie: String = "500",
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -41,7 +43,7 @@ fun HomeCalorieScreen() {
         Spacer(modifier = Modifier.padding(start = 4.dp))
         Text(
             modifier = Modifier.alignByBaseline(),
-            text = "500",
+            text = purposeCalorie,
             fontFamily = NeoDgm,
             fontSize = 22.sp,
             color = Color.White
