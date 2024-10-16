@@ -2,16 +2,10 @@ package com.ddanddan.ddanddan.presentation.signup.terms
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivityTermsBinding
 import com.ddanddan.ddanddan.presentation.signup.SignUpActivity
 import com.ddanddan.ddanddan.util.SigninUtils.EXTRA_KEY_OAUTHID
-import com.ddanddan.ddanddan.util.SigninUtils.EXTRA_KEY_PROVIDER
 import com.ddanddan.ddanddan.util.SigninUtils.EXTRA_KEY_URL
 import com.ddanddan.ui.base.BindingActivity
 import dagger.hilt.android.AndroidEntryPoint
