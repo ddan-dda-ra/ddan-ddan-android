@@ -1,10 +1,9 @@
 package com.ddanddan.ddanddan.presentation.signup.name
 
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputFilter
-import android.text.TextWatcher
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.ddanddan.ddanddan.R
@@ -14,6 +13,7 @@ import com.ddanddan.ddanddan.presentation.signup.SignUpProgress
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
 import com.ddanddan.ui.base.BindingFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
@@ -34,17 +34,9 @@ class GetNameFragment
     }
 
     private fun setTextChangedListener() {
-        binding.etName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-                viewModel.updateUserName(p0.toString())
-            }
-        })
+        binding.etName.doAfterTextChanged {
+            viewModel.updateUserName(it.toString())
+        }
     }
 
     private var filterAlphaNumSpace = InputFilter { source, _, _, _, _, _ ->
@@ -56,7 +48,7 @@ class GetNameFragment
 
     private fun checkValidinput() {
         lifecycleScope.launch {
-            viewModel.userName.collect { userName ->
+            viewModel.userName.collectLatest { userName ->
                 if (Pattern.matches(REGEX_NAME_PATTERN_SUBMIT, userName) && userName.trim().length >= 2) {
                     (activity as SignUpActivity).activateNextButton()
                     binding.tvCaption.visibility = View.INVISIBLE
