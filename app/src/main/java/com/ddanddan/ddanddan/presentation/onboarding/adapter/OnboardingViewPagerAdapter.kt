@@ -9,14 +9,14 @@ import com.ddanddan.ddanddan.databinding.ItemOnboardingViewpagerBinding
 import com.ddanddan.domain.entity.CommonViewPagerEntity
 
 class OnboardingViewPagerAdapter: ListAdapter<CommonViewPagerEntity, OnboardingViewPagerAdapter.ItemViewHolder>(ItemListDiffCallback) {
-    private lateinit var binding: ItemOnboardingViewpagerBinding
+    private lateinit var layoutInflater: LayoutInflater
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ItemViewHolder {
-        binding = ItemOnboardingViewpagerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemViewHolder(binding)
+        layoutInflater = LayoutInflater.from(parent.context)
+        return ItemViewHolder(ItemOnboardingViewpagerBinding.inflate(layoutInflater, parent, false))
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
