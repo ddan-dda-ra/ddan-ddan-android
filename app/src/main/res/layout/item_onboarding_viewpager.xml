@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:background="@color/background"
+        android:theme="@style/Theme.DdanDdan"
+        >
+
+        <TextView
+            android:id="@+id/tv_title"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="오늘 소비한 칼로리로\n귀여운 펫을 키워보세요"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/neodgm"
+            android:textSize="24sp"
+            android:lineSpacingExtra="3sp"
+            android:textColor="#F5F5F5"
+            android:includeFontPadding="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <ImageView
+            android:id="@+id/iv_viewpager"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_title"
+            android:layout_marginTop="180dp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
