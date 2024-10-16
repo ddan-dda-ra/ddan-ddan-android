@@ -12,6 +12,7 @@ import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
 import com.ddanddan.ddanddan.presentation.setting.SettingScreen
 import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionScreen
+import com.ddanddan.ddanddan.presentation.setting.EditNicknameScreen
 
 @Composable
 fun MainScreen(
@@ -39,7 +40,7 @@ fun MainScreen(
         }
         composable(DDanDDanRoute.PET_COLLECTION.route) {
             PetCollectionScreen(
-                navController = navController,
+                navigatePopUp = navController::popBackStack,
                 onConfirmClick = {
                     // 선택 완료 클릭
                 }
@@ -67,6 +68,13 @@ fun MainScreen(
                 },
                 onLogOutClick = {
                     //로그아웃
+                }
+            )
+        }
+        composable(DDanDDanRoute.EDIT_NICKNAME.route) {
+            EditNicknameScreen(
+                onTopBarBackClick = {
+                    navController.popBackStack()
                 }
             )
         }
