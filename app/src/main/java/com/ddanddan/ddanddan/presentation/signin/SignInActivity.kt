@@ -5,25 +5,22 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.ddanddan.ddanddan.BuildConfig
-import com.ddanddan.ddanddan.BuildConfig.KAKAO_APP_KEY
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivitySigninBinding
 import com.ddanddan.ddanddan.presentation.MainActivity
-import com.ddanddan.ddanddan.presentation.signup.SignUpActivity
 import com.ddanddan.ddanddan.presentation.signup.terms.TermsActivity
 import com.ddanddan.ui.base.BindingActivity
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.TokenManagerProvider
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class SignInActivity
@@ -92,9 +89,9 @@ class SignInActivity
     }
 
     private fun observer() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.signInState.collect { state ->
-                when (state) {
+        viewModel.signInState.flowWithLifecycle(lifecycle)
+            .onEach {
+                when (it) {
                     is SignInState.Success -> {
                         startActivity(Intent(this@SignInActivity, MainActivity::class.java))
                         finish()
@@ -104,12 +101,11 @@ class SignInActivity
                         finish()
                     }
                     is SignInState.Failure -> {
-                        Toast.makeText(this@SignInActivity, state.msg, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SignInActivity, it.msg, Toast.LENGTH_SHORT).show()
                     }
-                    else -> {}
+                    else -> { }
                 }
-            }
-        }
+            }.launchIn(lifecycleScope)
     }
 
     companion object {
