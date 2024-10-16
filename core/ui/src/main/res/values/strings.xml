@@ -7,4 +7,9 @@
     <string name="setting_title_text5">탈퇴하기</string>
     <string name="setting_title_text6">로그아웃</string>
     <string name="setting_version_text">앱 버전</string>
+    
+    <string name="editname_topbar_title">내 별명 수정</string>
+    <string name="editname_screen_title">별명을 알려주세요</string>
+    <string name="editname_textfield_text">별명</string>
+    <string name="editname_button_text">변경 완료</string>
 </resources>
