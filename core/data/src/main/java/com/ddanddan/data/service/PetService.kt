@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface HomeService {
+interface PetService {
     @POST("/v1/pets/{petId}/play")
     suspend fun postPlayPet(
         @Path("petId") petId: String

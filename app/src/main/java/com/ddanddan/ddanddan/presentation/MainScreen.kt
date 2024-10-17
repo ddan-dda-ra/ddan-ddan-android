@@ -29,12 +29,6 @@ fun MainScreen(
                 },
                 onSettingClick = {
                     navController.navigate(DDanDDanRoute.SETTING.route)
-                },
-                onEatClick = {
-                    // TODO 먹이주기 클릭 로직
-                },
-                onPlayClick = {
-                    // TODO 놀아주기 클릭 로직
                 }
             )
         }

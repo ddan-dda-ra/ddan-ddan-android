@@ -1,14 +1,13 @@
 package com.ddanddan.ddanddan.di
 
-import com.ddanddan.data.repository.HomeRepositoryImpl
+import com.ddanddan.data.repository.PetRepositoryImpl
 import com.ddanddan.data.repository.UserRepositoryImpl
-import com.ddanddan.domain.repository.HomeRepository
+import com.ddanddan.domain.repository.PetRepository
 import com.ddanddan.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import retrofit2.http.Body
 import javax.inject.Singleton
 
 @Module
@@ -16,7 +15,7 @@ import javax.inject.Singleton
 interface RepositoryModule {
     @Singleton
     @Binds
-    fun bindHomeRepository(homeRepositoryImpl: HomeRepositoryImpl): HomeRepository
+    fun bindPetRepository(petRepositoryImpl: PetRepositoryImpl): PetRepository
 
     @Singleton
     @Binds

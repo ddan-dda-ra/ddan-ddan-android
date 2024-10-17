@@ -25,6 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ddanddan.ddanddan.util.toColor
+import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.enum.PetTypeEnum
 import com.ddanddan.ui.compose.ColorPalette_Dark
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -32,13 +35,10 @@ import com.ddanddan.ui.compose.NeoDgm
 
 @Composable
 fun HomeProgressbarScreen(
-    progress: Float,
-    progressColor: Color,
-    level: Int,
+    homeState: HomeState,
     modifier: Modifier = Modifier
 ) {
     val totalSegments = 24
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -57,7 +57,7 @@ fun HomeProgressbarScreen(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "LV.$level",
+                    text = "LV.${homeState.pet?.level}",
                     color = DDanDDanColorPalette.current.color_text_headline_primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400),
@@ -66,7 +66,7 @@ fun HomeProgressbarScreen(
             }
 
             Text(
-                text = "${(progress * 100).toInt()}%",
+                text = "${homeState.pet?.expPercent}%",
                 color = DDanDDanColorPalette.current.color_text_headline_primary,
                 style = DDanDDanTypo.current.SubTitle1
             )
@@ -76,8 +76,8 @@ fun HomeProgressbarScreen(
 
         DDanDDanProgressbar(
             totalSegments = totalSegments,
-            progress = progress,
-            progressColor = progressColor
+            progress = ((homeState.pet?.expPercent ?: 0.0) * 0.01).toFloat(),
+            progressColor = homeState.pet?.type.toColor()
         )
     }
 }
@@ -158,5 +158,7 @@ fun DDanDDanProgressbar(
     backgroundColor = 0xFF111111
 )
 fun HomeProgressbarScreenPreview() {
-    HomeProgressbarScreen(progress = 0.25f, progressColor = Color(0xFFFD85FF), level = 5)
+    HomeProgressbarScreen(
+        homeState = HomeState(pet = Pet("cat", PetTypeEnum.CAT, 1, 1.0))
+    )
 }
