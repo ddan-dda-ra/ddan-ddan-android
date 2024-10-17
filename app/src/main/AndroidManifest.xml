@@ -17,12 +17,45 @@
         android:theme="@style/Theme.DdanDdan"
         tools:targetApi="34">
         <activity
-            android:name=".presentation.MainActivity"
-            android:exported="true">
+            android:name=".presentation.signup.terms.TermsWebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.terms.TermsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.finish.SignUpFinishActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signin.SignInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.onboarding.OnboardingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.splash.SplashActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".presentation.MainActivity"
+            android:exported="true">
+        </activity>
+
+        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="oauth"
+                    android:scheme="kakao${KAKAO_APP_KEY}" />
             </intent-filter>
         </activity>
     </application>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        >
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="51sp"
+            android:text="하루 목표 칼로리를\n설정해주세요"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/neodgm"
+            android:textSize="24sp"
+            android:lineSpacingExtra="3sp"
+            android:textColor="#F5F5F5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/tv_goal"
+            android:layout_width="88dp"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:text="300"
+            android:background="@drawable/shape_rect8_elevation_level01"
+            android:textColor="#13E695"
+            android:fontFamily="@font/pretendard_bold"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.3"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/iv_minus"
+            android:src="@drawable/ic_circle_minus"
+            app:layout_constraintTop_toTopOf="@id/tv_goal"
+            app:layout_constraintBottom_toBottomOf="@id/tv_goal"
+            app:layout_constraintEnd_toStartOf="@id/tv_goal"
+            android:layout_margin="20dp"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/iv_plus"
+            android:src="@drawable/ic_circle_plus"
+            app:layout_constraintTop_toTopOf="@id/tv_goal"
+            app:layout_constraintBottom_toBottomOf="@id/tv_goal"
+            app:layout_constraintStart_toEndOf="@id/tv_goal"
+            android:layout_margin="20dp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
