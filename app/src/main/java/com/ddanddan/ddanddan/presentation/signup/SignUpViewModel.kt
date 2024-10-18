@@ -71,12 +71,29 @@ class SignUpViewModel @Inject constructor(
                 reduce {
                     state.copy(isLoading = true)
                 }
-//                postTypePet()
+                postTypePet()
             }.onFailure {
                 postSideEffect(SignUpSideEffect.ToastNetworkError)
             }
     }
 
+    private fun postTypePet() = intent {
+        petType.value?.let { postTypePetUseCase(it)
+            .onSuccess {
+                reduce {
+                    state.copy(newPet = it)
+                }
+                postMainPet()
+            }
+            .onFailure {
+                postSideEffect(SignUpSideEffect.ToastNetworkError)
+            }
+        }
+    }
+
+    private fun postMainPet() = intent {
+
+    }
 }
 
 enum class SignUpProgress {

@@ -3,6 +3,7 @@ package com.ddanddan.data.repository
 import com.ddanddan.data.datasource.remote.RemotePetDataSource
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.UserPet
+import com.ddanddan.domain.enum.PetTypeEnum
 import com.ddanddan.domain.repository.PetRepository
 import javax.inject.Inject
 
@@ -19,5 +20,9 @@ class PetRepositoryImpl @Inject constructor(
 
     override suspend fun postFoodPet(petId: String): UserPet {
         return petDataSource.postFoodPet(petId).toUserPet()
+    }
+
+    override suspend fun postTypePet(petTypeEnum: PetTypeEnum): Pet {
+        return petDataSource.postTypePet(petTypeEnum.toString()).toPet()
     }
 }

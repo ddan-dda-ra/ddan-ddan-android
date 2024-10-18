@@ -1,7 +1,10 @@
 package com.ddanddan.data.service
 
+import com.ddanddan.model.request.RequestTypePet
+import com.ddanddan.model.response.ResponsePet
 import com.ddanddan.model.response.ResponsePets
 import com.ddanddan.model.response.ResponseUserPet
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -19,4 +22,9 @@ interface PetService {
 
     @GET("/v1/pets/me")
     suspend fun getPetList(): ResponsePets
+
+    @POST("/v1/pets/me")
+    suspend fun postTypePet(
+        @Body petType: RequestTypePet
+    ): ResponsePet
 }
