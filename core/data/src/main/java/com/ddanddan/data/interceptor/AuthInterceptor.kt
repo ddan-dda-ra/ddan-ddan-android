@@ -17,11 +17,7 @@ class AuthInterceptor @Inject constructor(
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
-        val authRequest = if (dataStore.isLogin) {
-            originalRequest.newAuthBuilder().build()
-        } else {
-            originalRequest
-        }
+        val authRequest = originalRequest.newAuthBuilder().build()
         val response = chain.proceed(authRequest)
 
         when (response.code) {
@@ -29,7 +25,7 @@ class AuthInterceptor @Inject constructor(
                 try {
                     Timber.tag("만료된 토큰").d("accessToken: ${dataStore.userToken}, refreshToken: ${dataStore.refreshToken}")
                     val refreshTokenRequest = originalRequest.newBuilder().post("".toRequestBody())
-                        .url("${BASE_URL}auth/reissues")
+                        .url("${BASE_URL}/v1/auth/reissue")
                         .addHeader(HEADER_AUTHORIZATION, dataStore.userToken)
                         .addHeader(HEADER_REFRESH_TOKEN, dataStore.refreshToken)
                         .build()
