@@ -8,6 +8,7 @@ import com.ddanddan.ddanddan.databinding.FragmentSetEggBinding
 import com.ddanddan.ddanddan.presentation.signup.SignUpActivity
 import com.ddanddan.ddanddan.presentation.signup.SignUpProgress
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
+import com.ddanddan.domain.enum.PetTypeEnum
 import com.ddanddan.ui.base.BindingFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,34 +30,34 @@ class SelectEggFragment
     private fun setUpInitialListener() {
         with(binding) {
             ivPink.setOnClickListener {
-                setSelection(0)
+                setSelection(PetTypeEnum.CAT)
             }
             ivGreen.setOnClickListener {
-                setSelection(1)
+                setSelection(PetTypeEnum.HAMSTER)
             }
             ivPurple.setOnClickListener {
-                setSelection(2)
+                setSelection(PetTypeEnum.DOG)
             }
             ivBlue.setOnClickListener {
-                setSelection(3)
+                setSelection(PetTypeEnum.PENGUIN)
             }
         }
     }
 
-    private fun setSelection(color: Int) {
+    private fun setSelection(petTypeEnum: PetTypeEnum) {
         (activity as SignUpActivity).activateNextButton()
-        viewModel.setEggColor(color)
+        viewModel.setPetType(petTypeEnum)
         with(binding) {
             ivPink.isSelected = false
             ivGreen.isSelected = false
             ivPurple.isSelected = false
             ivBlue.isSelected = false
 
-            when (color) {
-                0 -> ivPink.isSelected = true
-                1 -> ivGreen.isSelected = true
-                2 -> ivPurple.isSelected = true
-                3 -> ivBlue.isSelected = true
+            when (petTypeEnum) {
+                PetTypeEnum.CAT -> ivPink.isSelected = true
+                PetTypeEnum.HAMSTER -> ivGreen.isSelected = true
+                PetTypeEnum.DOG -> ivPurple.isSelected = true
+                PetTypeEnum.PENGUIN -> ivBlue.isSelected = true
             }
         }
     }

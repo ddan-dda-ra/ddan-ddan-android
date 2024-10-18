@@ -58,11 +58,11 @@ class SignUpViewModel @Inject constructor(
         return true
     }
 
-    private val _eggColor = MutableStateFlow<Int?>(null)
-    val eggColor: StateFlow<Int?> = _eggColor.asStateFlow()
+    private val _petType = MutableStateFlow<PetTypeEnum?>(null)
+    val petType: StateFlow<PetTypeEnum?> = _petType.asStateFlow()
 
-    fun setEggColor(color: Int) {
-        _eggColor.value = color
+    fun setPetType(petTypeEnum: PetTypeEnum) {
+        _petType.value = petTypeEnum
     }
 
     fun putUserInfo() = intent {
