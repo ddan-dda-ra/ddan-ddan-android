@@ -1,15 +1,33 @@
 package com.ddanddan.ddanddan.presentation.signup
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.repository.UserRepository
+import com.ddanddan.domain.usecase.GetPetListUseCase
+import com.ddanddan.domain.usecase.PostTypePetUseCase
+import com.ddanddan.domain.usecase.PutUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-) : ViewModel() {
+    private val putUserInfoUseCase: PutUserInfoUseCase,
+    private val postTypePetUseCase: PostTypePetUseCase
+) : ViewModel(), ContainerHost<SignUpState, SignUpSideEffect> {
+
+    override val container =
+        container<SignUpState, SignUpSideEffect>(SignUpState())
 
     private val _signUpProgress = MutableStateFlow<SignUpProgress>(SignUpProgress.Name)
     val signUpProgress: StateFlow<SignUpProgress> = _signUpProgress.asStateFlow()
@@ -46,6 +64,19 @@ class SignUpViewModel @Inject constructor(
     fun setEggColor(color: Int) {
         _eggColor.value = color
     }
+
+    fun putUserInfo() = intent {
+        putUserInfoUseCase(userName.value, goalCalories.value)
+            .onSuccess {
+                reduce {
+                    state.copy(isLoading = true)
+                }
+//                postTypePet()
+            }.onFailure {
+                postSideEffect(SignUpSideEffect.ToastNetworkError)
+            }
+    }
+
 }
 
 enum class SignUpProgress {
