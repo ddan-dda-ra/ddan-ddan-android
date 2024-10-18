@@ -30,9 +30,9 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun HomeScreen(
+fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    onStorageClick: () -> Unit = {},
+    onStorageClick: (String) -> Unit = {},
     onSettingClick: () -> Unit = {}
 ) {
     val homeState by homeViewModel.collectAsState()
@@ -52,6 +52,26 @@ fun HomeScreen(
             }
         }
     }
+
+    HomeScreen(
+        homeState = homeState,
+        snackBarHostState = snackBarHostState,
+        onStorageClick = { onStorageClick(homeState.pet?.id ?: "") },
+        onSettingClick = onSettingClick,
+        onEatClick = homeViewModel::postFoodPet,
+        onPlayClick = homeViewModel::postPlayPet,
+    )
+}
+
+@Composable
+fun HomeScreen(
+    homeState: HomeState = HomeState(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    onStorageClick: () -> Unit = {},
+    onSettingClick: () -> Unit = {},
+    onEatClick: () -> Unit = {},
+    onPlayClick: () -> Unit = {}
+) {
     Scaffold(
         containerColor = DDanDDanColorPalette.current.color_background,
         snackbarHost = {
@@ -85,25 +105,9 @@ fun HomeScreen(
                 foodCount = homeState.user?.foodQuantity ?: 0,
                 toyCount = homeState.user?.toyQuantity ?: 0,
                 onEatClick = {
-                    homeState.pet?.let {
-                        if ((homeState.user?.foodQuantity ?: 0) > 0) {
-                            homeViewModel.postFoodPet(it.id)
-                        } else {
-                            homeViewModel.showSnackBarEvent("먹이주기 개수가 부족합니다.")
-                        }
-                    } ?: run {
-                        homeViewModel.showSnackBarEvent("펫 아이디에 오류가 발생했습니다.")
-                    }
+                    onEatClick()
                 }, onPlayClick = {
-                    homeState.pet?.let {
-                        if ((homeState.user?.toyQuantity ?: 0) > 0) {
-                            homeViewModel.postPlayPet(it.id)
-                        } else {
-                            homeViewModel.showSnackBarEvent("놀아주기 개수가 부족합니다.")
-                        }
-                    } ?: run {
-                        homeViewModel.showSnackBarEvent("펫 아이디에 오류가 발생했습니다.")
-                    }
+                    onPlayClick()
                 }
             )
         }

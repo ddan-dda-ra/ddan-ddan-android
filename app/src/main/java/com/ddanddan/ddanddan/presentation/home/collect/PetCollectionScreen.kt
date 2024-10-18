@@ -23,7 +23,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,27 +34,27 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.reward.BottomButton
+import com.ddanddan.ddanddan.util.toImage
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.enum.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.facebook.flipper.plugins.uidebugger.descriptors.Id
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun PetCollectionScreen(
+fun PetCollectionRoute(
     viewModel: CollectViewModel = hiltViewModel(),
     navigatePopUp: () -> Unit = {},
     onConfirmClick: () -> Unit = {}
 ) {
     val petCollectionState by viewModel.collectAsState()
 
-    val selectIndex = remember {
-        mutableIntStateOf(0)
-    }
     val context = LocalContext.current
+
     val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -63,10 +62,15 @@ fun PetCollectionScreen(
     }
 
     viewModel.collectSideEffect { sideEffect ->
-        when(sideEffect) {
+        when (sideEffect) {
             is PetCollectionSideEffect.NavigatePopUp -> {
                 navigatePopUp()
             }
+
+            is PetCollectionSideEffect.SuccessChangePet -> {
+                onConfirmClick()
+            }
+
             is PetCollectionSideEffect.ToastNetworkError -> {
                 Toast.makeText(context, "네트워크 에러가 발생하였습니다.", Toast.LENGTH_SHORT).show()
             }
@@ -77,6 +81,26 @@ fun PetCollectionScreen(
         }
     }
 
+    PetCollectionScreen(
+        petCollectionState = petCollectionState,
+        snackBarHostState = snackBarHostState,
+        navigatePopUp = viewModel::onBackButtonClicked,
+        onConfirmClick = viewModel::postMainPet,
+        onSelectId = viewModel::changeSelectId,
+        onSnackBarEvent = viewModel::showSnackBarEvent
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PetCollectionScreen(
+    petCollectionState: PetCollectionState = PetCollectionState(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    navigatePopUp: () -> Unit = {},
+    onConfirmClick: () -> Unit = {},
+    onSelectId: (String) -> Unit = {},
+    onSnackBarEvent: (String) -> Unit = {},
+) {
     Scaffold(
         containerColor = DDanDDanColorPalette.current.color_background,
         topBar = {
@@ -91,7 +115,7 @@ fun PetCollectionScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { viewModel.onBackButtonClicked() }
+                        onClick = { navigatePopUp() }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
@@ -129,11 +153,12 @@ fun PetCollectionScreen(
                             .clip(RoundedCornerShape(8.dp))
                             .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
                     ) {
-                        PetItem(petCollectionState.pets.getOrNull(index), selectIndex.intValue, {
-                            selectIndex.intValue = it
-                        }, {
-                            viewModel.showSnackBarEvent("새로운 펫을 준비중이에요")
-                        })
+                        PetItem(
+                            pet = petCollectionState.pets.getOrNull(index),
+                            mainPetId = petCollectionState.mainPetId,
+                            onSelectId = { onSelectId(it) },
+                            onOtherItemClick = { onSnackBarEvent("새로운 펫을 준비중이에요") }
+                        )
                     }
                 }
             }
@@ -144,35 +169,27 @@ fun PetCollectionScreen(
 @Composable
 fun PetItem(
     pet: Pet?,
-    selectIndex: Int,
-    onSelectIndex: (Int) -> Unit = {},
+    mainPetId: String,
+    onSelectId: (String) -> Unit = {},
     onOtherItemClick: () -> Unit = {}
 ) {
-    val imageRes = when (pet?.type) {
-        PetTypeEnum.CAT -> R.drawable.ic_cat
-        PetTypeEnum.DOG -> R.drawable.ic_cat
-        PetTypeEnum.PENGUIN -> R.drawable.ic_cat
-        PetTypeEnum.HAMSTER -> R.drawable.ic_cat
-        else -> R.drawable.ic_question
-    }
-    val index = PetTypeEnum.values().indexOf(pet?.type)
     Box(modifier = Modifier
         .fillMaxSize()
         .clickable {
             if (pet != null) {
-                onSelectIndex(index)
+                onSelectId(pet.id)
             } else {
                 onOtherItemClick()
             }
         }) {
         Image(
-            painter = painterResource(id = imageRes),
+            painter = painterResource(id = pet?.type.toImage()),
             contentDescription = "Pet",
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         )
-        if (index == selectIndex) {
+        if (pet?.id == mainPetId) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
