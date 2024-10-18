@@ -48,26 +48,42 @@ class HomeViewModel @Inject constructor(
             }
     }
 
-    fun postPlayPet(petId: String) = intent {
-        postPlayPetUseCase(petId)
-            .onSuccess {
-                reduce {
-                    state.copy(user = it.user, pet = it.pet)
-                }
-            }.onFailure {
-                postSideEffect(HomeSideEffect.ToastNetworkError)
+    fun postPlayPet() = intent {
+        state.pet?.let {
+            if ((state.user?.toyQuantity ?: 0) > 0) {
+                postPlayPetUseCase(it.id)
+                    .onSuccess {
+                        reduce {
+                            state.copy(user = it.user, pet = it.pet)
+                        }
+                    }.onFailure {
+                        postSideEffect(HomeSideEffect.ToastNetworkError)
+                    }
+            } else {
+                postSideEffect(HomeSideEffect.SnackBarMsg("놀아주기 개수가 부족합니다."))
             }
+        } ?: run {
+            postSideEffect(HomeSideEffect.SnackBarMsg("펫 아이디에 오류가 발생했습니다."))
+        }
     }
 
-    fun postFoodPet(petId: String) = intent {
-        postFoodPetUseCase(petId)
-            .onSuccess {
-                reduce {
-                    state.copy(user = it.user, pet = it.pet)
-                }
-            }.onFailure {
-                postSideEffect(HomeSideEffect.ToastNetworkError)
+    fun postFoodPet() = intent {
+        state.pet?.let {
+            if ((state.user?.foodQuantity ?: 0) > 0) {
+                postFoodPetUseCase(it.id)
+                    .onSuccess {
+                        reduce {
+                            state.copy(user = it.user, pet = it.pet)
+                        }
+                    }.onFailure {
+                        postSideEffect(HomeSideEffect.ToastNetworkError)
+                    }
+            } else {
+                postSideEffect(HomeSideEffect.SnackBarMsg("먹이주기 개수가 부족합니다."))
             }
+        } ?: run {
+            postSideEffect(HomeSideEffect.SnackBarMsg("펫 아이디에 오류가 발생했습니다."))
+        }
     }
 
     fun showSnackBarEvent(msg: String) = intent {
