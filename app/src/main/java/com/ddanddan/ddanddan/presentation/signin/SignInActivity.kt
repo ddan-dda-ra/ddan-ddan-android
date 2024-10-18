@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.databinding.adapters.ViewBindingAdapter.setClickListener
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.ddanddan.ddanddan.R
@@ -34,6 +35,7 @@ class SignInActivity
         observer()
         setClickListener()
 
+        /**
         if (AuthApiClient.instance.hasToken()) {
             // 저장된 액세스 토큰 가져오기
             val accessToken = TokenManagerProvider.instance.manager.getToken()?.accessToken
@@ -56,6 +58,7 @@ class SignInActivity
                 }
             }
         }
+        */
     }
 
     private val mCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
