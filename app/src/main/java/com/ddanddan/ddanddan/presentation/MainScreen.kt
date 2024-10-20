@@ -2,11 +2,15 @@ package com.ddanddan.ddanddan.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.presentation.home.HomeRoute
 import com.ddanddan.ddanddan.presentation.home.HomeScreen
+import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionRoute
 import com.ddanddan.ddanddan.presentation.home.reward.LevelUpOrNetPetScreen
 import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
@@ -23,21 +27,22 @@ fun MainScreen(
         startDestination = DDanDDanRoute.HOME.route
     ) {
         composable(DDanDDanRoute.HOME.route) {
-            HomeScreen(
-                onStorageClick = {
-                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route)
+            HomeRoute(
+                onStorageClick = { petId ->
+                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "petId=${petId}")
                 },
                 onSettingClick = {
                     navController.navigate(DDanDDanRoute.SETTING.route)
                 }
             )
         }
-        composable(DDanDDanRoute.PET_COLLECTION.route) {
-            PetCollectionScreen(
+        composable(
+            route = DDanDDanRoute.PET_COLLECTION.route + "petId={petId}",
+            arguments = listOf(navArgument("petId") { type = NavType.StringType; defaultValue = "" })
+        ) {
+            PetCollectionRoute(
                 navigatePopUp = navController::popBackStack,
-                onConfirmClick = {
-                    // 선택 완료 클릭
-                }
+                onConfirmClick = navController::popBackStack
             )
         }
         composable(DDanDDanRoute.SETTING.route) {
