@@ -6,6 +6,8 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivitySignupBinding
 import com.ddanddan.ddanddan.presentation.signup.egg.SelectEggFragment
@@ -15,6 +17,8 @@ import com.ddanddan.ddanddan.presentation.signup.name.GetNameFragment
 import com.ddanddan.ddanddan.util.SigninUtils.EXTRA_KEY_OAUTHID
 import com.ddanddan.ui.base.BindingActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class SignUpActivity
@@ -58,11 +62,21 @@ class SignUpActivity
                     navigateTo<SelectEggFragment>()
                 }
                 SignUpProgress.Egg -> {
-                    goToSignUpFinishActivity()
-                    finish()
+                    observe()
+                    viewModel.putUserInfo()
                 }
             }
         }
+    }
+
+    private fun observe() {
+        viewModel.container.stateFlow.flowWithLifecycle(lifecycle)
+            .onEach {
+                if (it.signUpSuccess) {
+                    goToSignUpFinishActivity()
+                    finish()
+                }
+            }.launchIn(lifecycleScope)
     }
 
     private fun goToSignUpFinishActivity() {

@@ -15,6 +15,10 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.getUser().toUser()
     }
 
+    override suspend fun putUser(name: String, purposeCalorie: Int): User {
+        return userDataSource.putUser(name, purposeCalorie).toUser()
+    }
+
     override suspend fun getMainPet(): Pet {
         return userDataSource.getMainPet().mainPet.toPet()
     }
@@ -27,8 +31,8 @@ class UserRepositoryImpl @Inject constructor(
         return runCatching {
             val result = userDataSource.login(token)
 
-            ddanddanDataStore.userToken = result.accessToken
-            ddanddanDataStore.refreshToken = result.refreshToken
+            ddanddanDataStore.userToken = "Bearer ${result.accessToken}"
+            ddanddanDataStore.refreshToken = "Bearer ${result.refreshToken}"
 
             result.isOnboardingComplete
         }

@@ -1,7 +1,7 @@
 package com.ddanddan.model.response
 
 import com.ddanddan.domain.entity.Pet
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 import kotlinx.serialization.Serializable
 
 /**

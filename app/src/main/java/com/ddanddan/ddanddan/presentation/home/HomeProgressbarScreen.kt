@@ -27,8 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.domain.entity.Pet
-import com.ddanddan.domain.enum.PetTypeEnum
-import com.ddanddan.ui.compose.ColorPalette_Dark
+import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
