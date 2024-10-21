@@ -22,6 +22,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toImage
 import com.ddanddan.ui.compose.DDanDDanColorPalette
@@ -32,8 +37,10 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    onStorageClick: (String) -> Unit = {},
-    onSettingClick: () -> Unit = {}
+    onStorageClick: (String) -> Unit,
+    onSettingClick: () -> Unit,
+    onNavigateLevelUp: (level: Int, petType: String) -> Unit,
+    onNavigateNewPet: (petType: String) -> Unit
 ) {
     val homeState by homeViewModel.collectAsState()
 
@@ -43,10 +50,21 @@ fun HomeRoute(
 
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
+            is HomeSideEffect.NavigatePetCollection -> {
+                onStorageClick(sideEffect.petId)
+            }
+            is HomeSideEffect.NavigateSetting -> {
+                onSettingClick()
+            }
+            is HomeSideEffect.NavigateLevelUp -> {
+                onNavigateLevelUp(sideEffect.level, sideEffect.petType.name)
+            }
+            is HomeSideEffect.NavigateNewPet -> {
+                onNavigateNewPet(sideEffect.petType.name)
+            }
             is HomeSideEffect.ToastNetworkError -> {
                 Toast.makeText(context, "네트워크 에러가 발생하였습니다.", Toast.LENGTH_SHORT).show()
             }
-
             is HomeSideEffect.SnackBarMsg -> {
                 snackBarHostState.showSnackbar(sideEffect.msg)
             }
@@ -56,8 +74,8 @@ fun HomeRoute(
     HomeScreen(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
-        onStorageClick = { onStorageClick(homeState.pet?.id ?: "") },
-        onSettingClick = onSettingClick,
+        onStorageClick = homeViewModel::onStorageClick,
+        onSettingClick = homeViewModel::onSettingClick,
         onEatClick = homeViewModel::postFoodPet,
         onPlayClick = homeViewModel::postPlayPet,
     )
