@@ -1,18 +1,14 @@
 package com.ddanddan.ddanddan.presentation.signup
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.ddanddan.domain.enum.PetTypeEnum
-import com.ddanddan.domain.repository.UserRepository
-import com.ddanddan.domain.usecase.GetPetListUseCase
+import com.ddanddan.domain.enums.PetTypeEnum
+import com.ddanddan.domain.usecase.PostMainPetUseCase
 import com.ddanddan.domain.usecase.PostTypePetUseCase
 import com.ddanddan.domain.usecase.PutUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -23,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val putUserInfoUseCase: PutUserInfoUseCase,
-    private val postTypePetUseCase: PostTypePetUseCase
+    private val postTypePetUseCase: PostTypePetUseCase,
+    private val postMainPetUseCase: PostMainPetUseCase
 ) : ViewModel(), ContainerHost<SignUpState, SignUpSideEffect> {
 
     override val container =
@@ -79,11 +76,11 @@ class SignUpViewModel @Inject constructor(
 
     private fun postTypePet() = intent {
         petType.value?.let { postTypePetUseCase(it)
-            .onSuccess {
+            .onSuccess { pet ->
                 reduce {
-                    state.copy(newPet = it)
+                    state.copy(newPet = pet)
                 }
-                postMainPet()
+                postMainPet(pet.id)
             }
             .onFailure {
                 postSideEffect(SignUpSideEffect.ToastNetworkError)
@@ -91,8 +88,16 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun postMainPet() = intent {
-
+    private fun postMainPet(petId: String) = intent {
+        postMainPetUseCase(petId)
+            .onSuccess {
+                reduce {
+                    state.copy(isLoading = false, signUpSuccess = true)
+                }
+            }
+            .onFailure {
+                postSideEffect(SignUpSideEffect.ToastNetworkError)
+            }
     }
 }
 
