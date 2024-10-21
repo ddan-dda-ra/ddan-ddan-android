@@ -2,7 +2,7 @@ package com.ddanddan.domain.repository
 
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.UserPet
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 
 interface PetRepository {
     suspend fun getPetList(): List<Pet>

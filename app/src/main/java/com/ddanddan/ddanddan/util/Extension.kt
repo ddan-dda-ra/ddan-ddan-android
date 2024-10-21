@@ -2,8 +2,7 @@ package com.ddanddan.ddanddan.util
 
 import androidx.compose.ui.graphics.Color
 import com.ddanddan.ddanddan.R
-import com.ddanddan.domain.enum.PetTypeEnum
-import com.ddanddan.ui.compose.DDanDDanColorPalette
+import com.ddanddan.domain.enums.PetTypeEnum
 
 fun PetTypeEnum?.toImage(): Int {
     return when (this) {

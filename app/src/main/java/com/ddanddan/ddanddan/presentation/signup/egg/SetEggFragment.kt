@@ -8,7 +8,7 @@ import com.ddanddan.ddanddan.databinding.FragmentSetEggBinding
 import com.ddanddan.ddanddan.presentation.signup.SignUpActivity
 import com.ddanddan.ddanddan.presentation.signup.SignUpProgress
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.base.BindingFragment
 import dagger.hilt.android.AndroidEntryPoint
 

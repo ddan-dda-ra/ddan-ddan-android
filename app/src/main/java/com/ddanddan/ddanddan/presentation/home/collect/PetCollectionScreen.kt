@@ -36,11 +36,9 @@ import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.reward.BottomButton
 import com.ddanddan.ddanddan.util.toImage
 import com.ddanddan.domain.entity.Pet
-import com.ddanddan.domain.enum.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanSnackBar
-import com.facebook.flipper.plugins.uidebugger.descriptors.Id
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 

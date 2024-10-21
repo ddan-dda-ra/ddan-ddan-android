@@ -3,7 +3,7 @@ package com.ddanddan.data.repository
 import com.ddanddan.data.datasource.remote.RemotePetDataSource
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.UserPet
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.repository.PetRepository
 import javax.inject.Inject
 

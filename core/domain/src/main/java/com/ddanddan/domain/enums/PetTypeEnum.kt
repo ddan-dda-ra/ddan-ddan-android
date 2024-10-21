@@ -1,4 +1,4 @@
-package com.ddanddan.domain.enum
+package com.ddanddan.domain.enums
 
 enum class PetTypeEnum {
     CAT, HAMSTER, PENGUIN, DOG

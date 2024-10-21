@@ -1,6 +1,6 @@
 package com.ddanddan.domain.entity
 
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 
 data class Pet(
     val id: String,

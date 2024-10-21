@@ -1,6 +1,6 @@
 package com.ddanddan.domain.usecase
 
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.repository.PetRepository
 import javax.inject.Inject
 
