@@ -3,6 +3,7 @@ package com.ddanddan.ddanddan.presentation.home
 import androidx.compose.runtime.Immutable
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.User
+import com.ddanddan.domain.enum.PetTypeEnum
 
 @Immutable
 data class HomeState(
@@ -13,5 +14,9 @@ data class HomeState(
 
 sealed class HomeSideEffect {
     object ToastNetworkError : HomeSideEffect()
+    object NavigateSetting: HomeSideEffect()
+    data class NavigateLevelUp(val level: Int, val petType: PetTypeEnum) : HomeSideEffect()
+    data class NavigateNewPet(val petType: PetTypeEnum) : HomeSideEffect()
+    data class NavigatePetCollection(val petId: String) : HomeSideEffect()
     data class SnackBarMsg(val msg: String) : HomeSideEffect()
 }

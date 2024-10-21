@@ -7,6 +7,7 @@ import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PostFoodPetUseCase
 import com.ddanddan.domain.usecase.PostPlayPetUseCase
+import com.ddanddan.domain.usecase.PostRandomPetUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -20,7 +21,8 @@ class HomeViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getMainPetUseCase: GetMainPetUseCase,
     private val postPlayPetUseCase: PostPlayPetUseCase,
-    private val postFoodPetUseCase: PostFoodPetUseCase
+    private val postFoodPetUseCase: PostFoodPetUseCase,
+    private val postRandomPetUseCase: PostRandomPetUseCase
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
@@ -68,10 +70,20 @@ class HomeViewModel @Inject constructor(
     }
 
     fun postFoodPet() = intent {
-        state.pet?.let {
+        state.pet?.let { pet ->
             if ((state.user?.foodQuantity ?: 0) > 0) {
-                postFoodPetUseCase(it.id)
+                postFoodPetUseCase(pet.id)
                     .onSuccess {
+                        if (it.pet.level == MAX_LEVEL && it.pet.expPercent == MAX_PERCENTS) {
+                            postRandomPet()
+                        } else if (it.pet.level > (state.pet?.level ?: 0)) {
+                            postSideEffect(
+                                HomeSideEffect.NavigateLevelUp(
+                                    it.pet.level,
+                                    it.pet.type
+                                )
+                            )
+                        }
                         reduce {
                             state.copy(user = it.user, pet = it.pet)
                         }
@@ -86,7 +98,28 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun showSnackBarEvent(msg: String) = intent {
-        postSideEffect(HomeSideEffect.SnackBarMsg(msg))
+    fun onStorageClick() = intent {
+        postSideEffect(HomeSideEffect.NavigatePetCollection(state.pet?.id ?: ""))
+    }
+
+    fun onSettingClick() = intent {
+        postSideEffect(HomeSideEffect.NavigateSetting)
+    }
+
+    private fun postRandomPet() = intent {
+        postRandomPetUseCase()
+            .onSuccess {
+                reduce {
+                    state.copy(pet = it)
+                }
+                postSideEffect(HomeSideEffect.NavigateNewPet(it.type))
+            }.onFailure {
+                postSideEffect(HomeSideEffect.SnackBarMsg("새로운 펫을 불러오는데 오류가 발생했습니다."))
+            }
+    }
+
+    companion object {
+        private const val MAX_LEVEL = 5
+        private const val MAX_PERCENTS = 100.0
     }
 }
