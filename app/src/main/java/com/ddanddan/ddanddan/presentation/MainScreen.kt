@@ -7,16 +7,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.HomeRoute
-import com.ddanddan.ddanddan.presentation.home.HomeScreen
 import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionRoute
-import com.ddanddan.ddanddan.presentation.home.reward.LevelUpOrNetPetScreen
 import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
+import com.ddanddan.ddanddan.presentation.home.reward.level.LevelUpRoute
+import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
-import com.ddanddan.ddanddan.presentation.setting.SettingScreen
-import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionScreen
 import com.ddanddan.ddanddan.presentation.setting.EditNicknameScreen
+import com.ddanddan.ddanddan.presentation.setting.SettingScreen
+import com.ddanddan.domain.enum.PetTypeEnum
 
 @Composable
 fun MainScreen(
@@ -29,15 +28,21 @@ fun MainScreen(
         composable(DDanDDanRoute.HOME.route) {
             HomeRoute(
                 onStorageClick = { petId ->
-                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "petId=${petId}")
+                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
                 },
                 onSettingClick = {
                     navController.navigate(DDanDDanRoute.SETTING.route)
+                },
+                onNavigateLevelUp = { level, petType ->
+                    navController.navigate(DDanDDanRoute.LEVEL_UP.route + "?level=${level}&petType=${petType}")
+                },
+                onNavigateNewPet = { petType ->
+                    navController.navigate(DDanDDanRoute.NET_PET.route + "?petType=${petType}")
                 }
             )
         }
         composable(
-            route = DDanDDanRoute.PET_COLLECTION.route + "petId={petId}",
+            route = DDanDDanRoute.PET_COLLECTION.route + "?petId={petId}",
             arguments = listOf(navArgument("petId") { type = NavType.StringType; defaultValue = "" })
         ) {
             PetCollectionRoute(
@@ -80,18 +85,24 @@ fun MainScreen(
         composable(DDanDDanRoute.TOY_REWARD.route) {
             ToyRewardScreen()
         }
-        composable(DDanDDanRoute.LEVEL_UP.route) {
-            LevelUpOrNetPetScreen(
-                imageSource = R.drawable.ic_cat,
-                text = "lv.2로\n업그레이드 되었어요!",
-                btnText = "성장하기"
+        composable(
+            route = DDanDDanRoute.LEVEL_UP.route + "?level={level}" +"&petType={petType}",
+            arguments = listOf(navArgument("level") { type = NavType.IntType; defaultValue = 0 }, navArgument("petType") { type = NavType.StringType; defaultValue = PetTypeEnum.CAT.name })
+        ) {
+            val petTypeString = it.arguments?.getString("petType") ?: PetTypeEnum.CAT.name
+            val petType = PetTypeEnum.valueOf(petTypeString)
+            LevelUpRoute(
+                level = it.arguments?.getInt("level") ?: 1,
+                petType = petType,
+                onButtonClick = navController::popBackStack
             )
         }
-        composable(DDanDDanRoute.NET_PET.route) {
-            LevelUpOrNetPetScreen(
-                imageSource = R.drawable.ic_cat,
-                text = "새로운 펫을 키울 수 있어요",
-                btnText = "시작하기"
+        composable(DDanDDanRoute.NET_PET.route + "?petType={petType}") {
+            val petTypeString = it.arguments?.getString("petType") ?: PetTypeEnum.CAT.name
+            val petType = PetTypeEnum.valueOf(petTypeString)
+            NewPetRoute(
+                petType = petType,
+                onButtonClick = navController::popBackStack
             )
         }
     }
