@@ -9,4 +9,5 @@ interface PetRepository {
     suspend fun postPlayPet(petId: String): UserPet
     suspend fun postFoodPet(petId: String): UserPet
     suspend fun postTypePet(petTypeEnum: PetTypeEnum): Pet
+    suspend fun postRandomPet(): Pet
 }

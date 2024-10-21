@@ -25,4 +25,8 @@ class PetRepositoryImpl @Inject constructor(
     override suspend fun postTypePet(petTypeEnum: PetTypeEnum): Pet {
         return petDataSource.postTypePet(petTypeEnum.toString()).toPet()
     }
+
+    override suspend fun postRandomPet(): Pet {
+        return petDataSource.postRandomPet().toPet()
+    }
 }
