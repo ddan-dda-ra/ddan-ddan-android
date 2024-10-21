@@ -23,6 +23,10 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.getMainPet().mainPet.toPet()
     }
 
+    override suspend fun postMainPet(petId: String): Pet {
+        return userDataSource.postMainPet(petId).mainPet.toPet()
+    }
+
     override suspend fun login(token: String): Result<Boolean> {
         return runCatching {
             val result = userDataSource.login(token)
