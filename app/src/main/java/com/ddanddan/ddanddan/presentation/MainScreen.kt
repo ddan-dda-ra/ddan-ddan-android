@@ -15,7 +15,7 @@ import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
 import com.ddanddan.ddanddan.presentation.setting.EditNicknameScreen
 import com.ddanddan.ddanddan.presentation.setting.SettingScreen
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 
 @Composable
 fun MainScreen(

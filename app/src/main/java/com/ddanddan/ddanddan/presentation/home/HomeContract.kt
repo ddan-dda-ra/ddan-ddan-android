@@ -3,7 +3,7 @@ package com.ddanddan.ddanddan.presentation.home
 import androidx.compose.runtime.Immutable
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.User
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 
 @Immutable
 data class HomeState(

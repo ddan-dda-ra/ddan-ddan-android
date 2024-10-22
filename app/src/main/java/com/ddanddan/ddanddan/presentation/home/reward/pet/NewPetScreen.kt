@@ -21,7 +21,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.reward.level.BottomButton
 import com.ddanddan.ddanddan.util.toImage
-import com.ddanddan.domain.enum.PetTypeEnum
+import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.NeoDgm
 
