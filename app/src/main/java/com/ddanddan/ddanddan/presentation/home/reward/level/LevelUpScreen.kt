@@ -1,9 +1,7 @@
-package com.ddanddan.ddanddan.presentation.home.reward
+package com.ddanddan.ddanddan.presentation.home.reward.level
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,27 +18,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.util.toImage
+import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
-import com.ddanddan.ui.compose.Shapes
-import com.ddanddan.ui.compose.theme.DDanDDanTheme
 
 @Composable
-fun LevelUpOrNetPetScreen(
-    imageSource: Int = R.drawable.ic_cat,
-    text: String = "",
-    btnText: String = "성장하기"
+fun LevelUpRoute(
+    level: Int,
+    petType: PetTypeEnum,
+    onButtonClick: () -> Unit
+) {
+    LevelUpScreen(
+        level = level,
+        petType = petType,
+        onButtonClick = onButtonClick
+    )
+}
+
+@Composable
+fun LevelUpScreen(
+    level: Int = 1,
+    petType: PetTypeEnum = PetTypeEnum.CAT,
+    onButtonClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            BottomButton(btnText = btnText)
+            BottomButton("성장하기", onButtonClick = onButtonClick)
         },
         backgroundColor = DDanDDanColorPalette.current.color_background
     ) { paddingValues ->
@@ -66,7 +76,7 @@ fun LevelUpOrNetPetScreen(
                 )
 
                 Image(
-                    painter = painterResource(id = imageSource),
+                    painter = painterResource(id = petType.toImage()),
                     contentDescription = "배경 이미지",
                     modifier = Modifier.constrainAs(overlayImage) {
                         top.linkTo(backgroundImage.top, margin = 40.dp)
@@ -79,7 +89,7 @@ fun LevelUpOrNetPetScreen(
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = text,
+                text = "lv.${level}로 업그레이드 되었어요!",
                 fontFamily = NeoDgm,
                 fontWeight = FontWeight(400),
                 fontSize = 24.sp,

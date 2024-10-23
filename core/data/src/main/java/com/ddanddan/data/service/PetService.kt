@@ -27,4 +27,7 @@ interface PetService {
     suspend fun postTypePet(
         @Body petType: RequestTypePet
     ): ResponsePet
+
+    @POST("/v1/pets/me/random")
+    suspend fun postRandomPet(): ResponsePet
 }
