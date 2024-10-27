@@ -9,5 +9,6 @@ enum class DDanDDanRoute(val route: String) {
     NET_PET("net_pet"),
     SETTING("setting"),
     EDIT_TARGET("edit_target"),
-    EDIT_NICKNAME("edit_nickname")
+    EDIT_NICKNAME("edit_nickname"),
+    ERROR("error")
 }
