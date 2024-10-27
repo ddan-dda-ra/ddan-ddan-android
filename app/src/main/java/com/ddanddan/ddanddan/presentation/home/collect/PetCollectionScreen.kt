@@ -47,11 +47,10 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun PetCollectionRoute(
     viewModel: CollectViewModel = hiltViewModel(),
     navigatePopUp: () -> Unit = {},
-    onConfirmClick: () -> Unit = {}
+    onConfirmClick: () -> Unit = {},
+    onNavigateError: (Int?) -> Unit = {}
 ) {
     val petCollectionState by viewModel.collectAsState()
-
-    val context = LocalContext.current
 
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -69,8 +68,8 @@ fun PetCollectionRoute(
                 onConfirmClick()
             }
 
-            is PetCollectionSideEffect.ToastNetworkError -> {
-                Toast.makeText(context, "네트워크 에러가 발생하였습니다.", Toast.LENGTH_SHORT).show()
+            is PetCollectionSideEffect.NetworkError -> {
+                onNavigateError(sideEffect.code)
             }
 
             is PetCollectionSideEffect.SnackBarMsg -> {
