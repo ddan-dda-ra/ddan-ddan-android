@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ddanddan.ddanddan.presentation.error.ErrorScreen
 import com.ddanddan.ddanddan.presentation.home.HomeRoute
 import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionRoute
 import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
@@ -38,6 +39,9 @@ fun MainScreen(
                 },
                 onNavigateNewPet = { petType ->
                     navController.navigate(DDanDDanRoute.NET_PET.route + "?petType=${petType}")
+                },
+                onNavigateError = { errorCode ->
+                    navController.navigate(DDanDDanRoute.ERROR.route + "?errorCode=${errorCode}")
                 }
             )
         }
@@ -103,6 +107,16 @@ fun MainScreen(
             NewPetRoute(
                 petType = petType,
                 onButtonClick = navController::popBackStack
+            )
+        }
+        composable(
+            route = DDanDDanRoute.ERROR.route + "?errorCode={errorCode}",
+            arguments = listOf(navArgument("errorCode") { type = NavType.IntType; defaultValue = 0 })) {
+            val errorCode = it.arguments?.getInt("errorCode") ?: 0
+            ErrorScreen(
+                isNotPage = errorCode == 0,
+                errorCode = if (errorCode == 0) null else errorCode,
+                onMoveHomeClicked = navController::popBackStack
             )
         }
     }
