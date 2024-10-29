@@ -1,6 +1,6 @@
 package com.ddanddan.domain
 
-interface ddanddanDataStore {
+interface DdanDdanDataStore {
     var userToken: String
     var refreshToken: String
     var isLogin: Boolean

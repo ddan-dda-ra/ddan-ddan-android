@@ -15,101 +15,54 @@
  */
 package com.ddanddan.watch.service
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.content.ContentValues.TAG
 import android.content.Intent
-import android.util.Log
-import androidx.core.app.NotificationCompat
 import androidx.health.services.client.PassiveListenerService
 import androidx.health.services.client.data.DataPointContainer
 import androidx.health.services.client.data.DataType
-import com.ddanddan.data.PassiveDataRepository
-import com.ddanddan.data.latestCalories
-import com.ddanddan.watch.TAG
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
+import androidx.health.services.client.data.IntervalDataPoint
+import com.ddanddan.domain.repository.PassiveDataRepository
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
+import timber.log.Timber
+import javax.inject.Inject
 
 /**
- * Service to receive data from Health Services.
- *
- * Passive data is delivered from Health Services to this service. Override the appropriate methods
- * in [PassiveListenerService] to receive updates for new data points, goals achieved etc.
+ * Health Services로부터 데이터를 수신하는 서비스입니다.
+ * Health Services에서 전달되는 패시브 데이터를 이 서비스에서 수신합니다. 새로운 데이터 포인트, 목표 달성 등의 업데이트를 받으려면 [PassiveListenerService]의 적절한 메서드를 재정의하세요.
  */
-class PassiveDataService : PassiveListenerService(), CoroutineScope {
+@AndroidEntryPoint
+class PassiveDataService : PassiveListenerService() {
 
-    private val job = Job()  // 코루틴 작업을 관리할 Job 객체
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job  // IO 스레드에서 코루틴을 실행
+    @Inject
+    lateinit var passiveDataRepository: PassiveDataRepository
 
     override fun onCreate() {
         super.onCreate()
-        Log.i(TAG, "PassiveDataService started")
-
-        // 포어그라운드 서비스 시작
-        val notification = createNotification() // 알림을 생성하는 함수
-        startForeground(1, notification)
-
-        // 1초마다 로그 출력하는 작업 시작
-        startLoggingTask()
+        Timber.tag(TAG).i("PassiveDataService started")
     }
 
-    // 1초 간격으로 로그를 찍는 함수
-    private fun startLoggingTask() {
-        launch {
-            while (isActive) {  // 코루틴이 활성화되어 있는 동안 반복
-                Log.d("PassiveDataService", "Service is running...")
-                delay(1000L)  // 1초 대기
-            }
-        }
-    }
-
-    // 알림을 생성하는 함수
-    private fun createNotification(): Notification {
-        val notificationChannelId = "PASSIVE_DATA_CHANNEL"
-        val channel = NotificationChannel(
-            notificationChannelId,
-            "Passive Data Service",
-            NotificationManager.IMPORTANCE_LOW  // 중요도 설정
-        )
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(channel)
-
-        return NotificationCompat.Builder(this, notificationChannelId)
-            .setContentTitle("Passive Data Service")
-            .setContentText("Tracking your daily calories...")
-            .setSmallIcon(coil.compose.base.R.drawable.ic_100tb)
-            .build()
-    }
-
+    // 칼로리가 수집되는 곳
     override fun onNewDataPointsReceived(dataPoints: DataPointContainer) {
         val caloriesData = dataPoints.getData(DataType.CALORIES_DAILY)
 
         caloriesData.latestCalories()?.let { calories ->
-            // 데이터 처리 로직: DataStore에 저장
-            Log.d("PassiveDataService", "Received calories data: $calories")
+            Timber.tag("PassiveDataService").d("Received calories data: %s", calories)
 
-            // 서비스의 CoroutineScope에서 비동기 처리
-            launch {
-                val repository = PassiveDataRepository(applicationContext)
-                repository.storeLatestCalories(calories)
+            runBlocking {
+                passiveDataRepository.storeLatestCalories(calories)
             }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("PassiveDataService", "Service stopped")
-        job.cancel()  // 서비스가 종료되면 코루틴 작업도 취소
+        Timber.tag("PassiveDataService").d("Service stopped")
     }
+}
 
-    // 서비스 재시작 설정
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return START_STICKY  // 서비스가 종료되면 다시 시작
-    }
+fun List<IntervalDataPoint<Double>>.latestCalories(): Double? {
+    return this
+        .filter { it.value > 0 }
+        .maxByOrNull { it.endDurationFromBoot }?.value  // 가장 최신 데이터를 가져옴
 }

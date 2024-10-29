@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.passivedatacompose">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Needed in order to re-register for data on device startup. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -35,24 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name="com.example.passivedatacompose.presentation.CalorieTileService"
-            android:description="@string/calorie_tile_description"
-            android:exported="true"
-            android:icon="@drawable/ic_nordic"
-            android:label="@string/calorie_tile_label"
-            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
-
-            <intent-filter>
-                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
-            </intent-filter>
-
-            <!-- The tile preview shown when configuring tiles on your phone -->
-            <meta-data
-                android:name="androidx.wear.tiles.PREVIEW"
-                android:resource="@drawable/common_google_signin_btn_icon_dark" />
-        </service>
 
         <service
             android:name="com.ddanddan.watch.service.PassiveDataService"

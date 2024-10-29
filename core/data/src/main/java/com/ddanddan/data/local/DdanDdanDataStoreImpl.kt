@@ -2,12 +2,12 @@ package com.ddanddan.data.local
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.ddanddan.domain.ddanddanDataStore
+import com.ddanddan.domain.DdanDdanDataStore
 import javax.inject.Inject
 
 class DdanDdanDataStoreImpl @Inject constructor(
     private val userPref: SharedPreferences
-) : ddanddanDataStore {
+) : DdanDdanDataStore {
     override var userToken: String
         get() = userPref.getString(PREF_USER_TOKEN, "") ?: ""
         set(value) = userPref.edit { putString(PREF_USER_TOKEN, value) }

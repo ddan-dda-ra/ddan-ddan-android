@@ -2,11 +2,15 @@ package com.ddanddan.ddanddan.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.ddanddan.data.local.DdanDdanDataStoreImpl
 import com.ddanddan.ddanddan.BuildConfig
-import com.ddanddan.domain.ddanddanDataStore
+import com.ddanddan.domain.DdanDdanDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +41,13 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(ddanddanDataStore: DdanDdanDataStoreImpl): ddanddanDataStore = ddanddanDataStore
+    fun provideDataStore(ddanddanDataStore: DdanDdanDataStoreImpl): DdanDdanDataStore = ddanddanDataStore
+
+    @Provides
+    @Singleton
+    fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("settings") }
+        )
+    }
 }

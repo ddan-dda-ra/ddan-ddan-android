@@ -1,7 +1,7 @@
 package com.ddanddan.data.interceptor
 
 import com.ddanddan.data.BuildConfig.BASE_URL
-import com.ddanddan.domain.ddanddanDataStore
+import com.ddanddan.domain.DdanDdanDataStore
 import com.ddanddan.model.response.ResponseAuthToken
 import javax.inject.Inject
 import kotlinx.serialization.json.Json
@@ -13,7 +13,7 @@ import timber.log.Timber
 
 class AuthInterceptor @Inject constructor(
     private val json: Json,
-    private val dataStore: ddanddanDataStore,
+    private val dataStore: DdanDdanDataStore,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()

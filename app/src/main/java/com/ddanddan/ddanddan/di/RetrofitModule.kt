@@ -1,7 +1,7 @@
 package com.ddanddan.ddanddan.di
 
 import com.ddanddan.data.interceptor.AuthInterceptor
-import com.ddanddan.ddanddan.BuildConfig.BASE_URL
+import com.ddanddan.ddanddan.BuildConfig
 import com.ddanddan.ddanddan.FlipperUtil
 import com.ddanddan.ddanddan.di.qualifier.Auth
 import com.ddanddan.ddanddan.di.qualifier.Logger
@@ -65,7 +65,7 @@ object RetrofitModule {
         client: OkHttpClient,
         factory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(BuildConfig.BASE_URL)
         .client(client)
         .addConverterFactory(factory)
         .build()
