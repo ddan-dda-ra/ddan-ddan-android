@@ -1,0 +1,65 @@
+name: Daily PR Report
+on:
+  schedule:
+    - cron: '30 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  send-pr-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get PRs and Send to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          prs=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/ddan-dda-ra/ddan-ddan-android/pulls?state=open")
+          
+          title="🏋️ 딴딴의 리뷰 대기 중인 PR 목록 ($(date '+%Y-%m-%d'))"
+          content=""
+          has_prs=false
+          
+          while IFS= read -r pr; do
+            if [ -n "$pr" ]; then
+              number=$(echo "$pr" | jq -r '.number')
+              url=$(echo "$pr" | jq -r '.html_url')
+              pr_title=$(echo "$pr" | jq -r '.title')
+          
+              reviews=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/ddan-dda-ra/ddan-ddan-android/pulls/$number/reviews")
+              comments=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/ddan-dda-ra/ddan-ddan-android/issues/$number/comments")
+          
+              review_count=$(echo "$reviews" | jq '. | length')
+              comment_count=$(echo "$comments" | jq '. | length')
+          
+              if [ "$review_count" = "0" ] && [ "$comment_count" = "0" ]; then
+                [ -n "$content" ] && content="$content"$'\n'
+                content="${content}• <${url}|${pr_title}>"
+                has_prs=true
+              fi
+            fi
+          done < <(echo "$prs" | jq -c '.[]')
+          
+          if [ "$has_prs" = "true" ]; then
+            mention=$'\n\n👉 <@U06NU73P6U9> <@U06NQUHNC75> <@U06N10QH0TH> <@U06NQUHJCAX> 리뷰 플리쥬'
+            content="$content$mention"
+          else
+            content="🍺 리뷰 대기 중인 PR이 없슴둥."
+          fi
+          
+          message=$(jq -n \
+            --arg title "$title" \
+            --arg content "$content" \
+            '{text: ($title + "\n" + $content)}')
+          
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data "$message" \
+            SLACK_WEBHOOK_URL
