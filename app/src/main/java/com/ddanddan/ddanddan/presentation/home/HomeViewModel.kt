@@ -1,8 +1,6 @@
 package com.ddanddan.ddanddan.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionSideEffect
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PostFoodPetUseCase
@@ -14,6 +12,7 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,6 +37,12 @@ class HomeViewModel @Inject constructor(
                 reduce {
                     state.copy(user = it)
                 }
+            }.onFailure {
+                if (it is HttpException) {
+                    postSideEffect(HomeSideEffect.NetworkError(it.code()))
+                } else {
+                    postSideEffect(HomeSideEffect.NetworkError(null))
+                }
             }
     }
 
@@ -47,19 +52,29 @@ class HomeViewModel @Inject constructor(
                 reduce {
                     state.copy(pet = it)
                 }
+            }.onFailure {
+                if (it is HttpException) {
+                    postSideEffect(HomeSideEffect.NetworkError(it.code()))
+                } else {
+                    postSideEffect(HomeSideEffect.NetworkError(null))
+                }
             }
     }
 
     fun postPlayPet() = intent {
-        state.pet?.let {
+        state.pet?.let { pet ->
             if ((state.user?.toyQuantity ?: 0) > 0) {
-                postPlayPetUseCase(it.id)
+                postPlayPetUseCase(pet.id)
                     .onSuccess {
                         reduce {
                             state.copy(user = it.user, pet = it.pet)
                         }
                     }.onFailure {
-                        postSideEffect(HomeSideEffect.ToastNetworkError)
+                        if (it is HttpException) {
+                            postSideEffect(HomeSideEffect.NetworkError(it.code()))
+                        } else {
+                            postSideEffect(HomeSideEffect.NetworkError(null))
+                        }
                     }
             } else {
                 postSideEffect(HomeSideEffect.SnackBarMsg("놀아주기 개수가 부족합니다."))
@@ -88,7 +103,11 @@ class HomeViewModel @Inject constructor(
                             state.copy(user = it.user, pet = it.pet)
                         }
                     }.onFailure {
-                        postSideEffect(HomeSideEffect.ToastNetworkError)
+                        if (it is HttpException) {
+                            postSideEffect(HomeSideEffect.NetworkError(it.code()))
+                        } else {
+                            postSideEffect(HomeSideEffect.NetworkError(null))
+                        }
                     }
             } else {
                 postSideEffect(HomeSideEffect.SnackBarMsg("먹이주기 개수가 부족합니다."))

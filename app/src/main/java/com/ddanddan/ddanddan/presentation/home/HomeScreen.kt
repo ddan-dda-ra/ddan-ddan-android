@@ -1,6 +1,5 @@
 package com.ddanddan.ddanddan.presentation.home
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,18 +15,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toImage
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanSnackBar
@@ -40,13 +31,12 @@ fun HomeRoute(
     onStorageClick: (String) -> Unit,
     onSettingClick: () -> Unit,
     onNavigateLevelUp: (level: Int, petType: String) -> Unit,
-    onNavigateNewPet: (petType: String) -> Unit
+    onNavigateNewPet: (petType: String) -> Unit,
+    onNavigateError: (Int?) -> Unit = {}
 ) {
     val homeState by homeViewModel.collectAsState()
 
     val snackBarHostState = remember { SnackbarHostState() }
-
-    val context = LocalContext.current
 
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -62,8 +52,8 @@ fun HomeRoute(
             is HomeSideEffect.NavigateNewPet -> {
                 onNavigateNewPet(sideEffect.petType.name)
             }
-            is HomeSideEffect.ToastNetworkError -> {
-                Toast.makeText(context, "네트워크 에러가 발생하였습니다.", Toast.LENGTH_SHORT).show()
+            is HomeSideEffect.NetworkError -> {
+                onNavigateError(sideEffect.code)
             }
             is HomeSideEffect.SnackBarMsg -> {
                 snackBarHostState.showSnackbar(sideEffect.msg)

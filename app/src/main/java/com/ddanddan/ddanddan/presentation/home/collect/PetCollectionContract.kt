@@ -13,6 +13,6 @@ data class PetCollectionState(
 sealed class PetCollectionSideEffect {
     object NavigatePopUp : PetCollectionSideEffect()
     object SuccessChangePet : PetCollectionSideEffect()
-    object ToastNetworkError : PetCollectionSideEffect()
+    data class NetworkError(val code: Int?) : PetCollectionSideEffect()
     data class SnackBarMsg(val msg: String) : PetCollectionSideEffect()
 }

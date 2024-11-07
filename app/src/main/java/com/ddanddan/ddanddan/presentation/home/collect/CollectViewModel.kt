@@ -2,6 +2,7 @@ package com.ddanddan.ddanddan.presentation.home.collect
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.ddanddan.ddanddan.presentation.home.HomeSideEffect
 import com.ddanddan.domain.usecase.GetPetListUseCase
 import com.ddanddan.domain.usecase.PostMainPetUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,6 +11,7 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,8 +47,11 @@ class CollectViewModel @Inject constructor(
                     state.copy(pets = it, mainPetId = savedStateHandle["petId"] ?: "")
                 }
             }.onFailure {
-                postSideEffect(PetCollectionSideEffect.ToastNetworkError)
-            }
+                if (it is HttpException) {
+                    postSideEffect(PetCollectionSideEffect.NetworkError(it.code()))
+                } else {
+                    postSideEffect(PetCollectionSideEffect.NetworkError(null))
+                }            }
         reduce {
             state.copy(
                 isLoading = false
@@ -62,7 +67,11 @@ class CollectViewModel @Inject constructor(
             .onSuccess {
                 postSideEffect(PetCollectionSideEffect.SuccessChangePet)
             }.onFailure {
-                postSideEffect(PetCollectionSideEffect.ToastNetworkError)
+                if (it is HttpException) {
+                    postSideEffect(PetCollectionSideEffect.NetworkError(it.code()))
+                } else {
+                    postSideEffect(PetCollectionSideEffect.NetworkError(null))
+                }
             }
         reduce {
             state.copy(
