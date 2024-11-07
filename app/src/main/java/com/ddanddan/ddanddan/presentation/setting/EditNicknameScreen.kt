@@ -32,7 +32,7 @@ import com.ddanddan.ui.compose.component.DdanScaffold
 
 @Composable
 fun EditNicknameScreen(
-    onTopBarBackClick: () -> Unit = {},
+    onTopBarBackClick: () -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.editname_topbar_title),

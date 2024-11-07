@@ -26,6 +26,21 @@ class SettingViewModel @Inject constructor(): ViewModel() {
         _nickName.value = newName
     }
 
+    private val _target = MutableStateFlow(100)
+    val target = _target.asStateFlow()
+
+    fun incrementTarget() {
+        if (_target.value < 1000) {
+            _target.value += 100
+        }
+    }
+
+    fun decrementTarget() {
+        if (_target.value > 100) {
+            _target.value -= 100
+        }
+    }
+
 
 
     data class SettingItem(val titleRes: Int, val intent: SettingIntent)

@@ -1,0 +1,65 @@
+package com.ddanddan.ddanddan.presentation.setting
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.ddanddan.base.R
+import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
+import com.ddanddan.ui.compose.DDanDDanColorPalette
+import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
+import com.ddanddan.ui.compose.component.DdanScaffold
+
+@Composable
+fun onAgreeScreen(
+    navController: NavHostController,
+    onTopBarBackClick: () -> Unit = {}
+) {
+    DdanScaffold(
+        topbarText = stringResource(id = R.string.setting_notice_title),
+        onClick = {
+            onTopBarBackClick()
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .background(color = DDanDDanColorPalette.current.color_background),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            DDanMarginVerticalSpacer(size = 108)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .height(200.dp)
+                    .background(color = DDanDDanColorPalette.current.color_background),
+            ) {
+                SettingTitle(
+                    title = "서비스 이용약관",
+                    onClick = {
+                        navController.navigate(DDanDDanRoute.WEBVIEW.route + "?url=https://www.naver.com")
+                    }
+                )
+                SettingTitle(
+                    title = "개인정보 처리방침",
+                    onClick = {
+                        navController.navigate(DDanDDanRoute.WEBVIEW.route + "?url=https://www.daum.net")
+                    }
+                )
+            }
+        }
+
+    }
+}

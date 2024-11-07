@@ -15,7 +15,10 @@ import com.ddanddan.ddanddan.presentation.home.reward.level.LevelUpRoute
 import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
 import com.ddanddan.ddanddan.presentation.setting.EditNicknameScreen
+import com.ddanddan.ddanddan.presentation.setting.EditTargetScreen
 import com.ddanddan.ddanddan.presentation.setting.SettingScreen
+import com.ddanddan.ddanddan.presentation.setting.SignOutFirstScreen
+import com.ddanddan.ddanddan.presentation.setting.WebViewScreen
 import com.ddanddan.domain.enums.PetTypeEnum
 
 @Composable
@@ -69,16 +72,25 @@ fun MainScreen(
                     //pushAlarm
                 },
                 onAgreeClick = {
-                    //동의 Webview
+                    navController.navigate(DDanDDanRoute.ON_AGREE.route)
                 },
                 onSignOutClick = {
-                    //탈퇴하기
+                    navController.navigate(DDanDDanRoute.SIGNOUT.route)
                 },
                 onLogOutClick = {
                     //로그아웃
                 }
             )
         }
+
+        composable(
+            route = DDanDDanRoute.WEBVIEW.route + "?url={url}",
+            arguments = listOf(navArgument("url") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val url = backStackEntry.arguments?.getString("url") ?: "https://www.naver.com"
+            WebViewScreen(url = url)
+        }
+
         composable(DDanDDanRoute.EDIT_NICKNAME.route) {
             EditNicknameScreen(
                 onTopBarBackClick = {
@@ -86,6 +98,23 @@ fun MainScreen(
                 }
             )
         }
+
+        composable(DDanDDanRoute.EDIT_TARGET.route) {
+            EditTargetScreen(
+                onTopBarBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(DDanDDanRoute.SIGNOUT.route) {
+            SignOutFirstScreen(
+                onTopBarBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         composable(DDanDDanRoute.TOY_REWARD.route) {
             ToyRewardScreen()
         }

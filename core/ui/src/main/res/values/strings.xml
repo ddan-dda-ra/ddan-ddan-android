@@ -12,4 +12,19 @@
     <string name="editname_screen_title">별명을 알려주세요</string>
     <string name="editname_textfield_text">별명</string>
     <string name="editname_button_text">변경 완료</string>
+
+    <string name="edittarget_topbar_title">목표 칼로리 수정</string>
+    <string name="edittarget_screen_title">하루 목표 칼로리를 \n 설정해 주세요</string>
+    <string name="edittarget_button_text">변경 완료</string>
+
+    <string name="setting_notice_title">약관 및 개인정보 처리 동의</string>
+    <string name="setting_notice_subtitle1">서비스 이용약관</string>
+    <string name="setting_notice_subtitle2">개인정보 처리방침</string>
+
+    <string name="setting_signout_subtitle1">탈퇴하는 이유가 무엇인가요?</string>
+    <string name="setting_signout_radiobtn_txt1">쓰지 않는 앱이에요</string>
+    <string name="setting_signout_radiobtn_txt2">오류가 생겨서 쓸 수 없어요</string>
+    <string name="setting_signout_radiobtn_txt3">개인정보가 불안해요</string>
+    <string name="setting_signout_radiobtn_txt4">앱 사용법을 모르겠어요</string>
+    <string name="setting_signout_btn_text1">탈퇴하기</string>
 </resources>
