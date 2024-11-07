@@ -11,8 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
 import com.ddanddan.ui.compose.DDanDDanColorPalette
@@ -42,7 +44,6 @@ fun onAgreeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
                     .height(200.dp)
                     .background(color = DDanDDanColorPalette.current.color_background),
             ) {
@@ -62,4 +63,11 @@ fun onAgreeScreen(
         }
 
     }
+}
+
+@Composable
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+fun OnAgreePreview() {
+    val navController = rememberNavController()
+    onAgreeScreen(navController = navController)
 }

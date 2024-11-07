@@ -19,6 +19,7 @@ import com.ddanddan.ddanddan.presentation.setting.EditTargetScreen
 import com.ddanddan.ddanddan.presentation.setting.SettingScreen
 import com.ddanddan.ddanddan.presentation.setting.SignOutFirstScreen
 import com.ddanddan.ddanddan.presentation.setting.WebViewScreen
+import com.ddanddan.ddanddan.presentation.setting.onAgreeScreen
 import com.ddanddan.domain.enums.PetTypeEnum
 
 @Composable
@@ -79,6 +80,15 @@ fun MainScreen(
                 },
                 onLogOutClick = {
                     //로그아웃
+                }
+            )
+        }
+
+        composable(DDanDDanRoute.ON_AGREE.route) {
+            onAgreeScreen(
+                navController = navController,
+                onTopBarBackClick = {
+                    navController.popBackStack()
                 }
             )
         }

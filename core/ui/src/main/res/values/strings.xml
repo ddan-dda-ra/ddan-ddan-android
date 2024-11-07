@@ -21,10 +21,14 @@
     <string name="setting_notice_subtitle1">서비스 이용약관</string>
     <string name="setting_notice_subtitle2">개인정보 처리방침</string>
 
+    <string name="setting_signout_title"></string>
     <string name="setting_signout_subtitle1">탈퇴하는 이유가 무엇인가요?</string>
+    <string name="setting_signout_subtitle2">정은아님 \n 탈퇴하기 전에 확인해주세요</string>
+    <string name="setting_signout_text">딴딴에서 함께했던 펫들과 운동기록을 다시 볼 수 없어요.</string>
     <string name="setting_signout_radiobtn_txt1">쓰지 않는 앱이에요</string>
     <string name="setting_signout_radiobtn_txt2">오류가 생겨서 쓸 수 없어요</string>
     <string name="setting_signout_radiobtn_txt3">개인정보가 불안해요</string>
     <string name="setting_signout_radiobtn_txt4">앱 사용법을 모르겠어요</string>
+    <string name="setting_signout_under_text">모두 다 꼼꼼히 확인했어요</string>
     <string name="setting_signout_btn_text1">탈퇴하기</string>
 </resources>

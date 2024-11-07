@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ui.compose.DDanDDanColorPalette
@@ -144,6 +146,7 @@ fun EditTargetBtn(
 //            if(isAllValid) { viewModel.updateUserInfo() }
         },
         colors = ButtonDefaults.buttonColors(containerColor = buttonColors),
+        shape = RoundedCornerShape(0.dp),
     ) {
         Text(
             text = text,
@@ -151,4 +154,10 @@ fun EditTargetBtn(
             color = textColors
         )
     }
+}
+
+@Composable
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+fun EditTargetPreview() {
+    EditTargetScreen()
 }

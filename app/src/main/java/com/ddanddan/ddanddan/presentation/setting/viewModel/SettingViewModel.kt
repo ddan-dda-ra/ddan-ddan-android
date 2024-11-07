@@ -41,7 +41,16 @@ class SettingViewModel @Inject constructor(): ViewModel() {
         }
     }
 
+    private val _selectedReasons = MutableStateFlow<List<String>>(emptyList())
+    val selectedReasons = _selectedReasons.asStateFlow()
 
+    fun updateSelection(reason: String) {
+        _selectedReasons.value = if (_selectedReasons.value.contains(reason)) {
+            _selectedReasons.value - reason
+        } else {
+            _selectedReasons.value + reason
+        }
+    }
 
     data class SettingItem(val titleRes: Int, val intent: SettingIntent)
 }
