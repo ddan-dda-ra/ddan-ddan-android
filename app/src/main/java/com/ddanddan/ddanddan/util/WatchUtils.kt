@@ -13,7 +13,7 @@ import timber.log.Timber
  * 1. 워치와 스마트폰이 연결되어있어야 함
  * 2. data를 보내는 스마트폰 앱의 applicationId와 수신하는 워치 쪽 applicationId가 일치해야 함
  */
-object WatchBridge {
+object WatchUtils {
 
     /**
      * 워치 연결 상태를 확인하는 함수
