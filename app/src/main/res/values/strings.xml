@@ -5,4 +5,9 @@
     <string name="onboarding_tv_access_location_subtitle">지역 기반 기능 사용 시 위치 권한이 필요합니다.</string>
     <string name="onboarding_tv_access_location_allow">허용</string>
     <string name="onboarding_tv_access_location_decline">허용 안함</string>
+    <string name="watch_send_token_success">워치로 토큰 전송 성공</string>
+    <string name="watch_send_token_failure">워치로 토큰 전송 실패: %1$s</string>
+    <string name="token_encrypt_failure">토큰 암호화에 실패했습니다.</string>
+    <string name="no_watch_connected">워치가 연결되어 있지 않습니다.</string>
+    <string name="watch_connection_check_failed">워치 상태 확인 실패: %1$s</string>
 </resources>
