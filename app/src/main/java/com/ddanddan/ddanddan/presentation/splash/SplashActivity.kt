@@ -12,6 +12,7 @@ import com.ddanddan.ddanddan.databinding.ActivitySplashBinding
 import com.ddanddan.ddanddan.presentation.onboarding.OnboardingActivity
 import com.ddanddan.ddanddan.presentation.signin.SignInActivity
 import com.ddanddan.ddanddan.util.NetworkManager
+import com.ddanddan.ddanddan.util.PermissionUtils
 import com.ddanddan.ui.base.BindingActivity
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +30,7 @@ class SplashActivity
 
     private fun checkNetwork() {
         if (NetworkManager.checkNetworkState(this)) {
-            initSplash(IS_FIRST_AFTER_INSTALL)
+            initSplash(PermissionUtils.isLocationPermissionGranted(applicationContext))
         } else {
             AlertDialog.Builder(this)
                 .setTitle("인터넷 연결")
@@ -45,13 +46,10 @@ class SplashActivity
         }
     }
 
-    private fun initSplash(state: Int) {
+    private fun initSplash(isGranted: Boolean) {
         Handler(Looper.getMainLooper()).postDelayed({
-            when (state) {
-                IS_FIRST_AFTER_INSTALL -> startOnBoarding()
-//                IS_AUTO_LOGIN -> observer()
-                else -> startSignIn()
-            }
+            if (isGranted) startSignIn()
+            else startOnBoarding()
         }, 3000)
     }
 

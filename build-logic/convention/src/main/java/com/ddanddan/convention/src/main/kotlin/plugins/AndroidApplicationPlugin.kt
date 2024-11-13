@@ -35,7 +35,6 @@ class AndroidApplicationPlugin : Plugin<Project> {
 //                apply("com.google.firebase.crashlytics")
             }
 
-
             extensions.configure<ApplicationExtension> {
                 namespace = Constants.packageName
                 compileSdk = Constants.compileSdk
@@ -46,6 +45,16 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 packagingOptions {
                     exclude("META-INF/DEPENDENCIES")
                     exclude("migrateToAndroidx/migration.xml")
+                }
+
+                signingConfigs {
+                    getByName("debug") {
+                        storeFile =
+                            file("ddanddan_debug.keystore")
+                        storePassword = gradleLocalProperties(rootDir).getProperty("storePassword")
+                        keyAlias = gradleLocalProperties(rootDir).getProperty("keyAlias")
+                        keyPassword = gradleLocalProperties(rootDir).getProperty("keyPassword")
+                    }
                 }
 
                 buildFeatures {
