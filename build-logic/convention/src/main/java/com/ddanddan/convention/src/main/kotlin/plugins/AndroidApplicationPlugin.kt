@@ -43,9 +43,9 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 configureAndroidCommonPlugin()
                 configureDefault()
 
-               packagingOptions {
+                packagingOptions {
                     exclude("META-INF/DEPENDENCIES")
-                   exclude("migrateToAndroidx/migration.xml")
+                    exclude("migrateToAndroidx/migration.xml")
                 }
 
                 buildFeatures {
@@ -62,11 +62,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
                             "BASE_URL",
                             gradleLocalProperties(rootDir).getProperty("base.url"),
                         )
-//                        buildConfigField(
-//                            "String",
-//                            "KAKAO_REDIRECT_URL",
-//                            gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
-//                        )
+
                         buildConfigField(
                             "String",
                             "KAKAO_APP_KEY",
@@ -75,6 +71,12 @@ class AndroidApplicationPlugin : Plugin<Project> {
 
                         manifestPlaceholders["KAKAO_APP_KEY"] =
                             gradleLocalProperties(rootDir).getProperty("kakaoAppKey")
+
+                        buildConfigField(
+                            "String",
+                            "AES_KEY",
+                            gradleLocalProperties(rootDir).getProperty("AES_KEY"),
+                        )
                     }
 
                     release {
@@ -83,15 +85,17 @@ class AndroidApplicationPlugin : Plugin<Project> {
                             "BASE_URL",
                             gradleLocalProperties(rootDir).getProperty("base.url"),
                         )
-//                        buildConfigField(
-//                            "String",
-//                            "KAKAO_REDIRECT_URL",
-//                            gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
-//                        )
+
                         buildConfigField(
                             "String",
                             "KAKAO_APP_KEY",
                             gradleLocalProperties(rootDir).getProperty("kakao.key"),
+                        )
+
+                        buildConfigField(
+                            "String",
+                            "AES_KEY",
+                            gradleLocalProperties(rootDir).getProperty("AES_KEY"),
                         )
 
                         manifestPlaceholders["KAKAO_APP_KEY"] =
@@ -166,6 +170,8 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 implementation(libs.getBundle("appModuleLibraryEtc"))
 
                 implementation(libs.getLibrary("play-services-location"))
+
+                implementation(libs.getLibrary("play-services-wearable"))
             }
         }
 }
