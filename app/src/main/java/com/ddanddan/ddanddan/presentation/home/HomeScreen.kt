@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Scaffold
@@ -19,7 +21,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.ddanddan.ddanddan.util.toBackgroundImage
 import com.ddanddan.ddanddan.util.toImage
+import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import org.orbitmvi.orbit.compose.collectAsState
@@ -37,6 +46,10 @@ fun HomeRoute(
     val homeState by homeViewModel.collectAsState()
 
     val snackBarHostState = remember { SnackbarHostState() }
+
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie())
+    )
 
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -64,6 +77,7 @@ fun HomeRoute(
     HomeScreen(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
+        composition = composition,
         onStorageClick = homeViewModel::onStorageClick,
         onSettingClick = homeViewModel::onSettingClick,
         onEatClick = homeViewModel::postFoodPet,
@@ -75,6 +89,7 @@ fun HomeRoute(
 fun HomeScreen(
     homeState: HomeState = HomeState(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    composition: LottieComposition? = null,
     onStorageClick: () -> Unit = {},
     onSettingClick: () -> Unit = {},
     onEatClick: () -> Unit = {},
@@ -101,9 +116,18 @@ fun HomeScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(homeState.pet?.type.toImage()),
+                    painter = painterResource(homeState.pet?.type.toBackgroundImage()),
                     contentDescription = "동물 이미지",
                     modifier = Modifier.wrapContentSize()
+                )
+
+                LottieAnimation(
+                    composition = composition,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)  // 하단 중앙 정렬
+                        .offset(y = (-56).dp)          // 하단에서 56dp 위로
+                        .size(100.dp),                 // 로티 크기
+                    iterations = LottieConstants.IterateForever
                 )
             }
             Spacer(modifier = Modifier.padding(top = 32.dp))
