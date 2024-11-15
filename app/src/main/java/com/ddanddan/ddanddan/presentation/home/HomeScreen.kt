@@ -4,9 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -19,7 +21,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddanddan.ddanddan.util.toImage
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.ddanddan.ddanddan.util.toBackgroundImage
+import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import org.orbitmvi.orbit.compose.collectAsState
@@ -37,6 +45,10 @@ fun HomeRoute(
     val homeState by homeViewModel.collectAsState()
 
     val snackBarHostState = remember { SnackbarHostState() }
+
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie())
+    )
 
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -64,6 +76,7 @@ fun HomeRoute(
     HomeScreen(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
+        composition = composition,
         onStorageClick = homeViewModel::onStorageClick,
         onSettingClick = homeViewModel::onSettingClick,
         onEatClick = homeViewModel::postFoodPet,
@@ -75,6 +88,7 @@ fun HomeRoute(
 fun HomeScreen(
     homeState: HomeState = HomeState(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    composition: LottieComposition? = null,
     onStorageClick: () -> Unit = {},
     onSettingClick: () -> Unit = {},
     onEatClick: () -> Unit = {},
@@ -84,6 +98,17 @@ fun HomeScreen(
         containerColor = DDanDDanColorPalette.current.color_background,
         snackbarHost = {
             DDanSnackBar(snackBarHostState = snackBarHostState)
+        },
+        bottomBar = {
+            HomeBottomScreen(
+                foodCount = homeState.user?.foodQuantity ?: 0,
+                toyCount = homeState.user?.toyQuantity ?: 0,
+                onEatClick = {
+                    onEatClick()
+                }, onPlayClick = {
+                    onPlayClick()
+                }
+            )
         }) { paddingValues ->
         Column(
             modifier = Modifier
@@ -97,27 +122,38 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
-                contentAlignment = Alignment.Center
+                    .weight(1f)
             ) {
-                Image(
-                    painter = painterResource(homeState.pet?.type.toImage()),
-                    contentDescription = "동물 이미지",
-                    modifier = Modifier.wrapContentSize()
-                )
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(homeState.pet?.type.toBackgroundImage()),
+                            contentDescription = "동물 이미지",
+                            modifier = Modifier.wrapContentSize()
+                        )
+
+                        LottieAnimation(
+                            composition = composition,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset(y = (-56).dp)
+                                .size(100.dp),
+                            iterations = LottieConstants.IterateForever
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(2.228f))
+                }
             }
             Spacer(modifier = Modifier.padding(top = 32.dp))
             HomeProgressbarScreen(homeState)
             Spacer(modifier = Modifier.padding(top = 20.dp))
-            HomeBottomScreen(
-                foodCount = homeState.user?.foodQuantity ?: 0,
-                toyCount = homeState.user?.toyQuantity ?: 0,
-                onEatClick = {
-                    onEatClick()
-                }, onPlayClick = {
-                    onPlayClick()
-                }
-            )
         }
     }
 }

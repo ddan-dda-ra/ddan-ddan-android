@@ -35,17 +35,33 @@ fun HomeBottomScreen(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 32.dp),
+            .padding(horizontal = 32.dp)
+            .padding(bottom = 60.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ActionButton(modifier = Modifier.weight(1f), text = "먹이주기", count = "${foodCount}개 보유", onClick = onEatClick)
+        ActionButton(
+            modifier = Modifier.weight(1f),
+            text = "먹이주기",
+            count = "${foodCount}개 보유",
+            onClick = onEatClick
+        )
         Spacer(modifier = Modifier.width(12.dp))
-        ActionButton(modifier = Modifier.weight(1f), text = "놀아주기", count = "${toyCount}개 보유", onClick = onPlayClick)
+        ActionButton(
+            modifier = Modifier.weight(1f),
+            text = "놀아주기",
+            count = "${toyCount}개 보유",
+            onClick = onPlayClick
+        )
     }
 }
 
 @Composable
-fun ActionButton(text: String, count: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
+fun ActionButton(
+    text: String,
+    count: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
     Button(
         onClick = { onClick() },
         modifier = modifier

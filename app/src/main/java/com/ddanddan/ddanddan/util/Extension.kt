@@ -14,12 +14,32 @@ fun PetTypeEnum?.toImage(): Int {
     }
 }
 
+fun PetTypeEnum?.toLottie(): Int {
+    return when (this) {
+        PetTypeEnum.CAT -> R.raw.motion_cat_level4_default
+        PetTypeEnum.DOG -> R.raw.motion_cat_level4_default
+        PetTypeEnum.PENGUIN -> R.raw.motion_cat_level4_default
+        PetTypeEnum.HAMSTER -> R.raw.motion_cat_level4_default
+        else -> R.raw.motion_cat_level4_default
+    }
+}
+
+fun PetTypeEnum?.toBackgroundImage(): Int {
+    return when (this) {
+        PetTypeEnum.CAT -> R.drawable.ic_bg_cat
+        PetTypeEnum.DOG -> R.drawable.ic_bg_dog
+        PetTypeEnum.PENGUIN -> R.drawable.ic_bg_penguin
+        PetTypeEnum.HAMSTER -> R.drawable.ic_bg_hamster
+        else -> R.drawable.ic_bg_cat
+    }
+}
+
 fun PetTypeEnum?.toColor(): Color {
     return when (this) {
         PetTypeEnum.CAT -> Color(0xFFFD85FF)
-        PetTypeEnum.DOG -> Color(0xFF86D32E)
-        PetTypeEnum.PENGUIN -> Color(0xFF3F51B5)
-        PetTypeEnum.HAMSTER -> Color(0xFF009688)
-        else -> Color(0xFF00BCD4)
+        PetTypeEnum.DOG -> Color(0xFF9B6CFF)
+        PetTypeEnum.PENGUIN -> Color(0xFF4E95FF)
+        PetTypeEnum.HAMSTER -> Color(0xFF46F8A2)
+        else -> Color(0xFFFD85FF)
     }
 }
