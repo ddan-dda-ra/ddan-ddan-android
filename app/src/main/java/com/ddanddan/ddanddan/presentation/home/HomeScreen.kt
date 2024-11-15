@@ -4,11 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -27,7 +27,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.util.toBackgroundImage
-import com.ddanddan.ddanddan.util.toImage
 import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanSnackBar
@@ -99,6 +98,17 @@ fun HomeScreen(
         containerColor = DDanDDanColorPalette.current.color_background,
         snackbarHost = {
             DDanSnackBar(snackBarHostState = snackBarHostState)
+        },
+        bottomBar = {
+            HomeBottomScreen(
+                foodCount = homeState.user?.foodQuantity ?: 0,
+                toyCount = homeState.user?.toyQuantity ?: 0,
+                onEatClick = {
+                    onEatClick()
+                }, onPlayClick = {
+                    onPlayClick()
+                }
+            )
         }) { paddingValues ->
         Column(
             modifier = Modifier
@@ -112,36 +122,38 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
-                contentAlignment = Alignment.Center
+                    .weight(1f)
             ) {
-                Image(
-                    painter = painterResource(homeState.pet?.type.toBackgroundImage()),
-                    contentDescription = "동물 이미지",
-                    modifier = Modifier.wrapContentSize()
-                )
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(homeState.pet?.type.toBackgroundImage()),
+                            contentDescription = "동물 이미지",
+                            modifier = Modifier.wrapContentSize()
+                        )
 
-                LottieAnimation(
-                    composition = composition,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)  // 하단 중앙 정렬
-                        .offset(y = (-56).dp)          // 하단에서 56dp 위로
-                        .size(100.dp),                 // 로티 크기
-                    iterations = LottieConstants.IterateForever
-                )
+                        LottieAnimation(
+                            composition = composition,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset(y = (-56).dp)
+                                .size(100.dp),
+                            iterations = LottieConstants.IterateForever
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(2.228f))
+                }
             }
             Spacer(modifier = Modifier.padding(top = 32.dp))
             HomeProgressbarScreen(homeState)
             Spacer(modifier = Modifier.padding(top = 20.dp))
-            HomeBottomScreen(
-                foodCount = homeState.user?.foodQuantity ?: 0,
-                toyCount = homeState.user?.toyQuantity ?: 0,
-                onEatClick = {
-                    onEatClick()
-                }, onPlayClick = {
-                    onPlayClick()
-                }
-            )
         }
     }
 }
