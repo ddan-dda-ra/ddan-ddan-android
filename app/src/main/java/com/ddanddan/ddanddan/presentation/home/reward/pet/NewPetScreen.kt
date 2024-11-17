@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.reward.level.BottomButton
-import com.ddanddan.ddanddan.util.toImage
+import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.NeoDgm
@@ -69,9 +69,8 @@ fun NewPetScreen(
                     }
                 )
 
-                // TODO 알 이미지로 변경해야 함
                 Image(
-                    painter = painterResource(id = petType.toImage()),
+                    painter = painterResource(id = petType.toAnimal(1)),
                     contentDescription = "배경 이미지",
                     modifier = Modifier.constrainAs(overlayImage) {
                         top.linkTo(backgroundImage.top, margin = 40.dp)
