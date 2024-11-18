@@ -47,13 +47,45 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
     }
 }
 
-fun PetTypeEnum?.toLottie(): Int {
+fun PetTypeEnum?.toLottie(level: Int?): Int {
     return when (this) {
-        PetTypeEnum.CAT -> R.raw.motion_cat_level4_default
-        PetTypeEnum.DOG -> R.raw.motion_cat_level4_default
-        PetTypeEnum.PENGUIN -> R.raw.motion_cat_level4_default
-        PetTypeEnum.HAMSTER -> R.raw.motion_cat_level4_default
-        else -> R.raw.motion_cat_level4_default
+        PetTypeEnum.CAT -> {
+            when(level) {
+                2 -> R.raw.motion_cat_level5_default
+                3 -> R.raw.motion_cat_level5_default
+                4 -> R.raw.motion_cat_level5_default
+                5 -> R.raw.motion_cat_level5_default
+                else -> R.raw.motion_cat_level4_default
+            }
+        }
+        PetTypeEnum.DOG -> {
+            when(level) {
+                2 -> R.raw.motion_cat_level5_default
+                3 -> R.raw.motion_cat_level5_default
+                4 -> R.raw.motion_cat_level5_default
+                5 -> R.raw.motion_cat_level5_default
+                else -> R.raw.motion_cat_level4_default
+            }
+        }
+        PetTypeEnum.PENGUIN -> {
+            when(level) {
+                2 -> R.raw.motion_cat_level5_default
+                3 -> R.raw.motion_cat_level5_default
+                4 -> R.raw.motion_cat_level5_default
+                5 -> R.raw.motion_cat_level5_default
+                else -> R.raw.motion_cat_level4_default
+            }
+        }
+        PetTypeEnum.HAMSTER -> {
+            when(level) {
+                2 -> R.raw.motion_cat_level5_default
+                3 -> R.raw.motion_cat_level5_default
+                4 -> R.raw.motion_cat_level5_default
+                5 -> R.raw.motion_cat_level5_default
+                else -> R.raw.motion_cat_level4_default
+            }
+        }
+        else -> R.raw.motion_cat_level5_default
     }
 }
 
