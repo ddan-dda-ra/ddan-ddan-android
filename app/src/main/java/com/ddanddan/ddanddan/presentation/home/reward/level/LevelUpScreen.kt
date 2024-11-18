@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ddanddan.ddanddan.R
-import com.ddanddan.ddanddan.util.toImage
+import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -76,7 +76,7 @@ fun LevelUpScreen(
                 )
 
                 Image(
-                    painter = painterResource(id = petType.toImage()),
+                    painter = painterResource(id = petType.toAnimal(level)),
                     contentDescription = "배경 이미지",
                     modifier = Modifier.constrainAs(overlayImage) {
                         top.linkTo(backgroundImage.top, margin = 40.dp)

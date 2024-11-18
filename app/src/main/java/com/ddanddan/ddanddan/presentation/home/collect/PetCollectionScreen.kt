@@ -1,6 +1,5 @@
 package com.ddanddan.ddanddan.presentation.home.collect
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,14 +26,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.reward.level.BottomButton
-import com.ddanddan.ddanddan.util.toImage
+import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -180,7 +178,7 @@ fun PetItem(
             }
         }) {
         Image(
-            painter = painterResource(id = pet?.type.toImage()),
+            painter = painterResource(id = pet?.type.toAnimal(pet?.level)),
             contentDescription = "Pet",
             modifier = Modifier
                 .fillMaxSize()
