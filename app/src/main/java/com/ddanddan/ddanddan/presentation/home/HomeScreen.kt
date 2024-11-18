@@ -47,7 +47,7 @@ fun HomeRoute(
     val snackBarHostState = remember { SnackbarHostState() }
 
     val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie())
+        LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie(homeState.pet?.level))
     )
 
     homeViewModel.collectSideEffect { sideEffect ->
