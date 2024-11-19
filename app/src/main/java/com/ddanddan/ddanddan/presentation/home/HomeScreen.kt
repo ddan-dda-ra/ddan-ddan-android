@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +31,9 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.util.toBackgroundImage
 import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.ui.compose.DDanDDanColorPalette
+import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -49,6 +53,15 @@ fun HomeRoute(
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie(homeState.pet?.level))
     )
+
+    val tooltipMessages = remember { listOf("안녕", "배고파요", "운동하자") }
+
+    val currentTooltipMsg = remember { mutableStateOf("") }
+
+    LaunchedEffect(homeState.isShowTooltipState) {
+        if (homeState.isShowTooltipState) {
+            currentTooltipMsg.value = tooltipMessages.random()
+        }    }
 
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -77,10 +90,12 @@ fun HomeRoute(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
         composition = composition,
+        tooltipMsg = currentTooltipMsg.value,
         onStorageClick = homeViewModel::onStorageClick,
         onSettingClick = homeViewModel::onSettingClick,
         onEatClick = homeViewModel::postFoodPet,
         onPlayClick = homeViewModel::postPlayPet,
+        onTooltipVisibilityChanged = homeViewModel::setTooltipState
     )
 }
 
@@ -89,10 +104,12 @@ fun HomeScreen(
     homeState: HomeState = HomeState(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     composition: LottieComposition? = null,
+    tooltipMsg: String = "",
     onStorageClick: () -> Unit = {},
     onSettingClick: () -> Unit = {},
     onEatClick: () -> Unit = {},
-    onPlayClick: () -> Unit = {}
+    onPlayClick: () -> Unit = {},
+    onTooltipVisibilityChanged: (Boolean) -> Unit = {},
 ) {
     Scaffold(
         containerColor = DDanDDanColorPalette.current.color_background,
@@ -119,41 +136,65 @@ fun HomeScreen(
             Spacer(modifier = Modifier.padding(top = 16.dp))
             HomeCalorieScreen(homeState.user?.purposeCalorie.toString())
             Spacer(modifier = Modifier.padding(top = 14.dp))
-            Box(
+            PetContent(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(homeState.pet?.type.toBackgroundImage()),
-                            contentDescription = "동물 이미지",
-                            modifier = Modifier.wrapContentSize()
-                        )
-
-                        LottieAnimation(
-                            composition = composition,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .offset(y = (-56).dp)
-                                .size(100.dp),
-                            iterations = LottieConstants.IterateForever
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(2.228f))
-                }
-            }
+                    .weight(1f),
+                homeState = homeState,
+                composition = composition,
+                tooltipMsg = tooltipMsg,
+                onTooltipVisibilityChanged = onTooltipVisibilityChanged
+            )
             Spacer(modifier = Modifier.padding(top = 32.dp))
             HomeProgressbarScreen(homeState)
             Spacer(modifier = Modifier.padding(top = 20.dp))
+        }
+    }
+}
+
+@Composable
+private fun PetContent(
+    modifier: Modifier,
+    homeState: HomeState,
+    composition: LottieComposition?,
+    tooltipMsg: String,
+    onTooltipVisibilityChanged: (Boolean) -> Unit
+) {
+    Box(modifier = modifier) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Spacer(modifier = Modifier.weight(1f))
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(homeState.pet?.type.toBackgroundImage()),
+                    contentDescription = "동물 이미지",
+                    modifier = Modifier.wrapContentSize()
+                )
+
+                DDanAnimationTooltip(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .offset(y = -(164.dp)),
+                    tooltipText = tooltipMsg,
+                    isVisible = homeState.isShowTooltipState,
+                    onVisibilityChanged = onTooltipVisibilityChanged
+                )
+
+                LottieAnimation(
+                    composition = composition,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .offset(y = (-56).dp)
+                        .size(100.dp)
+                        .noRippleClickable {
+                            onTooltipVisibilityChanged(true)
+                        },
+                    iterations = LottieConstants.IterateForever
+                )
+            }
+            Spacer(modifier = Modifier.weight(2.228f))
         }
     }
 }
