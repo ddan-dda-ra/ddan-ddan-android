@@ -125,6 +125,12 @@ class HomeViewModel @Inject constructor(
         postSideEffect(HomeSideEffect.NavigateSetting)
     }
 
+    fun setTooltipState(isShowTooltip: Boolean) = intent {
+        reduce {
+            state.copy(isShowTooltipState = isShowTooltip)
+        }
+    }
+
     private fun postRandomPet() = intent {
         postRandomPetUseCase()
             .onSuccess {
