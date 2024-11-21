@@ -9,7 +9,8 @@ import com.ddanddan.domain.enums.PetTypeEnum
 data class HomeState(
     val isLoading: Boolean = false,
     val user: User? = null,
-    val pet: Pet? = null
+    val pet: Pet? = null,
+    val isShowTooltipState: Boolean = false
 )
 
 sealed class HomeSideEffect {
