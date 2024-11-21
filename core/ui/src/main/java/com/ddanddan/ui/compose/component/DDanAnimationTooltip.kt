@@ -22,8 +22,8 @@ import com.ddanddan.base.R
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.ext.draw9Patch
-import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 
 @Composable
 fun DDanAnimationTooltip(
@@ -72,9 +72,10 @@ fun DDanAnimationTooltip(
             Text(
                 text = tooltipText,
                 color = DDanDDanColorPalette.current.color_text_button_primary_default,
-                style = DDanDDanTypo.current.Body1,
+                style = DDanDDanTypo.current.NeoDgm16,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
+                    .wrapContentSize()
                     .padding(horizontal = 20.dp)
                     .padding(top = 11.dp, bottom = 23.dp)
             )
