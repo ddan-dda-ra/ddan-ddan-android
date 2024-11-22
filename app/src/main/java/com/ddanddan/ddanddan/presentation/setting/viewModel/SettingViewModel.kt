@@ -1,23 +1,22 @@
 package com.ddanddan.ddanddan.presentation.setting.viewModel
 
 import androidx.lifecycle.ViewModel
-import com.ddanddan.ddanddan.presentation.setting.SettingIntent
+import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
+import com.ddanddan.ddanddan.presentation.setting.SettingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingViewModel @Inject constructor(): ViewModel() {
-    val settingItems = listOf(
-        SettingItem(com.ddanddan.base.R.string.setting_title_text1, SettingIntent.EditNickname),
-        SettingItem(com.ddanddan.base.R.string.setting_title_text2, SettingIntent.EditTargetCalories),
-    )
-    val settingItemsBottom = listOf(
-        SettingItem(com.ddanddan.base.R.string.setting_title_text4, SettingIntent.AgreeToTerms),
-        SettingItem(com.ddanddan.base.R.string.setting_title_text5, SettingIntent.DeleteAccount),
-        SettingItem(com.ddanddan.base.R.string.setting_title_text6, SettingIntent.Logout)
-    )
+class SettingViewModel @Inject constructor() :
+    ContainerHost<SettingState, SettingSideEffect>, ViewModel() {
+    override val container =
+        container<SettingState, SettingSideEffect>(SettingState())
 
     private val _nickName = MutableStateFlow("")
     val nickName = _nickName.asStateFlow()
@@ -52,5 +51,14 @@ class SettingViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-    data class SettingItem(val titleRes: Int, val intent: SettingIntent)
+    fun onSettingItemClick(titleId: Int) = intent {
+        val sideEffect = when (titleId) {
+            com.ddanddan.base.R.string.setting_title_text1 -> SettingSideEffect.EditNickname
+            com.ddanddan.base.R.string.setting_title_text2 -> SettingSideEffect.EditTargetCalories
+            com.ddanddan.base.R.string.setting_title_text4 -> SettingSideEffect.AgreeToTerms
+            com.ddanddan.base.R.string.setting_title_text5 -> SettingSideEffect.DeleteAccount
+            else -> SettingSideEffect.Logout
+        }
+        postSideEffect(sideEffect)
+    }
 }

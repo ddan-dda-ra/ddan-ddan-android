@@ -16,6 +16,7 @@ import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
 import com.ddanddan.ddanddan.presentation.setting.EditNicknameScreen
 import com.ddanddan.ddanddan.presentation.setting.EditTargetScreen
+import com.ddanddan.ddanddan.presentation.setting.SettingRoute
 import com.ddanddan.ddanddan.presentation.setting.SettingScreen
 import com.ddanddan.ddanddan.presentation.setting.SignOutFirstScreen
 import com.ddanddan.ddanddan.presentation.setting.WebViewScreen
@@ -59,7 +60,7 @@ fun MainScreen(
             )
         }
         composable(DDanDDanRoute.SETTING.route) {
-            SettingScreen(
+            SettingRoute(
                 onTopBarBackClick = {
                     navController.popBackStack()
                 },
@@ -119,6 +120,7 @@ fun MainScreen(
 
         composable(DDanDDanRoute.SIGNOUT.route) {
             SignOutFirstScreen(
+                navController = navController,
                 onTopBarBackClick = {
                     navController.popBackStack()
                 }

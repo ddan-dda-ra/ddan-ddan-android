@@ -2,33 +2,44 @@ package com.ddanddan.ddanddan.presentation.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.ddanddan.ddanddan.BuildConfig.VERSION_NAME
-import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ui.compose.DDanDDanColorPalette
+import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 import com.ddanddan.ui.compose.component.DdanScaffold
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(
+fun SettingRoute(
+    viewModel: SettingViewModel = hiltViewModel(),
     onTopBarBackClick: () -> Unit = {},
     onNickNameClick: () -> Unit = {},
     onCaloriesClick: () -> Unit = {},
@@ -36,7 +47,33 @@ fun SettingScreen(
     onAgreeClick: () -> Unit = {},
     onSignOutClick: () -> Unit = {},
     onLogOutClick: () -> Unit = {},
-    viewModel: SettingViewModel = hiltViewModel(),
+) {
+    val settingState by viewModel.collectAsState()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when(sideEffect) {
+            SettingSideEffect.EditNickname -> onNickNameClick()
+            SettingSideEffect.EditTargetCalories -> onCaloriesClick()
+            SettingSideEffect.TogglePushNotifications -> onAlarmClick()
+            SettingSideEffect.AgreeToTerms -> onAgreeClick()
+            SettingSideEffect.DeleteAccount -> onSignOutClick()
+            SettingSideEffect.Logout -> onLogOutClick()
+        }
+    }
+
+    SettingScreen(
+        settingState = settingState,
+        onTopBarBackClick = onTopBarBackClick,
+        onSettingItemClick = viewModel::onSettingItemClick,
+        onAlarmClick = onAlarmClick
+    )
+}
+@Composable
+fun SettingScreen(
+    settingState: SettingState = SettingState(),
+    onTopBarBackClick: () -> Unit = {},
+    onSettingItemClick: (Int) -> Unit = {},
+    onAlarmClick: () -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = com.ddanddan.base.R.string.setting_topbar_title),
@@ -50,38 +87,15 @@ fun SettingScreen(
                 .background(color = DDanDDanColorPalette.current.elevation_color_elevation_level01)
         ) {
             val versionName = VERSION_NAME
-            val settingItems = viewModel.settingItems
-            val settingItemsBottom = viewModel.settingItemsBottom
             DDanMarginVerticalSpacer(size = 65)
             SettingColumn(
-                settingItems = settingItems,
-                onIntent = { intent ->
-                    when(intent) {
-                        SettingIntent.EditNickname -> {
-                            onNickNameClick()
-                        }
-                        else -> {
-                            onCaloriesClick()
-                        }
-                    }
-                }
+                settingItems = settingState.settingItems,
+                onClick = { titleId -> onSettingItemClick(titleId) }
             )
             DDanMarginVerticalSpacer(size = 8)
             SettingColumn(
-                settingItems = settingItemsBottom,
-                onIntent = { intent ->
-                    when(intent) {
-                        SettingIntent.AgreeToTerms -> {
-                            onAgreeClick()
-                        }
-                        SettingIntent.DeleteAccount -> {
-                            onSignOutClick()
-                        }
-                        else -> {
-                            onLogOutClick()
-                        }
-                    }
-                }
+                settingItems = settingState.settingItemsBottom,
+                onClick = { titleId -> onSettingItemClick(titleId) }
             )
         }
     }
@@ -89,8 +103,8 @@ fun SettingScreen(
 
 @Composable
 fun SettingColumn(
-    settingItems: List<SettingViewModel.SettingItem>,
-    onIntent: (SettingIntent) -> Unit
+    settingItems: List<Int>,
+    onClick: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -100,11 +114,11 @@ fun SettingColumn(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        items(settingItems) {item->
+        items(settingItems) { item->
             SettingTitle(
-                title = stringResource(id = item.titleRes),
+                title = stringResource(id = item),
                 onClick = {
-                    onIntent(item.intent)
+                    onClick(item)
                 }
             )
         }
