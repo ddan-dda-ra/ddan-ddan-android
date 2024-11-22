@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -136,8 +137,10 @@ fun PetCollectionScreen(
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             contentPadding = paddingValues,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize().padding(horizontal = 20.dp)
         ) {
             if (petCollectionState.pets.isNotEmpty()) {
                 items(9) { index ->
@@ -182,7 +185,7 @@ fun PetItem(
             contentDescription = "Pet",
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(8.dp)
         )
         if (pet?.id == mainPetId) {
             Box(
