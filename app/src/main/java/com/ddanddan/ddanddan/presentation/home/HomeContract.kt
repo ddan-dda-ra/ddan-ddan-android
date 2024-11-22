@@ -4,13 +4,16 @@ import androidx.compose.runtime.Immutable
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.User
 import com.ddanddan.domain.enums.PetTypeEnum
+import com.ddanddan.ui.enums.TooltipType
 
 @Immutable
 data class HomeState(
     val isLoading: Boolean = false,
     val user: User? = null,
     val pet: Pet? = null,
-    val isShowTooltipState: Boolean = false
+    val isShowTooltipState: Boolean = false,
+    val tooltipType: TooltipType = TooltipType.BASIC,
+    val currentTooltipMsg: String = ""
 )
 
 sealed class HomeSideEffect {
