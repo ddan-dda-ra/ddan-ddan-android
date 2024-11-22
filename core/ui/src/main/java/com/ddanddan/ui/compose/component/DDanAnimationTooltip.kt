@@ -22,8 +22,8 @@ import com.ddanddan.base.R
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.ext.draw9Patch
-import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
+import kotlin.math.roundToInt
 
 @Composable
 fun DDanAnimationTooltip(
