@@ -126,5 +126,11 @@ data class Type(
         fontSize =  10.sp,
         lineHeight = 12.sp,
     ),
+    val NeoDgm16: TextStyle = TextStyle(
+        fontFamily = NeoDgm,
+        fontWeight = FontWeight(400),
+        fontSize = 16.sp,
+        lineHeight = 22.sp
+    )
 )
 val DDanDDanTypo = staticCompositionLocalOf { Type() }

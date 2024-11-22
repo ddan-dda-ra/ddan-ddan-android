@@ -34,6 +34,7 @@ import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.ext.noRippleClickable
+import okhttp3.internal.immutableListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -49,14 +50,17 @@ fun HomeRoute(
     val homeState by homeViewModel.collectAsState()
 
     val snackBarHostState = remember { SnackbarHostState() }
-
+    val currentTooltipMsg = remember { mutableStateOf("") }
+    val storageClick = remember(homeViewModel) { { homeViewModel.onStorageClick() } }
+    val settingClick = remember(homeViewModel) { { homeViewModel.onSettingClick() } }
+    val eatClick = remember(homeViewModel) { { homeViewModel.postFoodPet() } }
+    val playClick = remember(homeViewModel) { { homeViewModel.postPlayPet() } }
+    val tooltipVisibilityChanged = remember(homeViewModel) { { it: Boolean -> homeViewModel.setTooltipState(it) } }
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie(homeState.pet?.level))
     )
 
-    val tooltipMessages = remember { listOf("안녕", "배고파요", "운동하자") }
-
-    val currentTooltipMsg = remember { mutableStateOf("") }
+    val tooltipMessages = immutableListOf("안녕", "배고파요", "운동하자")
 
     LaunchedEffect(homeState.isShowTooltipState) {
         if (homeState.isShowTooltipState) {
@@ -91,11 +95,11 @@ fun HomeRoute(
         snackBarHostState = snackBarHostState,
         composition = composition,
         tooltipMsg = currentTooltipMsg.value,
-        onStorageClick = homeViewModel::onStorageClick,
-        onSettingClick = homeViewModel::onSettingClick,
-        onEatClick = homeViewModel::postFoodPet,
-        onPlayClick = homeViewModel::postPlayPet,
-        onTooltipVisibilityChanged = homeViewModel::setTooltipState
+        onStorageClick = { storageClick() },
+        onSettingClick = { settingClick() },
+        onEatClick = { eatClick() },
+        onPlayClick = { playClick() },
+        onTooltipVisibilityChanged = { tooltipVisibilityChanged(it) }
     )
 }
 
@@ -120,11 +124,8 @@ fun HomeScreen(
             HomeBottomScreen(
                 foodCount = homeState.user?.foodQuantity ?: 0,
                 toyCount = homeState.user?.toyQuantity ?: 0,
-                onEatClick = {
-                    onEatClick()
-                }, onPlayClick = {
-                    onPlayClick()
-                }
+                onEatClick = { onEatClick() },
+                onPlayClick = { onPlayClick() }
             )
         }) { paddingValues ->
         Column(
@@ -132,7 +133,7 @@ fun HomeScreen(
                 .padding(paddingValues)
         ) {
             Spacer(modifier = Modifier.padding(top = 20.dp))
-            HomeTopScreen(onStorageClick, onSettingClick)
+            HomeTopScreen(onStorageClick = onStorageClick, onSettingClick = onSettingClick)
             Spacer(modifier = Modifier.padding(top = 16.dp))
             HomeCalorieScreen(homeState.user?.purposeCalorie.toString())
             Spacer(modifier = Modifier.padding(top = 14.dp))
