@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,8 +29,10 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toBackgroundImage
 import com.ddanddan.ddanddan.util.toLottie
+import com.ddanddan.ui.enums.TooltipType
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanSnackBar
@@ -50,22 +53,35 @@ fun HomeRoute(
     val homeState by homeViewModel.collectAsState()
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val currentTooltipMsg = remember { mutableStateOf("") }
+
     val storageClick = remember(homeViewModel) { { homeViewModel.onStorageClick() } }
     val settingClick = remember(homeViewModel) { { homeViewModel.onSettingClick() } }
     val eatClick = remember(homeViewModel) { { homeViewModel.postFoodPet() } }
     val playClick = remember(homeViewModel) { { homeViewModel.postPlayPet() } }
+    val petClick =
+        remember(homeViewModel) { { it: Boolean -> homeViewModel.showTooltipState(it, TooltipType.BASIC) } }
     val tooltipVisibilityChanged = remember(homeViewModel) { { it: Boolean -> homeViewModel.setTooltipState(it) } }
+
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie(homeState.pet?.level))
     )
 
-    val tooltipMessages = immutableListOf("안녕", "배고파요", "운동하자")
+    val basicTooltipMessages = stringArrayResource(id = R.array.basic_tooltip_msg)
+    val playTooltipMessages = stringArrayResource(id = R.array.play_tooltip_msg)
+    val eatTooltipMessages = stringArrayResource(id = R.array.eat_tooltip_msg)
 
     LaunchedEffect(homeState.isShowTooltipState) {
         if (homeState.isShowTooltipState) {
-            currentTooltipMsg.value = tooltipMessages.random()
-        }    }
+            when (homeState.tooltipType) {
+                TooltipType.BASIC ->
+                    homeViewModel.setCurrentTooltipMsg(basicTooltipMessages.random())
+                TooltipType.EAT ->
+                    homeViewModel.setCurrentTooltipMsg(eatTooltipMessages.random())
+                TooltipType.PLAY ->
+                    homeViewModel.setCurrentTooltipMsg(playTooltipMessages.random())
+            }
+        }
+    }
 
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -94,12 +110,12 @@ fun HomeRoute(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
         composition = composition,
-        tooltipMsg = currentTooltipMsg.value,
         onStorageClick = { storageClick() },
         onSettingClick = { settingClick() },
         onEatClick = { eatClick() },
         onPlayClick = { playClick() },
-        onTooltipVisibilityChanged = { tooltipVisibilityChanged(it) }
+        onPetClick = { petClick(it) },
+        onTooltipVisibilityChanged = { tooltipVisibilityChanged(it) },
     )
 }
 
@@ -108,11 +124,11 @@ fun HomeScreen(
     homeState: HomeState = HomeState(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     composition: LottieComposition? = null,
-    tooltipMsg: String = "",
     onStorageClick: () -> Unit = {},
     onSettingClick: () -> Unit = {},
     onEatClick: () -> Unit = {},
     onPlayClick: () -> Unit = {},
+    onPetClick: (Boolean) -> Unit = {},
     onTooltipVisibilityChanged: (Boolean) -> Unit = {},
 ) {
     Scaffold(
@@ -143,7 +159,7 @@ fun HomeScreen(
                     .weight(1f),
                 homeState = homeState,
                 composition = composition,
-                tooltipMsg = tooltipMsg,
+                onPetClick = onPetClick,
                 onTooltipVisibilityChanged = onTooltipVisibilityChanged
             )
             Spacer(modifier = Modifier.padding(top = 32.dp))
@@ -158,7 +174,7 @@ private fun PetContent(
     modifier: Modifier,
     homeState: HomeState,
     composition: LottieComposition?,
-    tooltipMsg: String,
+    onPetClick: (Boolean) -> Unit,
     onTooltipVisibilityChanged: (Boolean) -> Unit
 ) {
     Box(modifier = modifier) {
@@ -178,7 +194,7 @@ private fun PetContent(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .offset(y = -(164.dp)),
-                    tooltipText = tooltipMsg,
+                    tooltipText = homeState.currentTooltipMsg,
                     isVisible = homeState.isShowTooltipState,
                     onVisibilityChanged = onTooltipVisibilityChanged
                 )
@@ -190,7 +206,7 @@ private fun PetContent(
                         .offset(y = (-56).dp)
                         .size(100.dp)
                         .noRippleClickable {
-                            onTooltipVisibilityChanged(true)
+                            onPetClick(true)
                         },
                     iterations = LottieConstants.IterateForever
                 )

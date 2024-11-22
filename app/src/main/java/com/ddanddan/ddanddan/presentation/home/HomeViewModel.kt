@@ -6,6 +6,7 @@ import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PostFoodPetUseCase
 import com.ddanddan.domain.usecase.PostPlayPetUseCase
 import com.ddanddan.domain.usecase.PostRandomPetUseCase
+import com.ddanddan.ui.enums.TooltipType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -61,12 +62,25 @@ class HomeViewModel @Inject constructor(
             }
     }
 
+    private fun postRandomPet() = intent {
+        postRandomPetUseCase()
+            .onSuccess {
+                reduce {
+                    state.copy(pet = it)
+                }
+                postSideEffect(HomeSideEffect.NavigateNewPet(it.type))
+            }.onFailure {
+                postSideEffect(HomeSideEffect.SnackBarMsg("새로운 펫을 불러오는데 오류가 발생했습니다."))
+            }
+    }
+
     fun postPlayPet() = intent {
         state.pet?.let { pet ->
             if ((state.user?.toyQuantity ?: 0) > 0) {
                 postPlayPetUseCase(pet.id)
                     .onSuccess {
                         reduce {
+                            showTooltipState(true, TooltipType.PLAY)
                             state.copy(user = it.user, pet = it.pet)
                         }
                     }.onFailure {
@@ -100,6 +114,7 @@ class HomeViewModel @Inject constructor(
                             )
                         }
                         reduce {
+                            showTooltipState(true, TooltipType.EAT)
                             state.copy(user = it.user, pet = it.pet)
                         }
                     }.onFailure {
@@ -125,22 +140,22 @@ class HomeViewModel @Inject constructor(
         postSideEffect(HomeSideEffect.NavigateSetting)
     }
 
+    fun showTooltipState(isShowTooltip: Boolean, tooltipType: TooltipType) = intent {
+        reduce {
+            state.copy(isShowTooltipState = isShowTooltip, tooltipType = tooltipType)
+        }
+    }
+
     fun setTooltipState(isShowTooltip: Boolean) = intent {
         reduce {
             state.copy(isShowTooltipState = isShowTooltip)
         }
     }
 
-    private fun postRandomPet() = intent {
-        postRandomPetUseCase()
-            .onSuccess {
-                reduce {
-                    state.copy(pet = it)
-                }
-                postSideEffect(HomeSideEffect.NavigateNewPet(it.type))
-            }.onFailure {
-                postSideEffect(HomeSideEffect.SnackBarMsg("새로운 펫을 불러오는데 오류가 발생했습니다."))
-            }
+    fun setCurrentTooltipMsg(msg: String) = intent {
+        reduce {
+            state.copy(currentTooltipMsg = msg)
+        }
     }
 
     companion object {

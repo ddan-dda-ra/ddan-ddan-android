@@ -10,4 +10,20 @@
     <string name="token_encrypt_failure">토큰 암호화에 실패했습니다.</string>
     <string name="no_watch_connected">워치가 연결되어 있지 않습니다.</string>
     <string name="watch_connection_check_failed">워치 상태 확인 실패: %1$s</string>
+
+    <string-array name = "basic_tooltip_msg">
+        <item>안녕</item>
+        <item>배고파요</item>
+        <item>운동하자</item>
+    </string-array>
+    <string-array name = "eat_tooltip_msg">
+        <item>맛있다!</item>
+        <item>욤뇸뇸</item>
+        <item>쩝쩝박사</item>
+    </string-array>
+    <string-array name = "play_tooltip_msg">
+        <item>신난다</item>
+        <item>조아조아</item>
+        <item>눈누난나 ♫</item>
+    </string-array>
 </resources>
