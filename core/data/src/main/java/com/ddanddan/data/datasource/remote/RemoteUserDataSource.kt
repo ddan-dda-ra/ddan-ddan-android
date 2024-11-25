@@ -15,6 +15,7 @@ class RemoteUserDataSource @Inject constructor(
     suspend fun putUser(name: String, purposeCalorie: Int): ResponseUser = userService.putUser(
         RequestUser(name, purposeCalorie)
     )
+    suspend fun deleteUser(): Boolean = userService.deleteUser().isSuccessful
     suspend fun getMainPet(): ResponseMainPet = userService.getMainPet()
     suspend fun postMainPet(petId: String) = userService.postMainPet(RequestMainPet(petId))
     suspend fun login(token: String) = userService.login(RequestLogin(token, "KAKAO"))
