@@ -40,45 +40,48 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun SettingRoute(
     viewModel: SettingViewModel = hiltViewModel(),
-    onTopBarBackClick: () -> Unit = {},
-    onNickNameClick: () -> Unit = {},
-    onCaloriesClick: () -> Unit = {},
-    onAlarmClick: () -> Unit = {},
-    onAgreeClick: () -> Unit = {},
-    onSignOutClick: () -> Unit = {},
-    onLogOutClick: () -> Unit = {},
+    navigatePopUp: () -> Unit,
+    onNickNameClick: () -> Unit,
+    onCaloriesClick: () -> Unit,
+    onAlarmClick: () -> Unit,
+    onAgreeClick: () -> Unit,
+    onSignOutClick: () -> Unit,
+    onLogOutClick: () -> Unit,
 ) {
     val settingState by viewModel.collectAsState()
 
     viewModel.collectSideEffect { sideEffect ->
-        when(sideEffect) {
+        when (sideEffect) {
+            SettingSideEffect.NavigatePopUp -> navigatePopUp()
             SettingSideEffect.EditNickname -> onNickNameClick()
             SettingSideEffect.EditTargetCalories -> onCaloriesClick()
             SettingSideEffect.TogglePushNotifications -> onAlarmClick()
             SettingSideEffect.AgreeToTerms -> onAgreeClick()
             SettingSideEffect.DeleteAccount -> onSignOutClick()
             SettingSideEffect.Logout -> onLogOutClick()
+            else -> {}
         }
     }
 
     SettingScreen(
         settingState = settingState,
-        onTopBarBackClick = onTopBarBackClick,
+        navigatePopUp = viewModel::navigatePopUp,
         onSettingItemClick = viewModel::onSettingItemClick,
         onAlarmClick = onAlarmClick
     )
 }
+
 @Composable
 fun SettingScreen(
     settingState: SettingState = SettingState(),
-    onTopBarBackClick: () -> Unit = {},
+    navigatePopUp: () -> Unit = {},
     onSettingItemClick: (Int) -> Unit = {},
     onAlarmClick: () -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = com.ddanddan.base.R.string.setting_topbar_title),
         onClick = {
-            onTopBarBackClick()
+            navigatePopUp()
         }
     ) {
         Column(
@@ -114,7 +117,7 @@ fun SettingColumn(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        items(settingItems) { item->
+        items(settingItems) { item ->
             SettingTitle(
                 title = stringResource(id = item),
                 onClick = {
@@ -126,7 +129,7 @@ fun SettingColumn(
 }
 
 @Composable
-fun SettingTitle(title: String, onClick: ()-> Unit) {
+fun SettingTitle(title: String, onClick: () -> Unit) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .clickable { onClick() }
