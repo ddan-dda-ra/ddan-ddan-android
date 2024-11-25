@@ -11,7 +11,8 @@ enum class DDanDDanRoute(val route: String) {
     EDIT_TARGET("edit_target"),
     EDIT_NICKNAME("edit_nickname"),
     ON_AGREE("on_agree"),
-    SIGNOUT("sign_out_first"),
+    SIGN_OUT_FIRST("sign_out_first"),
+    SIGN_OUT_SECOND("sign_out_second"),
     WEBVIEW("webview"),
     ERROR("error")
 }

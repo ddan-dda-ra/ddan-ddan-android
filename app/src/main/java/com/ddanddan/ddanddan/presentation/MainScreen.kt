@@ -14,14 +14,16 @@ import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.home.reward.level.LevelUpRoute
 import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
-import com.ddanddan.ddanddan.presentation.setting.EditNicknameScreen
-import com.ddanddan.ddanddan.presentation.setting.EditTargetScreen
+import com.ddanddan.ddanddan.presentation.setting.target.EditTargetRoute
 import com.ddanddan.ddanddan.presentation.setting.SettingRoute
-import com.ddanddan.ddanddan.presentation.setting.SettingScreen
-import com.ddanddan.ddanddan.presentation.setting.SignOutFirstScreen
+import com.ddanddan.ddanddan.presentation.setting.signout.SignOutFirstRoute
+import com.ddanddan.ddanddan.presentation.setting.signout.SignOutSecondScreen
 import com.ddanddan.ddanddan.presentation.setting.WebViewScreen
+import com.ddanddan.ddanddan.presentation.setting.nickname.EditNickNameRoute
 import com.ddanddan.ddanddan.presentation.setting.onAgreeScreen
+import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.domain.enums.PetTypeEnum
+import com.ddanddan.ui.ext.sharedViewModel
 
 @Composable
 fun MainScreen(
@@ -54,16 +56,22 @@ fun MainScreen(
             route = DDanDDanRoute.PET_COLLECTION.route + "?petId={petId}",
             arguments = listOf(navArgument("petId") { type = NavType.StringType; defaultValue = "" })
         ) {
-            PetCollectionRoute(
+             PetCollectionRoute(
                 navigatePopUp = navController::popBackStack,
                 onConfirmClick = navController::popBackStack
             )
         }
-        composable(DDanDDanRoute.SETTING.route) {
+        composable(
+            route = DDanDDanRoute.SETTING.route
+        ) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.SETTING.route
+            )
             SettingRoute(
-                onTopBarBackClick = {
-                    navController.popBackStack()
-                },
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack
+                ,
                 onNickNameClick = {
                     navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
                 },
@@ -77,7 +85,7 @@ fun MainScreen(
                     navController.navigate(DDanDDanRoute.ON_AGREE.route)
                 },
                 onSignOutClick = {
-                    navController.navigate(DDanDDanRoute.SIGNOUT.route)
+                    navController.navigate(DDanDDanRoute.SIGN_OUT_FIRST.route)
                 },
                 onLogOutClick = {
                     //로그아웃
@@ -97,33 +105,55 @@ fun MainScreen(
         composable(
             route = DDanDDanRoute.WEBVIEW.route + "?url={url}",
             arguments = listOf(navArgument("url") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val url = backStackEntry.arguments?.getString("url") ?: "https://www.naver.com"
+        ) { navBackStackEntry ->
+            val url = navBackStackEntry.arguments?.getString("url") ?: "https://www.naver.com"
             WebViewScreen(url = url)
         }
 
-        composable(DDanDDanRoute.EDIT_NICKNAME.route) {
-            EditNicknameScreen(
-                onTopBarBackClick = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(DDanDDanRoute.EDIT_TARGET.route) {
-            EditTargetScreen(
-                onTopBarBackClick = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(DDanDDanRoute.SIGNOUT.route) {
-            SignOutFirstScreen(
+        composable(DDanDDanRoute.EDIT_NICKNAME.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
                 navController = navController,
-                onTopBarBackClick = {
-                    navController.popBackStack()
+                navGraphRoute = DDanDDanRoute.SETTING.route
+            )
+            EditNickNameRoute(
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack
+
+            )
+        }
+
+        composable(DDanDDanRoute.EDIT_TARGET.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.SETTING.route
+            )
+            EditTargetRoute(
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_OUT_FIRST.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.SETTING.route
+            )
+            SignOutFirstRoute(
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack,
+                navigateSignOutSecond = {
+                    navController.navigate(DDanDDanRoute.SIGN_OUT_SECOND.route)
                 }
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_OUT_SECOND.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.SETTING.route
+            )
+            SignOutSecondScreen(
+
             )
         }
 
