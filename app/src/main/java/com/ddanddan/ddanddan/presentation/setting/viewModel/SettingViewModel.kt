@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.presentation.setting.viewModel
 
+import androidx.compose.ui.util.trace
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
@@ -101,6 +102,10 @@ class SettingViewModel @Inject constructor(
             }.onFailure {
                 postSideEffect(SettingSideEffect.NetworkError("별명 변경에 실패했습니다."))
             }
+    }
+
+    fun onToggleClick() = intent {
+        reduce { state.copy(isCheckBoxChecked = !state.isCheckBoxChecked) }
     }
 
     fun deleteUser() = intent {
