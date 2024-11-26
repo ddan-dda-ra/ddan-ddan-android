@@ -82,7 +82,7 @@ fun SignOutFirstScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            DDanMarginVerticalSpacer(size = 108)
+            DDanMarginVerticalSpacer(size = 20)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -92,15 +92,13 @@ fun SignOutFirstScreen(
                 Text(
                     text = stringResource(id = com.ddanddan.base.R.string.setting_signout_subtitle1),
                     style = DDanDDanTypo.current.HeadLine3,
-                    fontFamily = NeoDgm,
                     color = DDanDDanColorPalette.current.color_text_headline_primary
                 )
             }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(color = DDanDDanColorPalette.current.color_background),
+                    .wrapContentHeight(),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
