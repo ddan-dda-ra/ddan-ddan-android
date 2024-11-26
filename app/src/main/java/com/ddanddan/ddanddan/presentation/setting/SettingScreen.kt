@@ -52,13 +52,13 @@ fun SettingRoute(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            SettingSideEffect.NavigatePopUp -> navigatePopUp()
-            SettingSideEffect.EditNickname -> onNickNameClick()
-            SettingSideEffect.EditTargetCalories -> onCaloriesClick()
-            SettingSideEffect.TogglePushNotifications -> onAlarmClick()
-            SettingSideEffect.AgreeToTerms -> onAgreeClick()
-            SettingSideEffect.DeleteAccount -> onSignOutClick()
-            SettingSideEffect.Logout -> onLogOutClick()
+            is SettingSideEffect.NavigatePopUp -> navigatePopUp()
+            is SettingSideEffect.EditNickname -> onNickNameClick()
+            is SettingSideEffect.EditTargetCalories -> onCaloriesClick()
+            is SettingSideEffect.TogglePushNotifications -> onAlarmClick()
+            is SettingSideEffect.AgreeToTerms -> onAgreeClick()
+            is SettingSideEffect.DeleteAccount -> onSignOutClick()
+            is SettingSideEffect.Logout -> onLogOutClick()
             else -> {}
         }
     }
@@ -88,9 +88,9 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = DDanDDanColorPalette.current.elevation_color_elevation_level01)
+                .padding(it)
         ) {
             val versionName = VERSION_NAME
-            DDanMarginVerticalSpacer(size = 65)
             SettingColumn(
                 settingItems = settingState.settingItems,
                 onClick = { titleId -> onSettingItemClick(titleId) }
@@ -99,6 +99,14 @@ fun SettingScreen(
             SettingColumn(
                 settingItems = settingState.settingItemsBottom,
                 onClick = { titleId -> onSettingItemClick(titleId) }
+            )
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 14.dp)
+                    .padding(start = 20.dp),
+                text = "앱 버전 $versionName",
+                style = DDanDDanTypo.current.Body2,
+                color = DDanDDanColorPalette.current.color_text_body_quinary,
             )
         }
     }
