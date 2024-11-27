@@ -2,10 +2,8 @@ package com.ddanddan.ddanddan.presentation.signin
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.databinding.adapters.ViewBindingAdapter.setClickListener
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.ddanddan.ddanddan.R
@@ -13,12 +11,6 @@ import com.ddanddan.ddanddan.databinding.ActivitySigninBinding
 import com.ddanddan.ddanddan.presentation.MainActivity
 import com.ddanddan.ddanddan.presentation.signup.terms.TermsActivity
 import com.ddanddan.ui.base.BindingActivity
-import com.kakao.sdk.auth.AuthApiClient
-import com.kakao.sdk.auth.TokenManagerProvider
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -34,60 +26,13 @@ class SignInActivity
 
         observer()
         setClickListener()
-
-        /**
-        if (AuthApiClient.instance.hasToken()) {
-            // 저장된 액세스 토큰 가져오기
-            val accessToken = TokenManagerProvider.instance.manager.getToken()?.accessToken
-
-            if (accessToken != null) {
-                Log.d(LOG_KAKAO_LOGIN, "Access Token: $accessToken")
-            } else {
-                Log.d(LOG_KAKAO_LOGIN, "Access Token is null")
-            }
-
-            // 토큰의 유효성 정보 확인
-            UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-                if (error != null) {
-                    Log.e(LOG_KAKAO_LOGIN, "토큰 정보 불러오기 실패", error)
-                } else if (tokenInfo != null) {
-                    Log.d(LOG_KAKAO_LOGIN, "토큰 정보 확인 성공: ${tokenInfo.id}")
-                    if (accessToken != null) {
-                        viewModel.login(accessToken)
-                    }
-                }
-            }
-        }
-        */
-    }
-
-    private val mCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error == null) {
-            token?.accessToken?.let { viewModel.login(it) }
-        }
     }
 
     private fun setClickListener() {
         with(binding) {
             btnKakao.setOnClickListener {
-                if (UserApiClient.instance.isKakaoTalkLoginAvailable(this@SignInActivity)) {
-                    UserApiClient.instance.loginWithKakaoTalk(this@SignInActivity) { token, error ->
-                        if (error != null) {
-                            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                                return@loginWithKakaoTalk
-                            } else {
-                                UserApiClient.instance.loginWithKakaoAccount(this@SignInActivity, callback = mCallback)
-                            }
-                        } else if (token != null) {
-                            Toast.makeText(this@SignInActivity, "로그인 성공!", Toast.LENGTH_SHORT).show()
-                            token.accessToken.let { viewModel.login(it) }
-                        }
-                    }
-                } else {
-                    UserApiClient.instance.loginWithKakaoAccount(this@SignInActivity, callback = mCallback)
-                }
+                viewModel.loginWithKakao(this@SignInActivity)
             }
-
         }
     }
 
@@ -112,6 +57,5 @@ class SignInActivity
     }
 
     companion object {
-        private const val LOG_KAKAO_LOGIN = "KAKAO_LOGIN"
     }
 }
