@@ -76,7 +76,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun navigatePopUp() = intent {
-        postSideEffect(SettingSideEffect.NavigatePopUp)
+        postSideEffect(SettingSideEffect.NavigatePopUp(state.needRefreshHomeScreen))
+        reduce { state.copy(needRefreshHomeScreen = false) }
     }
 
     fun navigateSignOutSecond() = intent {
@@ -97,7 +98,7 @@ class SettingViewModel @Inject constructor(
     fun onEditBtnClick() = intent {
         putUserInfoUseCase(state.nickName, state.calorie)
             .onSuccess {
-                reduce { state.copy(nickName = it.name ?: "", calorie = it.purposeCalorie) }
+                reduce { state.copy(nickName = it.name ?: "", calorie = it.purposeCalorie, needRefreshHomeScreen = true) }
                 postSideEffect(SettingSideEffect.SuccessChange)
             }.onFailure {
                 postSideEffect(SettingSideEffect.NetworkError("별명 변경에 실패했습니다."))

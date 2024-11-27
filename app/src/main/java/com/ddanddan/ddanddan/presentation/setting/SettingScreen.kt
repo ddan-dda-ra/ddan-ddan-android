@@ -40,7 +40,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun SettingRoute(
     viewModel: SettingViewModel = hiltViewModel(),
-    navigatePopUp: () -> Unit,
+    navigatePopUp: (Boolean) -> Unit,
     onNickNameClick: () -> Unit,
     onCaloriesClick: () -> Unit,
     onAlarmClick: () -> Unit,
@@ -52,7 +52,7 @@ fun SettingRoute(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is SettingSideEffect.NavigatePopUp -> navigatePopUp()
+            is SettingSideEffect.NavigatePopUp -> navigatePopUp(sideEffect.needRefreshHomeScreen)
             is SettingSideEffect.EditNickname -> onNickNameClick()
             is SettingSideEffect.EditTargetCalories -> onCaloriesClick()
             is SettingSideEffect.TogglePushNotifications -> onAlarmClick()

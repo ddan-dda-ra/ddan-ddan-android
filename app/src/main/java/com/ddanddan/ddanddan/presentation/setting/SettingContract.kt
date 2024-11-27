@@ -22,11 +22,13 @@ data class SettingState(
     ),
     val nickName: String = "",
     val calorie: Int = 100,
-    val selectedReasons: List<String> = emptyList()
+    val selectedReasons: List<String> = emptyList(),
+    val isCheckBoxChecked: Boolean = false,
+    val needRefreshHomeScreen: Boolean = false
 )
 
 sealed class SettingSideEffect {
-    object NavigatePopUp: SettingSideEffect()
+    data class NavigatePopUp(val needRefreshHomeScreen: Boolean = false): SettingSideEffect()
     object EditNickname: SettingSideEffect()
     object EditTargetCalories : SettingSideEffect()
     object TogglePushNotifications : SettingSideEffect()
