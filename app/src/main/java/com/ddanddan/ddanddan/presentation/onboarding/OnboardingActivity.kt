@@ -102,9 +102,5 @@ class OnboardingActivity
         }.attach()
     }
 
-    override fun finish() {
-        super.finish()
-    }
-
     companion object {}
 }
