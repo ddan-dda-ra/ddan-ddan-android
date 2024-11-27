@@ -1,6 +1,8 @@
 package com.ddanddan.ddanddan.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,13 +16,13 @@ import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.home.reward.level.LevelUpRoute
 import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
-import com.ddanddan.ddanddan.presentation.setting.target.EditTargetRoute
 import com.ddanddan.ddanddan.presentation.setting.SettingRoute
-import com.ddanddan.ddanddan.presentation.setting.signout.SignOutFirstRoute
-import com.ddanddan.ddanddan.presentation.setting.signout.SignOutSecondScreen
 import com.ddanddan.ddanddan.presentation.setting.WebViewScreen
 import com.ddanddan.ddanddan.presentation.setting.nickname.EditNickNameRoute
 import com.ddanddan.ddanddan.presentation.setting.onAgreeScreen
+import com.ddanddan.ddanddan.presentation.setting.signout.SignOutFirstRoute
+import com.ddanddan.ddanddan.presentation.setting.signout.SignOutSecondRoute
+import com.ddanddan.ddanddan.presentation.setting.target.EditTargetRoute
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.ext.sharedViewModel
@@ -28,13 +30,19 @@ import com.ddanddan.ui.ext.sharedViewModel
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
+    onNavigateOnBoarding: () -> Unit = {},
 ) {
     NavHost(
         navController = navController,
         startDestination = DDanDDanRoute.HOME.route
     ) {
-        composable(DDanDDanRoute.HOME.route) {
+        composable(DDanDDanRoute.HOME.route) { navBackStackEntry ->
+            val needRefresh by navBackStackEntry.savedStateHandle
+                .getStateFlow("needRefresh", false)
+                .collectAsState()
+
             HomeRoute(
+                needRefresh = needRefresh,
                 onStorageClick = { petId ->
                     navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
                 },
@@ -66,11 +74,16 @@ fun MainScreen(
         ) { navBackStackEntry ->
             val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
                 navController = navController,
-                navGraphRoute = DDanDDanRoute.SETTING.route
+                navGraphRoute = DDanDDanRoute.HOME.route
             )
             SettingRoute(
                 viewModel = viewModel,
-                navigatePopUp = navController::popBackStack
+                navigatePopUp = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("needRefresh", it)
+                    navController.popBackStack()
+                }
                 ,
                 onNickNameClick = {
                     navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
@@ -113,7 +126,7 @@ fun MainScreen(
         composable(DDanDDanRoute.EDIT_NICKNAME.route) { navBackStackEntry ->
             val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
                 navController = navController,
-                navGraphRoute = DDanDDanRoute.SETTING.route
+                navGraphRoute = DDanDDanRoute.HOME.route
             )
             EditNickNameRoute(
                 viewModel = viewModel,
@@ -125,7 +138,7 @@ fun MainScreen(
         composable(DDanDDanRoute.EDIT_TARGET.route) { navBackStackEntry ->
             val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
                 navController = navController,
-                navGraphRoute = DDanDDanRoute.SETTING.route
+                navGraphRoute = DDanDDanRoute.HOME.route
             )
             EditTargetRoute(
                 viewModel = viewModel,
@@ -136,7 +149,7 @@ fun MainScreen(
         composable(DDanDDanRoute.SIGN_OUT_FIRST.route) { navBackStackEntry ->
             val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
                 navController = navController,
-                navGraphRoute = DDanDDanRoute.SETTING.route
+                navGraphRoute = DDanDDanRoute.HOME.route
             )
             SignOutFirstRoute(
                 viewModel = viewModel,
@@ -150,10 +163,12 @@ fun MainScreen(
         composable(DDanDDanRoute.SIGN_OUT_SECOND.route) { navBackStackEntry ->
             val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
                 navController = navController,
-                navGraphRoute = DDanDDanRoute.SETTING.route
+                navGraphRoute = DDanDDanRoute.HOME.route
             )
-            SignOutSecondScreen(
-
+            SignOutSecondRoute(
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack,
+                navigateOnBoarding = onNavigateOnBoarding
             )
         }
 
