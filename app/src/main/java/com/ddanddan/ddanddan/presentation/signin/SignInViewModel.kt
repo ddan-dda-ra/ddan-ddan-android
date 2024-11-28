@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ddanddan.ddanddan.util.provider.KakaoProvider
 import com.ddanddan.domain.repository.AuthRepository
 import com.ddanddan.domain.repository.UserRepository
 import com.kakao.sdk.auth.model.OAuthToken
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val repository: UserRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val kakaoProvider: KakaoProvider
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow<SignInState>(SignInState.Init)
@@ -45,22 +47,22 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun loginWithKakao(context: Context) {
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
+    fun loginWithKakao() {
+        if (kakaoProvider.isKakaoTalkLoginAvailable()) {
+            kakaoProvider.loginWithKakaoTalk { token, error ->
                 if (error != null) {
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                         return@loginWithKakaoTalk
                     } else {
-                        UserApiClient.instance.loginWithKakaoAccount(context, callback = mCallback)
+                        kakaoProvider.loginWithKakaoAccount(mCallback)
                     }
                 } else if (token != null) {
-                    Toast.makeText(context, "로그인 성공!", Toast.LENGTH_SHORT).show()
-                    token.accessToken.let { login(it) }
+                    login(token.accessToken)
                 }
             }
         } else {
-            UserApiClient.instance.loginWithKakaoAccount(context, callback = mCallback)
+            kakaoProvider.loginWithKakaoAccount(mCallback)
+
         }
     }
 }

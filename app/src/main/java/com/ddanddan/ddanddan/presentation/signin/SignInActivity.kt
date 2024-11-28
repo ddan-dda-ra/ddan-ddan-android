@@ -31,7 +31,7 @@ class SignInActivity
     private fun setClickListener() {
         with(binding) {
             btnKakao.setOnClickListener {
-                viewModel.loginWithKakao(this@SignInActivity)
+                viewModel.loginWithKakao()
             }
         }
     }
