@@ -22,23 +22,17 @@ import com.ddanddan.ddanddan.util.PermissionUtils
 import com.ddanddan.ui.base.BindingActivity
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SplashActivity
     : BindingActivity<ActivitySplashBinding>(R.layout.activity_splash) {
 
     private val splashViewModel by viewModels<SplashViewModel>()
-    private val signInViewModel by viewModels<SignInViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         KakaoSdk.init(applicationContext, KAKAO_APP_KEY)
-        signInObserver()
-        autoLoginObserver()
         checkNetwork()
     }
 
@@ -63,7 +57,7 @@ class SplashActivity
     private fun initSplash(isGranted: Boolean) {
         Handler(Looper.getMainLooper()).postDelayed({
             if (isGranted) {
-                if (splashViewModel.isAutoLoginEnabled()) splashViewModel.autoLoginWithKakao()
+                if (splashViewModel.isAutoLoginEnabled()) startHome()
                 else startSignIn()
             }
             else startOnBoarding()
@@ -80,40 +74,9 @@ class SplashActivity
         finish()
     }
 
-    private fun autoLoginObserver() {
-        splashViewModel.autoLoginState.flowWithLifecycle(lifecycle)
-            .onEach {
-                when (it) {
-                    is AutoLoginState.Success -> {
-                        signInViewModel.login(it.token)
-                    }
-                    is AutoLoginState.Failure -> {
-                        Timber.d(it.msg)
-                        startActivity(Intent(this@SplashActivity, SignInActivity::class.java))
-                        finish()
-                    }
-                    else -> {
-                    }
-                }
-            }.launchIn(lifecycleScope)
-    }
-
-    private fun signInObserver() {
-        signInViewModel.signInState.flowWithLifecycle(lifecycle)
-            .onEach {
-                when (it) {
-                    is SignInState.Success -> {
-                        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                        finish()
-                    }
-                    is SignInState.Failure -> {
-                        startActivity(Intent(this@SplashActivity, SignInActivity::class.java))
-                        finish()
-                    }
-                    else -> {
-                    }
-                }
-            }.launchIn(lifecycleScope)
+    private fun startHome() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     companion object {

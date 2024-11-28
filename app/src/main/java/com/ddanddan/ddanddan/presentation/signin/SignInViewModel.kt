@@ -1,7 +1,5 @@
 package com.ddanddan.ddanddan.presentation.signin
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddanddan.ddanddan.util.provider.KakaoProvider
@@ -10,7 +8,6 @@ import com.ddanddan.domain.repository.UserRepository
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
