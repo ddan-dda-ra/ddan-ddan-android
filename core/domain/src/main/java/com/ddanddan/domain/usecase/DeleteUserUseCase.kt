@@ -6,15 +6,13 @@ import javax.inject.Inject
 
 class DeleteUserUseCase @Inject constructor(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository
+//    private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke() = runCatching {
         userRepository.deleteUser()
     }.fold(
         onSuccess = {
-            if (it) {
-                authRepository.disableAutoLogin()
-            }
+//            if (it) authRepository.disableAutoLogin()
             it
         }, onFailure = {
             false
