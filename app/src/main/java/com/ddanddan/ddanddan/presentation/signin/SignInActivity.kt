@@ -10,15 +10,20 @@ import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivitySigninBinding
 import com.ddanddan.ddanddan.presentation.MainActivity
 import com.ddanddan.ddanddan.presentation.signup.terms.TermsActivity
+import com.ddanddan.ddanddan.util.provider.KakaoProvider
 import com.ddanddan.ui.base.BindingActivity
+import com.kakao.sdk.auth.model.OAuthToken
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SignInActivity
     : BindingActivity<ActivitySigninBinding>(R.layout.activity_signin){
 
+    @Inject
+    lateinit var kakaoProvider: KakaoProvider
     private val viewModel by viewModels<SignInViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +33,16 @@ class SignInActivity
         setClickListener()
     }
 
+    private val mCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error == null) {
+            token?.accessToken?.let { viewModel.login(it) }
+        }
+    }
+
     private fun setClickListener() {
         with(binding) {
             btnKakao.setOnClickListener {
-                viewModel.loginWithKakao()
+                kakaoProvider.loginWithKakao(mCallback)
             }
         }
     }

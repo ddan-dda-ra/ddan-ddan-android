@@ -17,8 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val repository: UserRepository,
-    private val authRepository: AuthRepository,
-    private val kakaoProvider: KakaoProvider
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow<SignInState>(SignInState.Init)
@@ -35,31 +34,6 @@ class SignInViewModel @Inject constructor(
                 .onFailure {
                     _signInState.value = SignInState.Failure("회원 정보 로딩 실패")
                 }
-        }
-    }
-
-    private val mCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error == null) {
-            token?.accessToken?.let { login(it) }
-        }
-    }
-
-    fun loginWithKakao() {
-        if (kakaoProvider.isKakaoTalkLoginAvailable()) {
-            kakaoProvider.loginWithKakaoTalk { token, error ->
-                if (error != null) {
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        return@loginWithKakaoTalk
-                    } else {
-                        kakaoProvider.loginWithKakaoAccount(mCallback)
-                    }
-                } else if (token != null) {
-                    login(token.accessToken)
-                }
-            }
-        } else {
-            kakaoProvider.loginWithKakaoAccount(mCallback)
-
         }
     }
 }
