@@ -12,7 +12,6 @@ import com.ddanddan.ddanddan.presentation.MainActivity
 import com.ddanddan.ddanddan.presentation.signup.terms.TermsActivity
 import com.ddanddan.ddanddan.util.provider.KakaoProvider
 import com.ddanddan.ui.base.BindingActivity
-import com.kakao.sdk.auth.model.OAuthToken
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -33,16 +32,12 @@ class SignInActivity
         setClickListener()
     }
 
-    private val mCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error == null) {
-            token?.accessToken?.let { viewModel.login(it) }
-        }
-    }
-
     private fun setClickListener() {
         with(binding) {
             btnKakao.setOnClickListener {
-                kakaoProvider.loginWithKakao(mCallback)
+                kakaoProvider.loginWithKakao { token, error ->
+                    if (error == null) token?.accessToken?.let { viewModel.login(it) }
+                }
             }
         }
     }
