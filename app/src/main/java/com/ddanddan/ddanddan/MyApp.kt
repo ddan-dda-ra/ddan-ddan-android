@@ -7,6 +7,8 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.ddanddan.ddanddan.BuildConfig.DEBUG
+import com.ddanddan.ddanddan.BuildConfig.KAKAO_APP_KEY
+import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -21,6 +23,7 @@ class MyApp : Application(), LifecycleObserver {
             Timber.plant(Timber.DebugTree())
             FlipperUtil.init(this)
         }
+        KakaoSdk.init(applicationContext, KAKAO_APP_KEY)
         appContext = applicationContext
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
