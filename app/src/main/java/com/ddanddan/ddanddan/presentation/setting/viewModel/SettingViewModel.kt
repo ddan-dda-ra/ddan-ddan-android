@@ -1,6 +1,5 @@
 package com.ddanddan.ddanddan.presentation.setting.viewModel
 
-import androidx.compose.ui.util.trace
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
@@ -8,8 +7,6 @@ import com.ddanddan.domain.usecase.DeleteUserUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PutUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -40,7 +37,7 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    fun decrementTarget()  = intent {
+    fun decrementTarget() = intent {
         if (state.calorie > 100) {
             reduce {
                 state.copy(calorie = state.calorie - 100)
@@ -71,7 +68,7 @@ class SettingViewModel @Inject constructor(
         if (state.selectedReasons.contains(reason)) {
             reduce { state.copy(selectedReasons = state.selectedReasons - reason) }
         } else {
-            reduce { state.copy(selectedReasons = state.selectedReasons + reason)}
+            reduce { state.copy(selectedReasons = state.selectedReasons + reason) }
         }
     }
 
@@ -98,7 +95,13 @@ class SettingViewModel @Inject constructor(
     fun onEditBtnClick() = intent {
         putUserInfoUseCase(state.nickName, state.calorie)
             .onSuccess {
-                reduce { state.copy(nickName = it.name ?: "", calorie = it.purposeCalorie, needRefreshHomeScreen = true) }
+                reduce {
+                    state.copy(
+                        nickName = it.name ?: "",
+                        calorie = it.purposeCalorie,
+                        needRefreshHomeScreen = true
+                    )
+                }
                 postSideEffect(SettingSideEffect.SuccessChange)
             }.onFailure {
                 postSideEffect(SettingSideEffect.NetworkError("별명 변경에 실패했습니다."))
@@ -110,12 +113,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun deleteUser() = intent {
-        deleteUserUseCase()
-            .onSuccess {
-                if (it) postSideEffect(SettingSideEffect.NavigateOnBoarding)
-                else postSideEffect(SettingSideEffect.NetworkError("회원탈퇴에 실패했습니다."))
-            }.onFailure {
-                postSideEffect(SettingSideEffect.NetworkError("회원탈퇴에 실패했습니다."))
-            }
+        val isDeleteUser = deleteUserUseCase()
+        if (isDeleteUser) postSideEffect(SettingSideEffect.NavigateOnBoarding)
+        else postSideEffect(SettingSideEffect.NetworkError("회원탈퇴에 실패했습니다."))
     }
 }
