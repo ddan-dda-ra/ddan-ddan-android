@@ -51,11 +51,11 @@ fun PetTypeEnum?.toLottie(level: Int?): Int {
     return when (this) {
         PetTypeEnum.CAT -> {
             when(level) {
-                2 -> R.raw.motion_cat_level5_default
-                3 -> R.raw.motion_cat_level5_default
-                4 -> R.raw.motion_cat_level5_default
+                2 -> R.raw.motion_cat_level2_default
+                3 -> R.raw.motion_cat_level3_default
+                4 -> R.raw.motion_cat_level4_default
                 5 -> R.raw.motion_cat_level5_default
-                else -> R.raw.motion_cat_level4_default
+                else -> R.raw.motion_cat_level1_default
             }
         }
         PetTypeEnum.DOG -> {
