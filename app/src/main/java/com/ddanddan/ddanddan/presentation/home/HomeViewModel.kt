@@ -28,6 +28,10 @@ class HomeViewModel @Inject constructor(
         container<HomeState, HomeSideEffect>(HomeState())
 
     init {
+        getHomeInfo()
+    }
+
+    fun getHomeInfo() {
         getUserInfo()
         getMainPet()
     }

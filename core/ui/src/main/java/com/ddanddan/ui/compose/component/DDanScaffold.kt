@@ -29,6 +29,7 @@ import kotlinx.serialization.json.JsonNull.content
 @Composable
 fun DdanScaffold(
     topbarText: String = "",
+    snackbarHost: @Composable () -> Unit = {},
     onClick: (() -> Unit)? = null,
     onConfirmClick: (() -> Unit)? = null,
     isConfirm: Boolean = false,
@@ -103,6 +104,8 @@ fun DdanScaffold(
                 }
             )
         },
+        snackbarHost = snackbarHost,
+        containerColor = DDanDDanColorPalette.current.color_background,
         content = { it ->
             content(it)
         }

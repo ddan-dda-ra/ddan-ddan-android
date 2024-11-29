@@ -1,6 +1,8 @@
 package com.ddanddan.ddanddan.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,20 +16,34 @@ import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.home.reward.level.LevelUpRoute
 import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
-import com.ddanddan.ddanddan.presentation.setting.EditNicknameScreen
-import com.ddanddan.ddanddan.presentation.setting.SettingScreen
+import com.ddanddan.ddanddan.presentation.setting.SettingRoute
+import com.ddanddan.ddanddan.presentation.setting.WebViewScreen
+import com.ddanddan.ddanddan.presentation.setting.nickname.EditNickNameRoute
+import com.ddanddan.ddanddan.presentation.setting.onAgreeScreen
+import com.ddanddan.ddanddan.presentation.setting.signout.SignOutFirstRoute
+import com.ddanddan.ddanddan.presentation.setting.signout.SignOutSecondRoute
+import com.ddanddan.ddanddan.presentation.setting.target.EditTargetRoute
+import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.domain.enums.PetTypeEnum
+import com.ddanddan.ui.ext.sharedViewModel
 
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
+    onNavigateOnBoarding: () -> Unit = {},
+    onNavigateLogin: () -> Unit = {}
 ) {
     NavHost(
         navController = navController,
         startDestination = DDanDDanRoute.HOME.route
     ) {
-        composable(DDanDDanRoute.HOME.route) {
+        composable(DDanDDanRoute.HOME.route) { navBackStackEntry ->
+            val needRefresh by navBackStackEntry.savedStateHandle
+                .getStateFlow("needRefresh", false)
+                .collectAsState()
+
             HomeRoute(
+                needRefresh = needRefresh,
                 onStorageClick = { petId ->
                     navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
                 },
@@ -49,43 +65,111 @@ fun MainScreen(
             route = DDanDDanRoute.PET_COLLECTION.route + "?petId={petId}",
             arguments = listOf(navArgument("petId") { type = NavType.StringType; defaultValue = "" })
         ) {
-            PetCollectionRoute(
+             PetCollectionRoute(
                 navigatePopUp = navController::popBackStack,
                 onConfirmClick = navController::popBackStack
             )
         }
-        composable(DDanDDanRoute.SETTING.route) {
-            SettingScreen(
-                onTopBarBackClick = {
+        composable(
+            route = DDanDDanRoute.SETTING.route
+        ) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.HOME.route
+            )
+            SettingRoute(
+                viewModel = viewModel,
+                navigatePopUp = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("needRefresh", it)
                     navController.popBackStack()
-                },
+                }
+                ,
                 onNickNameClick = {
                     navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
                 },
                 onCaloriesClick = {
                     navController.navigate(DDanDDanRoute.EDIT_TARGET.route)
                 },
-                onAlarmClick = {
-                    //pushAlarm
-                },
                 onAgreeClick = {
-                    //동의 Webview
+                    navController.navigate(DDanDDanRoute.ON_AGREE.route)
                 },
                 onSignOutClick = {
-                    //탈퇴하기
+                    navController.navigate(DDanDDanRoute.SIGN_OUT_FIRST.route)
                 },
-                onLogOutClick = {
-                    //로그아웃
+                navigateLogin = {
+                    onNavigateLogin()
                 }
             )
         }
-        composable(DDanDDanRoute.EDIT_NICKNAME.route) {
-            EditNicknameScreen(
+
+        composable(DDanDDanRoute.ON_AGREE.route) {
+            onAgreeScreen(
+                navController = navController,
                 onTopBarBackClick = {
                     navController.popBackStack()
                 }
             )
         }
+
+        composable(
+            route = DDanDDanRoute.WEBVIEW.route + "?url={url}",
+            arguments = listOf(navArgument("url") { type = NavType.StringType })
+        ) { navBackStackEntry ->
+            val url = navBackStackEntry.arguments?.getString("url") ?: "https://www.naver.com"
+            WebViewScreen(url = url)
+        }
+
+        composable(DDanDDanRoute.EDIT_NICKNAME.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.HOME.route
+            )
+            EditNickNameRoute(
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack
+
+            )
+        }
+
+        composable(DDanDDanRoute.EDIT_TARGET.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.HOME.route
+            )
+            EditTargetRoute(
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_OUT_FIRST.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.HOME.route
+            )
+            SignOutFirstRoute(
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack,
+                navigateSignOutSecond = {
+                    navController.navigate(DDanDDanRoute.SIGN_OUT_SECOND.route)
+                }
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_OUT_SECOND.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SettingViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.HOME.route
+            )
+            SignOutSecondRoute(
+                viewModel = viewModel,
+                navigatePopUp = navController::popBackStack,
+                navigateOnBoarding = onNavigateOnBoarding
+            )
+        }
+
         composable(DDanDDanRoute.TOY_REWARD.route) {
             ToyRewardScreen()
         }

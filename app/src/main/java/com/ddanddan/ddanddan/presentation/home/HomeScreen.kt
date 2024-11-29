@@ -15,7 +15,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,18 +31,18 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toBackgroundImage
 import com.ddanddan.ddanddan.util.toLottie
-import com.ddanddan.ui.enums.TooltipType
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.enums.TooltipType
 import com.ddanddan.ui.ext.noRippleClickable
-import okhttp3.internal.immutableListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
+    needRefresh: Boolean,
     onStorageClick: (String) -> Unit,
     onSettingClick: () -> Unit,
     onNavigateLevelUp: (level: Int, petType: String) -> Unit,
@@ -80,6 +79,12 @@ fun HomeRoute(
                 TooltipType.PLAY ->
                     homeViewModel.setCurrentTooltipMsg(playTooltipMessages.random())
             }
+        }
+    }
+
+    LaunchedEffect(needRefresh) {
+        if (needRefresh) {
+            homeViewModel.getHomeInfo()
         }
     }
 

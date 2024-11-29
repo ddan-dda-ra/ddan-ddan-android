@@ -6,8 +6,10 @@ import com.ddanddan.model.request.RequestUser
 import com.ddanddan.model.response.ResponseLogin
 import com.ddanddan.model.response.ResponseMainPet
 import com.ddanddan.model.response.ResponseUser
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.POST
 import retrofit2.http.PUT
 
@@ -19,6 +21,10 @@ interface UserService {
     suspend fun putUser(
         @Body requestUser: RequestUser
     ): ResponseUser
+
+    @DELETE("/v1/user/me")
+    suspend fun deleteUser(
+    ): Response<Unit>
 
     @GET("/v1/user/me/main-pet")
     suspend fun getMainPet(): ResponseMainPet

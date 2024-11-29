@@ -1,50 +1,99 @@
-package com.ddanddan.ddanddan.presentation.setting
+package com.ddanddan.ddanddan.presentation.setting.nickname
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.base.R
+import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
+import com.ddanddan.ddanddan.presentation.setting.SettingState
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
+import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun EditNicknameScreen(
-    onTopBarBackClick: () -> Unit = {},
+fun EditNickNameRoute(
+    viewModel: SettingViewModel = hiltViewModel(),
+    navigatePopUp: () -> Unit = {}
+) {
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    val settingState by viewModel.collectAsState()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is SettingSideEffect.NavigatePopUp -> {
+                navigatePopUp()
+            }
+
+            is SettingSideEffect.SuccessChange -> {
+                navigatePopUp()
+            }
+
+            is SettingSideEffect.NetworkError -> {
+                snackBarHostState.showSnackbar(sideEffect.msg)
+            }
+
+            else -> {}
+        }
+    }
+
+    EditNickNameScreen(
+        settingState = settingState,
+        snackBarHostState = snackBarHostState,
+        navigatePopUp = viewModel::navigatePopUp,
+        onValueChange = viewModel::changeNickName,
+        onEditBtnClick = viewModel::onEditBtnClick
+    )
+}
+
+@Composable
+fun EditNickNameScreen(
+    settingState: SettingState = SettingState(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    navigatePopUp: () -> Unit = {},
+    onValueChange: (String) -> Unit = {},
+    onEditBtnClick: () -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.editname_topbar_title),
+        snackbarHost = {
+            DDanSnackBar(snackBarHostState = snackBarHostState)
+        },
         onClick = {
-            onTopBarBackClick()
+            navigatePopUp()
         }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(color = DDanDDanColorPalette.current.color_background),
+                .padding(it),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
@@ -54,8 +103,7 @@ fun EditNicknameScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
                     .height(76.dp)
-                    .background(color = DDanDDanColorPalette.current.color_background),
-            ){
+            ) {
                 Text(
                     text = stringResource(id = R.string.editname_screen_title),
                     style = DDanDDanTypo.current.HeadLine3,
@@ -78,23 +126,28 @@ fun EditNicknameScreen(
                     color = DDanDDanColorPalette.current.color_text_body_quaternary
                 )
                 DDanMarginVerticalSpacer(size = 12)
-                EditNameField()
-                Spacer(modifier = Modifier.weight(1f))
-                EditCardBtn(
-                    text = stringResource(id = R.string.editname_button_text),
+                EditNameField(
+                    nickName = settingState.nickName,
+                    onValueChange = onValueChange
                 )
-                DDanMarginVerticalSpacer(size = 20)
             }
+            Spacer(modifier = Modifier.weight(1f))
+            EditCardBtn(
+                text = stringResource(id = R.string.editname_button_text),
+                nickName = settingState.nickName,
+                onClick = onEditBtnClick
+            )
+            DDanMarginVerticalSpacer(size = 20)
         }
     }
 }
 
 @Composable
 fun EditNameField(
-    viewModel: SettingViewModel = hiltViewModel()
+    nickName: String,
+    onValueChange: (String) -> Unit = {},
 ) {
     val maxChar = 10
-    val nickName by viewModel.nickName.collectAsState()
 
     OutlinedTextField(
         value = nickName,
@@ -104,7 +157,7 @@ fun EditNameField(
             .wrapContentHeight(),
         onValueChange = { newText ->
             if (newText.length <= maxChar) {
-                viewModel.updateNickName(newText)
+                onValueChange(newText)
             }
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -121,26 +174,29 @@ fun EditNameField(
 @Composable
 fun EditCardBtn(
     text: String,
-    viewModel: SettingViewModel = hiltViewModel(),
-    isEnabled: Boolean = false,
+    nickName: String,
+    onClick: () -> Unit = {}
 ) {
     // 각 필드의 현재 상태를 수집
-    val name = viewModel.nickName.collectAsState().value
-    val isAllValid = name.isNotEmpty()
+    val isAllValid = nickName.isNotEmpty()
 
     val buttonColors =
-        if (isAllValid)  DDanDDanColorPalette.current.color_button_active else  DDanDDanColorPalette.current.color_button_disabled
+        if (isAllValid) DDanDDanColorPalette.current.color_button_active else DDanDDanColorPalette.current.color_button_disabled
     val textColors =
-        if (isAllValid)  DDanDDanColorPalette.current.color_text_button_primary_default else  DDanDDanColorPalette.current.color_text_button_primary_disabled
+        if (isAllValid) DDanDDanColorPalette.current.color_text_button_primary_default else DDanDDanColorPalette.current.color_text_button_primary_disabled
     androidx.compose.material3.Button(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
-        enabled = isEnabled,
+        shape = RoundedCornerShape(0.dp),
+        enabled = isAllValid,
         onClick = {
-//            if(isAllValid) { viewModel.updateUserInfo() }
+            onClick()
         },
-        colors = ButtonDefaults.buttonColors(containerColor = buttonColors),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColors,
+            disabledContainerColor = buttonColors
+        ),
     ) {
         Text(
             text = text,
@@ -148,4 +204,10 @@ fun EditCardBtn(
             color = textColors
         )
     }
+}
+
+@Composable
+@Preview
+fun EditNicknameScreenPreview() {
+    EditNickNameScreen()
 }

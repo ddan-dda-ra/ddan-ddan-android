@@ -19,6 +19,10 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.putUser(name, purposeCalorie).toUser()
     }
 
+    override suspend fun deleteUser(): Boolean {
+        return userDataSource.deleteUser()
+    }
+
     override suspend fun getMainPet(): Pet {
         return userDataSource.getMainPet().mainPet.toPet()
     }
