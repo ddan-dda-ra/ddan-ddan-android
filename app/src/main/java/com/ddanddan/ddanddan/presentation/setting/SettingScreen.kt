@@ -33,6 +33,7 @@ import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
+import com.ddanddan.ui.compose.component.DDanTwoButtonDialog
 import com.ddanddan.ui.compose.component.DdanScaffold
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -43,10 +44,9 @@ fun SettingRoute(
     navigatePopUp: (Boolean) -> Unit,
     onNickNameClick: () -> Unit,
     onCaloriesClick: () -> Unit,
-    onAlarmClick: () -> Unit,
     onAgreeClick: () -> Unit,
     onSignOutClick: () -> Unit,
-    onLogOutClick: () -> Unit,
+    navigateLogin: () -> Unit,
 ) {
     val settingState by viewModel.collectAsState()
 
@@ -55,10 +55,9 @@ fun SettingRoute(
             is SettingSideEffect.NavigatePopUp -> navigatePopUp(sideEffect.needRefreshHomeScreen)
             is SettingSideEffect.EditNickname -> onNickNameClick()
             is SettingSideEffect.EditTargetCalories -> onCaloriesClick()
-            is SettingSideEffect.TogglePushNotifications -> onAlarmClick()
             is SettingSideEffect.AgreeToTerms -> onAgreeClick()
             is SettingSideEffect.DeleteAccount -> onSignOutClick()
-            is SettingSideEffect.Logout -> onLogOutClick()
+            is SettingSideEffect.NavigateLogin -> navigateLogin()
             else -> {}
         }
     }
@@ -67,7 +66,9 @@ fun SettingRoute(
         settingState = settingState,
         navigatePopUp = viewModel::navigatePopUp,
         onSettingItemClick = viewModel::onSettingItemClick,
-        onAlarmClick = onAlarmClick
+        onLogOutClick = viewModel::showDialog,
+        onDialogDismiss = viewModel::dismissDialog,
+        onDialogConfirm = viewModel::navigateLogin
     )
 }
 
@@ -76,7 +77,9 @@ fun SettingScreen(
     settingState: SettingState = SettingState(),
     navigatePopUp: () -> Unit = {},
     onSettingItemClick: (Int) -> Unit = {},
-    onAlarmClick: () -> Unit = {}
+    onLogOutClick: () -> Unit = {},
+    onDialogDismiss: () -> Unit = {},
+    onDialogConfirm: () -> Unit = {},
 ) {
     DdanScaffold(
         topbarText = stringResource(id = com.ddanddan.base.R.string.setting_topbar_title),
@@ -98,7 +101,13 @@ fun SettingScreen(
             DDanMarginVerticalSpacer(size = 8)
             SettingColumn(
                 settingItems = settingState.settingItemsBottom,
-                onClick = { titleId -> onSettingItemClick(titleId) }
+                onClick = { titleId ->
+                    if (titleId == com.ddanddan.base.R.string.setting_title_text6) {
+                        onLogOutClick()
+                    } else {
+                        onSettingItemClick(titleId)
+                    }
+                }
             )
             Text(
                 modifier = Modifier
@@ -109,6 +118,15 @@ fun SettingScreen(
                 color = DDanDDanColorPalette.current.color_text_body_quinary,
             )
         }
+    }
+    if (settingState.isShowLogoutDialog) {
+        DDanTwoButtonDialog(
+            title = "정말 로그아웃 하시겠습니까?",
+            cancelText = "취소",
+            confirmText = "로그아웃",
+            onClickCancel = onDialogDismiss,
+            onClickConfirm = onDialogConfirm
+        )
     }
 }
 

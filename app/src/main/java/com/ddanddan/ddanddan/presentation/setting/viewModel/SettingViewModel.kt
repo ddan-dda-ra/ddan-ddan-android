@@ -3,7 +3,9 @@ package com.ddanddan.ddanddan.presentation.setting.viewModel
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
+import com.ddanddan.domain.repository.AuthRepository
 import com.ddanddan.domain.usecase.DeleteUserUseCase
+import com.ddanddan.domain.usecase.DisableAutoLoginUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PutUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,8 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val putUserInfoUseCase: PutUserInfoUseCase,
-    private val deleteUserUseCase: DeleteUserUseCase
+    private val deleteUserUseCase: DeleteUserUseCase,
+    private val disableAutoLoginUseCase: DisableAutoLoginUseCase
 ) :
     ContainerHost<SettingState, SettingSideEffect>, ViewModel() {
     override val container =
@@ -81,13 +84,26 @@ class SettingViewModel @Inject constructor(
         postSideEffect(SettingSideEffect.NavigateSignOutSecond)
     }
 
+    fun dismissDialog() = intent {
+        reduce { state.copy(isShowLogoutDialog = false) }
+    }
+
+    fun showDialog() = intent {
+        reduce { state.copy(isShowLogoutDialog = true) }
+    }
+
+    fun navigateLogin() = intent {
+        dismissDialog()
+        disableAutoLoginUseCase()
+        postSideEffect(SettingSideEffect.NavigateLogin)
+    }
+
     fun onSettingItemClick(titleId: Int) = intent {
         val sideEffect = when (titleId) {
             com.ddanddan.base.R.string.setting_title_text1 -> SettingSideEffect.EditNickname
             com.ddanddan.base.R.string.setting_title_text2 -> SettingSideEffect.EditTargetCalories
             com.ddanddan.base.R.string.setting_title_text4 -> SettingSideEffect.AgreeToTerms
-            com.ddanddan.base.R.string.setting_title_text5 -> SettingSideEffect.DeleteAccount
-            else -> SettingSideEffect.Logout
+            else -> SettingSideEffect.DeleteAccount
         }
         postSideEffect(sideEffect)
     }

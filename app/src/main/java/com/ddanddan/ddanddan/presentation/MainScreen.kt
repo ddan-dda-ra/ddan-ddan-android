@@ -31,6 +31,7 @@ import com.ddanddan.ui.ext.sharedViewModel
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
     onNavigateOnBoarding: () -> Unit = {},
+    onNavigateLogin: () -> Unit = {}
 ) {
     NavHost(
         navController = navController,
@@ -91,17 +92,14 @@ fun MainScreen(
                 onCaloriesClick = {
                     navController.navigate(DDanDDanRoute.EDIT_TARGET.route)
                 },
-                onAlarmClick = {
-                    //pushAlarm
-                },
                 onAgreeClick = {
                     navController.navigate(DDanDDanRoute.ON_AGREE.route)
                 },
                 onSignOutClick = {
                     navController.navigate(DDanDDanRoute.SIGN_OUT_FIRST.route)
                 },
-                onLogOutClick = {
-                    //로그아웃
+                navigateLogin = {
+                    onNavigateLogin()
                 }
             )
         }

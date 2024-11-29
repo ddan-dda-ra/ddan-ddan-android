@@ -24,21 +24,21 @@ data class SettingState(
     val calorie: Int = 100,
     val selectedReasons: List<String> = emptyList(),
     val isCheckBoxChecked: Boolean = false,
-    val needRefreshHomeScreen: Boolean = false
+    val needRefreshHomeScreen: Boolean = false,
+    val isShowLogoutDialog: Boolean = false,
 )
 
 sealed class SettingSideEffect {
     data class NavigatePopUp(val needRefreshHomeScreen: Boolean = false): SettingSideEffect()
     object EditNickname: SettingSideEffect()
     object EditTargetCalories : SettingSideEffect()
-    object TogglePushNotifications : SettingSideEffect()
     object AgreeToTerms : SettingSideEffect()
     object DeleteAccount : SettingSideEffect()
-    object Logout : SettingSideEffect()
 
     object SuccessChange : SettingSideEffect()
     data class NetworkError(val msg: String) : SettingSideEffect()
 
     object NavigateSignOutSecond : SettingSideEffect()
     object NavigateOnBoarding : SettingSideEffect()
+    object NavigateLogin : SettingSideEffect()
 }

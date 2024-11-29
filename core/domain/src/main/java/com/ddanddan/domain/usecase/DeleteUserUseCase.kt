@@ -1,18 +1,17 @@
 package com.ddanddan.domain.usecase
 
-import com.ddanddan.domain.repository.AuthRepository
 import com.ddanddan.domain.repository.UserRepository
 import javax.inject.Inject
 
 class DeleteUserUseCase @Inject constructor(
     private val userRepository: UserRepository,
-//    private val authRepository: AuthRepository
+    private val disableAutoLoginUseCase: DisableAutoLoginUseCase
 ) {
     suspend operator fun invoke() = runCatching {
         userRepository.deleteUser()
     }.fold(
         onSuccess = {
-//            if (it) authRepository.disableAutoLogin()
+            if (it) disableAutoLoginUseCase()
             it
         }, onFailure = {
             false
