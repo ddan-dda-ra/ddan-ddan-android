@@ -28,7 +28,7 @@ import com.ddanddan.ui.compose.theme.DDanDDanTheme
 @Composable
 fun DDanTwoButtonDialog(
     title: String,
-    content: String,
+    content: String? = null,
     cancelText: String = "취소",
     confirmText: String = "받기",
     onClickCancel: () -> Unit = {},
@@ -58,12 +58,14 @@ fun DDanTwoButtonDialog(
                     style = DDanDDanTypo.current.HeadLine6,
                     color = DDanDDanColorPalette.current.color_text_headline_primary
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = content,
-                    style = DDanDDanTypo.current.Body2,
-                    color = DDanDDanColorPalette.current.color_text_body_teritary
-                )
+                content?.let {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = content,
+                        style = DDanDDanTypo.current.Body2,
+                        color = DDanDDanColorPalette.current.color_text_body_teritary
+                    )
+                }
                 Spacer(modifier = Modifier.height(28.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
