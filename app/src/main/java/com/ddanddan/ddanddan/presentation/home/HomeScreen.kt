@@ -62,7 +62,7 @@ fun HomeRoute(
     val tooltipVisibilityChanged = remember(homeViewModel) { { it: Boolean -> homeViewModel.setTooltipState(it) } }
 
     val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie(homeState.pet?.level))
+        LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie(homeState.pet?.level, homeState.isPlayAndEatLottie))
     )
 
     val basicTooltipMessages = stringArrayResource(id = R.array.basic_tooltip_msg)

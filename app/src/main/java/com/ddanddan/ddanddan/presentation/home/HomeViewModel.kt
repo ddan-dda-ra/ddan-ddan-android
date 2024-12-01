@@ -8,6 +8,7 @@ import com.ddanddan.domain.usecase.PostPlayPetUseCase
 import com.ddanddan.domain.usecase.PostRandomPetUseCase
 import com.ddanddan.ui.enums.TooltipType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -85,7 +86,11 @@ class HomeViewModel @Inject constructor(
                     .onSuccess {
                         reduce {
                             showTooltipState(true, TooltipType.PLAY)
-                            state.copy(user = it.user, pet = it.pet)
+                            state.copy(user = it.user, pet = it.pet, isPlayAndEatLottie = true)
+                        }
+                        delay(1600)
+                        reduce {
+                            state.copy(isPlayAndEatLottie = false)
                         }
                     }.onFailure {
                         if (it is HttpException) {
@@ -119,7 +124,11 @@ class HomeViewModel @Inject constructor(
                         }
                         reduce {
                             showTooltipState(true, TooltipType.EAT)
-                            state.copy(user = it.user, pet = it.pet)
+                            state.copy(user = it.user, pet = it.pet, isPlayAndEatLottie = true)
+                        }
+                        delay(1600)
+                        reduce {
+                            state.copy(isPlayAndEatLottie = false)
                         }
                     }.onFailure {
                         if (it is HttpException) {
