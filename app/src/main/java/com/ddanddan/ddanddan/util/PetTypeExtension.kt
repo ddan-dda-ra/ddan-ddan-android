@@ -7,7 +7,7 @@ import com.ddanddan.domain.enums.PetTypeEnum
 fun PetTypeEnum?.toAnimal(level: Int?): Int {
     return when (this) {
         PetTypeEnum.CAT -> {
-            when(level) {
+            when (level) {
                 2 -> R.drawable.ic_cat_level2
                 3 -> R.drawable.ic_cat_level3
                 4 -> R.drawable.ic_cat_level4
@@ -15,8 +15,9 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
                 else -> R.drawable.ic_cat_level1
             }
         }
+
         PetTypeEnum.DOG -> {
-            when(level) {
+            when (level) {
                 2 -> R.drawable.ic_dog_level2
                 3 -> R.drawable.ic_dog_level3
                 4 -> R.drawable.ic_dog_level4
@@ -24,8 +25,9 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
                 else -> R.drawable.ic_dog_level1
             }
         }
+
         PetTypeEnum.PENGUIN -> {
-            when(level) {
+            when (level) {
                 2 -> R.drawable.ic_penguin_level2
                 3 -> R.drawable.ic_penguin_level3
                 4 -> R.drawable.ic_penguin_level4
@@ -33,8 +35,9 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
                 else -> R.drawable.ic_penguin_level1
             }
         }
+
         PetTypeEnum.HAMSTER -> {
-            when(level) {
+            when (level) {
                 2 -> R.drawable.ic_hamster_level2
                 3 -> R.drawable.ic_hamster_level3
                 4 -> R.drawable.ic_hamster_level4
@@ -43,32 +46,55 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
 
             }
         }
+
         else -> R.drawable.ic_question
     }
 }
 
-fun PetTypeEnum?.toLottie(level: Int?): Int {
+fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
     return when (this) {
         PetTypeEnum.CAT -> {
-            when(level) {
-                2 -> R.raw.motion_cat_level2_default
-                3 -> R.raw.motion_cat_level3_default
-                4 -> R.raw.motion_cat_level4_default
-                5 -> R.raw.motion_cat_level5_default
-                else -> R.raw.motion_cat_level1_default
+            when (isPlayAndEatLottie) {
+                false -> when (level) {
+                    2 -> R.raw.motion_cat_level2_default
+                    3 -> R.raw.motion_cat_level3_default
+                    4 -> R.raw.motion_cat_level4_default
+                    5 -> R.raw.motion_cat_level5_default
+                    else -> R.raw.motion_cat_level1_default
+                }
+
+                else -> when (level) {
+                    2 -> R.raw.motion_cat_level2_play_eat
+                    3 -> R.raw.motion_cat_level3_play_eat
+                    4 -> R.raw.motion_cat_level4_play_eat
+                    5 -> R.raw.motion_cat_level5_play_eat
+                    else -> R.raw.motion_cat_level1_play_eat
+                }
             }
         }
+
         PetTypeEnum.DOG -> {
-            when(level) {
-                2 -> R.raw.motion_cat_level5_default
-                3 -> R.raw.motion_cat_level5_default
-                4 -> R.raw.motion_cat_level5_default
-                5 -> R.raw.motion_cat_level5_default
-                else -> R.raw.motion_cat_level4_default
+            when (isPlayAndEatLottie) {
+                false -> when (level) {
+                    2 -> R.raw.motion_puppy_level2_default
+                    3 -> R.raw.motion_puppy_level3_default
+                    4 -> R.raw.motion_puppy_level4_default
+                    5 -> R.raw.motion_puppy_level5_default
+                    else -> R.raw.motion_puppy_level1_default
+                }
+
+                else -> when (level) {
+                    2 -> R.raw.motion_puppy_level2_play_eat
+                    3 -> R.raw.motion_puppy_level3_play_eat
+                    4 -> R.raw.motion_puppy_level4_play_eat
+                    5 -> R.raw.motion_puppy_level5_play_eat
+                    else -> R.raw.motion_puppy_level1_play_eat
+                }
             }
         }
+
         PetTypeEnum.PENGUIN -> {
-            when(level) {
+            when (level) {
                 2 -> R.raw.motion_cat_level5_default
                 3 -> R.raw.motion_cat_level5_default
                 4 -> R.raw.motion_cat_level5_default
@@ -76,15 +102,27 @@ fun PetTypeEnum?.toLottie(level: Int?): Int {
                 else -> R.raw.motion_cat_level4_default
             }
         }
+
         PetTypeEnum.HAMSTER -> {
-            when(level) {
-                2 -> R.raw.motion_cat_level5_default
-                3 -> R.raw.motion_cat_level5_default
-                4 -> R.raw.motion_cat_level5_default
-                5 -> R.raw.motion_cat_level5_default
-                else -> R.raw.motion_cat_level4_default
+            when (isPlayAndEatLottie) {
+                false -> when (level) {
+                    2 -> R.raw.motion_hamster_level2_default
+                    3 -> R.raw.motion_hamster_level3_default
+                    4 -> R.raw.motion_hamster_level4_default
+                    5 -> R.raw.motion_hamster_level5_default
+                    else -> R.raw.motion_hamster_level1_default
+                }
+
+                else -> when (level) {
+                    2 -> R.raw.motion_hamster_level2_play_eat
+                    3 -> R.raw.motion_hamster_level3_play_eat
+                    4 -> R.raw.motion_hamster_level4_play_eat
+                    5 -> R.raw.motion_hamster_level5_play_eat
+                    else -> R.raw.motion_hamster_level1_play_eat
+                }
             }
         }
+
         else -> R.raw.motion_cat_level5_default
     }
 }
