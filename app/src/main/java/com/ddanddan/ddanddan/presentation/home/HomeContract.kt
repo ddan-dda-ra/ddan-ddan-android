@@ -13,7 +13,8 @@ data class HomeState(
     val pet: Pet? = null,
     val isShowTooltipState: Boolean = false,
     val tooltipType: TooltipType = TooltipType.BASIC,
-    val currentTooltipMsg: String = ""
+    val currentTooltipMsg: String = "",
+    val isPlayAndEatLottie: Boolean = false
 )
 
 sealed class HomeSideEffect {

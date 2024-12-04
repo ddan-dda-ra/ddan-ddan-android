@@ -89,7 +89,7 @@ fun LevelUpScreen(
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "lv.${level}로 업그레이드 되었어요!",
+                text = "lv.${level}로\n업그레이드 되었어요!",
                 fontFamily = NeoDgm,
                 fontWeight = FontWeight(400),
                 fontSize = 24.sp,
