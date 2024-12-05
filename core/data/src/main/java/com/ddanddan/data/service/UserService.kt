@@ -14,22 +14,22 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface UserService {
-    @GET("/v1/user/me")
+    @GET("/v1/users/me")
     suspend fun getUser(): ResponseUser
 
-    @PUT("/v1/user/me")
+    @PUT("/v1/users/me")
     suspend fun putUser(
         @Body requestUser: RequestUser
     ): ResponseUser
 
-    @DELETE("/v1/user/me")
+    @DELETE("/v1/users/me")
     suspend fun deleteUser(
     ): Response<Unit>
 
-    @GET("/v1/user/me/main-pet")
+    @GET("/v1/users/me/main-pet")
     suspend fun getMainPet(): ResponseMainPet
 
-    @POST("/v1/user/me/main-pet")
+    @POST("/v1/users/me/main-pet")
     suspend fun postMainPet(
         @Body requestBody: RequestMainPet
     ): ResponseMainPet
