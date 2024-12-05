@@ -18,6 +18,7 @@ import com.ddanddan.ui.compose.NeoDgm
 @Composable
 fun HomeCalorieScreen(
     purposeCalorie: String = "500",
+    currentCalories: String
 ) {
     Row(
         modifier = Modifier
@@ -27,7 +28,7 @@ fun HomeCalorieScreen(
     ) {
         Text(
             modifier = Modifier.alignByBaseline(),
-            text = "245",
+            text = currentCalories,
             fontFamily = NeoDgm,
             fontSize = 52.sp,
             color = Color.White
@@ -65,5 +66,5 @@ fun HomeCalorieScreen(
     backgroundColor = 0xFF000000
 )
 fun HomeCalorieScreenPreview() {
-    HomeCalorieScreen()
+    HomeCalorieScreen(purposeCalorie = "500", currentCalories = "0")
 }

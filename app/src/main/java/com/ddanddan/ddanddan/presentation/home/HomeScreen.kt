@@ -156,7 +156,11 @@ fun HomeScreen(
             Spacer(modifier = Modifier.padding(top = 20.dp))
             HomeTopScreen(onStorageClick = onStorageClick, onSettingClick = onSettingClick)
             Spacer(modifier = Modifier.padding(top = 16.dp))
-            HomeCalorieScreen(homeState.user?.purposeCalorie.toString())
+
+            HomeCalorieScreen(
+                purposeCalorie = homeState.user?.purposeCalorie.toString(),
+                currentCalories = homeState.currentCalories.toString()
+            )
             Spacer(modifier = Modifier.padding(top = 14.dp))
             PetContent(
                 modifier = Modifier

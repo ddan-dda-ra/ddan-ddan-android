@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.presentation.home
 
 import androidx.lifecycle.ViewModel
+import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PostFoodPetUseCase
@@ -23,13 +24,15 @@ class HomeViewModel @Inject constructor(
     private val getMainPetUseCase: GetMainPetUseCase,
     private val postPlayPetUseCase: PostPlayPetUseCase,
     private val postFoodPetUseCase: PostFoodPetUseCase,
-    private val postRandomPetUseCase: PostRandomPetUseCase
+    private val postRandomPetUseCase: PostRandomPetUseCase,
+    private val userRepository: UserRepository
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
 
     init {
         getHomeInfo()
+        observeCalories()
     }
 
     fun getHomeInfo() {
@@ -169,6 +172,18 @@ class HomeViewModel @Inject constructor(
         reduce {
             state.copy(currentTooltipMsg = msg)
         }
+    }
+
+    /**
+     * 칼로리 변화 관찰
+     */
+    private fun observeCalories() = intent {
+        userRepository.getCaloriesFlow()
+            .collect { updatedCalories ->
+                reduce {
+                    state.copy(currentCalories = updatedCalories.toDouble())
+                }
+            }
     }
 
     companion object {
