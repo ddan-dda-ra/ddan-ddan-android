@@ -65,7 +65,7 @@ fun HomeProgressbarScreen(
             }
 
             Text(
-                text = "${homeState.pet?.expPercent}%",
+                text = "${homeState.pet?.expPercent?.toInt()}%",
                 color = DDanDDanColorPalette.current.color_text_headline_primary,
                 style = DDanDDanTypo.current.SubTitle1
             )
