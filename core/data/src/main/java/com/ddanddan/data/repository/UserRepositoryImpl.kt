@@ -5,6 +5,7 @@ import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.User
 import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.repository.UserRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -44,5 +45,12 @@ class UserRepositoryImpl @Inject constructor(
 
             result.isOnboardingComplete
         }
+    }
+
+    override fun getCaloriesFlow(): Flow<Float> = ddanddanDataStore.caloriesFlow
+
+
+    override suspend fun saveCalories(calories: Double) {
+        ddanddanDataStore.calories = calories.toFloat()
     }
 }

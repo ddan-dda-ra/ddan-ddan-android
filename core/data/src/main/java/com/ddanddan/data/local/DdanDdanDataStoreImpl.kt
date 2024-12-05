@@ -3,6 +3,8 @@ package com.ddanddan.data.local
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.ddanddan.domain.ddanddanDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class DdanDdanDataStoreImpl @Inject constructor(
@@ -40,6 +42,16 @@ class DdanDdanDataStoreImpl @Inject constructor(
         get() = userPref.getBoolean(PREF_ON_NOTIFICATION, true)
         set(value) = userPref.edit { putBoolean(PREF_ON_NOTIFICATION, value)}
 
+    private val _caloriesFlow = MutableStateFlow(userPref.getFloat(PREF_CALORIES, 0.0f))
+    override val caloriesFlow: Flow<Float> get() = _caloriesFlow
+
+    override var calories: Float
+        get() = userPref.getFloat(PREF_CALORIES, 0.0f)
+        set(value) {
+            userPref.edit { putFloat(PREF_CALORIES, value) }
+            _caloriesFlow.value = value
+        }
+
     override fun clearLocalPref() = userPref.edit { clear() }
 
     companion object {
@@ -51,5 +63,6 @@ class DdanDdanDataStoreImpl @Inject constructor(
         private const val PREF_DEVICE_TOKEN = "DEVICE_TOKEN"
         private const val PREF_ASKED_NOTIFICATION = "ASKED_NOTIFICATION"
         private const val PREF_ON_NOTIFICATION = "ON_NOTIFICATION"
+        private const val PREF_CALORIES = "CALORIES"
     }
 }

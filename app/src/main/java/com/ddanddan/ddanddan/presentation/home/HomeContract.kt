@@ -14,7 +14,8 @@ data class HomeState(
     val isShowTooltipState: Boolean = false,
     val tooltipType: TooltipType = TooltipType.BASIC,
     val currentTooltipMsg: String = "",
-    val isPlayAndEatLottie: Boolean = false
+    val isPlayAndEatLottie: Boolean = false,
+    val currentCalories: Double = 0.0
 )
 
 sealed class HomeSideEffect {
