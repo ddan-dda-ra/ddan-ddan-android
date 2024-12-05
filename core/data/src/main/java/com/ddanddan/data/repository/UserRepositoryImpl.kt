@@ -34,9 +34,13 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun login(token: String): Result<Boolean> {
         return runCatching {
             val result = userDataSource.login(token)
+            val bearerAccessToken = "Bearer ${result.accessToken}"
+            val bearerRefreshToken = "Bearer ${result.refreshToken}"
 
-            ddanddanDataStore.userToken = "Bearer ${result.accessToken}"
-            ddanddanDataStore.refreshToken = "Bearer ${result.refreshToken}"
+            ddanddanDataStore.run {
+                userToken = bearerAccessToken
+                refreshToken = bearerRefreshToken
+            }
 
             result.isOnboardingComplete
         }
