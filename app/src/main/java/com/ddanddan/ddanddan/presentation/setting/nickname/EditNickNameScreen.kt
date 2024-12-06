@@ -125,7 +125,7 @@ fun EditNickNameScreen(
                     style = DDanDDanTypo.current.Body2,
                     color = DDanDDanColorPalette.current.color_text_body_quaternary
                 )
-                DDanMarginVerticalSpacer(size = 12)
+                DDanMarginVerticalSpacer(size = 8)
                 EditNameField(
                     nickName = settingState.nickName,
                     onValueChange = onValueChange
@@ -153,7 +153,6 @@ fun EditNameField(
         value = nickName,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .wrapContentHeight(),
         onValueChange = { newText ->
             if (newText.length <= maxChar) {
