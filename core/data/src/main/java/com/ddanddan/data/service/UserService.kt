@@ -2,6 +2,7 @@ package com.ddanddan.data.service
 
 import com.ddanddan.model.request.RequestLogin
 import com.ddanddan.model.request.RequestMainPet
+import com.ddanddan.model.request.RequestSignOut
 import com.ddanddan.model.request.RequestUser
 import com.ddanddan.model.response.ResponseLogin
 import com.ddanddan.model.response.ResponseMainPet
@@ -24,6 +25,7 @@ interface UserService {
 
     @DELETE("/v1/users/me")
     suspend fun deleteUser(
+        @Body request: RequestSignOut
     ): Response<Unit>
 
     @GET("/v1/users/me/main-pet")
