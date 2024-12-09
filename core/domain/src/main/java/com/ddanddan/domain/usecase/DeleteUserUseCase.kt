@@ -7,8 +7,8 @@ class DeleteUserUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val disableAutoLoginUseCase: DisableAutoLoginUseCase
 ) {
-    suspend operator fun invoke() = runCatching {
-        userRepository.deleteUser()
+    suspend operator fun invoke(cause: String) = runCatching {
+        userRepository.deleteUser(cause)
     }.fold(
         onSuccess = {
             if (it) disableAutoLoginUseCase()

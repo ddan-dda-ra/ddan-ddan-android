@@ -44,13 +44,13 @@ fun onAgreeScreen(
                 SettingTitle(
                     title = "서비스 이용약관",
                     onClick = {
-                        navController.navigate(DDanDDanRoute.WEBVIEW.route + "?url=https://www.naver.com")
+                        navController.navigate(DDanDDanRoute.WEBVIEW.route + "?url=https://www.notion.so/4105267fc3b849fba10b8a3155809255")
                     }
                 )
                 SettingTitle(
                     title = "개인정보 처리방침",
                     onClick = {
-                        navController.navigate(DDanDDanRoute.WEBVIEW.route + "?url=https://www.daum.net")
+                        navController.navigate(DDanDDanRoute.WEBVIEW.route + "?url=https://www.notion.so/1d544c615c44412fa51d2ecb9f98116a")
                     }
                 )
             }

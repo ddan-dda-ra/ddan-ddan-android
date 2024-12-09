@@ -83,18 +83,13 @@ fun SignOutFirstScreen(
             horizontalAlignment = Alignment.Start
         ) {
             DDanMarginVerticalSpacer(size = 20)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .height(76.dp)
-            ) {
-                Text(
-                    text = stringResource(id = com.ddanddan.base.R.string.setting_signout_subtitle1),
-                    style = DDanDDanTypo.current.HeadLine3,
-                    color = DDanDDanColorPalette.current.color_text_headline_primary
-                )
-            }
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = stringResource(id = com.ddanddan.base.R.string.setting_signout_subtitle1),
+                style = DDanDDanTypo.current.HeadLine3,
+                color = DDanDDanColorPalette.current.color_text_headline_primary
+            )
+            DDanMarginVerticalSpacer(size = 60)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -137,12 +132,12 @@ fun CheckBoxList(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 20.dp)
+                    .padding(vertical = 13.dp, horizontal = 20.dp)
                     .noRippleClickable { onReasonClick(reason) }
             ) {
                 Text(
                     text = reason,
-                    modifier = Modifier.padding(start = 8.dp),
+                    modifier = Modifier,
                     color = DDanDDanColorPalette.current.color_text_body_secondary,
                     style = DDanDDanTypo.current.HeadLine7
                 )

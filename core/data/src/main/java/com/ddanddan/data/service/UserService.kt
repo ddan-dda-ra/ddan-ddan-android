@@ -2,6 +2,7 @@ package com.ddanddan.data.service
 
 import com.ddanddan.model.request.RequestLogin
 import com.ddanddan.model.request.RequestMainPet
+import com.ddanddan.model.request.RequestSignOut
 import com.ddanddan.model.request.RequestUser
 import com.ddanddan.model.response.ResponseLogin
 import com.ddanddan.model.response.ResponseMainPet
@@ -10,6 +11,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.PUT
 
@@ -22,8 +24,9 @@ interface UserService {
         @Body requestUser: RequestUser
     ): ResponseUser
 
-    @DELETE("/v1/users/me")
+    @HTTP(method = "DELETE", path = "/v1/users/me", hasBody = true)
     suspend fun deleteUser(
+        @Body request: RequestSignOut
     ): Response<Unit>
 
     @GET("/v1/users/me/main-pet")

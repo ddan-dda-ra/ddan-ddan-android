@@ -129,7 +129,7 @@ class SettingViewModel @Inject constructor(
     }
 
     fun deleteUser() = intent {
-        val isDeleteUser = deleteUserUseCase()
+        val isDeleteUser = deleteUserUseCase(state.selectedReasons.toString())
         if (isDeleteUser) postSideEffect(SettingSideEffect.NavigateOnBoarding)
         else postSideEffect(SettingSideEffect.NetworkError("회원탈퇴에 실패했습니다."))
     }
