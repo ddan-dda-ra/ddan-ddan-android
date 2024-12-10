@@ -1,10 +1,12 @@
 package com.ddanddan.ddanddan.presentation.home
 
 import androidx.lifecycle.ViewModel
+import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionSideEffect
 import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PostFoodPetUseCase
+import com.ddanddan.domain.usecase.PostMainPetUseCase
 import com.ddanddan.domain.usecase.PostPlayPetUseCase
 import com.ddanddan.domain.usecase.PostRandomPetUseCase
 import com.ddanddan.ui.enums.TooltipType
@@ -25,6 +27,7 @@ class HomeViewModel @Inject constructor(
     private val postPlayPetUseCase: PostPlayPetUseCase,
     private val postFoodPetUseCase: PostFoodPetUseCase,
     private val postRandomPetUseCase: PostRandomPetUseCase,
+    private val postMainPetUseCase: PostMainPetUseCase,
     private val userRepository: UserRepository
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
@@ -76,6 +79,7 @@ class HomeViewModel @Inject constructor(
                 reduce {
                     state.copy(pet = it)
                 }
+                postMainPet(it.id)
                 postSideEffect(HomeSideEffect.NavigateNewPet(it.type))
             }.onFailure {
                 postSideEffect(HomeSideEffect.SnackBarMsg("새로운 펫을 불러오는데 오류가 발생했습니다."))
@@ -87,6 +91,11 @@ class HomeViewModel @Inject constructor(
             if ((state.user?.toyQuantity ?: 0) > 0) {
                 postPlayPetUseCase(pet.id)
                     .onSuccess {
+                        if (it.pet.level == MAX_LEVEL && it.pet.expPercent.toInt() == MAX_PERCENTS) {
+                            postRandomPet()
+                        } else if (it.pet.level > (state.pet?.level ?: 0)) {
+                            postSideEffect(HomeSideEffect.NavigateLevelUp(it.pet.level, it.pet.type))
+                        }
                         reduce {
                             showTooltipState(true, TooltipType.PLAY)
                             state.copy(user = it.user, pet = it.pet, isPlayAndEatLottie = true)
@@ -115,15 +124,10 @@ class HomeViewModel @Inject constructor(
             if ((state.user?.foodQuantity ?: 0) > 0) {
                 postFoodPetUseCase(pet.id)
                     .onSuccess {
-                        if (it.pet.level == MAX_LEVEL && it.pet.expPercent == MAX_PERCENTS) {
+                        if (it.pet.level == MAX_LEVEL && it.pet.expPercent.toInt() == MAX_PERCENTS) {
                             postRandomPet()
                         } else if (it.pet.level > (state.pet?.level ?: 0)) {
-                            postSideEffect(
-                                HomeSideEffect.NavigateLevelUp(
-                                    it.pet.level,
-                                    it.pet.type
-                                )
-                            )
+                            postSideEffect(HomeSideEffect.NavigateLevelUp(it.pet.level, it.pet.type))
                         }
                         reduce {
                             showTooltipState(true, TooltipType.EAT)
@@ -145,6 +149,29 @@ class HomeViewModel @Inject constructor(
             }
         } ?: run {
             postSideEffect(HomeSideEffect.SnackBarMsg("펫 아이디에 오류가 발생했습니다."))
+        }
+    }
+
+    private fun postMainPet(mainPetId: String) = intent {
+        reduce {
+            state.copy(isLoading = true)
+        }
+        postMainPetUseCase(mainPetId)
+            .onSuccess {
+                reduce {
+                    state.copy(pet = it)
+                }
+            }.onFailure {
+                if (it is HttpException) {
+                    postSideEffect(HomeSideEffect.NetworkError(it.code()))
+                } else {
+                    postSideEffect(HomeSideEffect.NetworkError(null))
+                }
+            }
+        reduce {
+            state.copy(
+                isLoading = false
+            )
         }
     }
 
@@ -188,6 +215,6 @@ class HomeViewModel @Inject constructor(
 
     companion object {
         private const val MAX_LEVEL = 5
-        private const val MAX_PERCENTS = 100.0
+        private const val MAX_PERCENTS = 100
     }
 }
