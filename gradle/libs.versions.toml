@@ -74,7 +74,7 @@ ossPlugin = "0.10.4"
 ## Test
 junitVersion = "4.13.2"
 espressoVersion = "3.3.0"
-androidTestVersion = "1.1.2"
+androidTestVersion = "1.2.1"
 
 ## Flipper
 flipperVersion = "0.236.0"
