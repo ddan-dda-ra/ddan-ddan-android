@@ -1,15 +1,25 @@
 package com.ddanddan.ddanddan.presentation.home
 
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -18,10 +28,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
@@ -32,6 +45,8 @@ import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toBackgroundImage
 import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.ui.compose.DDanDDanColorPalette
+import com.ddanddan.ui.compose.NeoDgm
+import com.ddanddan.ui.compose.component.DDanActionButton
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.enums.TooltipType
@@ -51,19 +66,22 @@ fun HomeRoute(
 ) {
     val homeState by homeViewModel.collectAsState()
 
+    val context = LocalContext.current
     val snackBarHostState = remember { SnackbarHostState() }
-
-    val storageClick = remember(homeViewModel) { { homeViewModel.onStorageClick() } }
-    val settingClick = remember(homeViewModel) { { homeViewModel.onSettingClick() } }
-    val eatClick = remember(homeViewModel) { { homeViewModel.postFoodPet() } }
-    val playClick = remember(homeViewModel) { { homeViewModel.postPlayPet() } }
-    val petClick =
-        remember(homeViewModel) { { it: Boolean -> homeViewModel.showTooltipState(it, TooltipType.BASIC) } }
-    val tooltipVisibilityChanged = remember(homeViewModel) { { it: Boolean -> homeViewModel.setTooltipState(it) } }
 
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(homeState.pet?.type.toLottie(homeState.pet?.level, homeState.isPlayAndEatLottie))
     )
+
+    val vibrator = remember {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        }
+    }
 
     val basicTooltipMessages = stringArrayResource(id = R.array.basic_tooltip_msg)
     val playTooltipMessages = stringArrayResource(id = R.array.play_tooltip_msg)
@@ -79,6 +97,17 @@ fun HomeRoute(
                 TooltipType.PLAY ->
                     homeViewModel.setCurrentTooltipMsg(playTooltipMessages.random())
             }
+        }
+    }
+
+    LaunchedEffect(homeState.isPlayAndEatLottie) {
+        if (homeState.isPlayAndEatLottie) {
+            val pattern = longArrayOf(0, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100)
+            val amplitudes = intArrayOf(0, 40, 60, 80, 100, 100, 80, 60, 40, 60, 80, 100, 100, 80, 60, 40)
+            val effect = VibrationEffect.createWaveform(pattern, amplitudes, -1)
+            vibrator.vibrate(effect)
+        } else {
+            vibrator.cancel()
         }
     }
 
@@ -115,12 +144,12 @@ fun HomeRoute(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
         composition = composition,
-        onStorageClick = { storageClick() },
-        onSettingClick = { settingClick() },
-        onEatClick = { eatClick() },
-        onPlayClick = { playClick() },
-        onPetClick = { petClick(it) },
-        onTooltipVisibilityChanged = { tooltipVisibilityChanged(it) },
+        onStorageClick = homeViewModel::onStorageClick,
+        onSettingClick = homeViewModel::onSettingClick,
+        onEatClick = homeViewModel::postFoodPet,
+        onPlayClick = homeViewModel::postPlayPet,
+        onPetClick = { homeViewModel.showTooltipState(it, TooltipType.BASIC) },
+        onTooltipVisibilityChanged = homeViewModel::setTooltipState,
     )
 }
 
@@ -142,11 +171,11 @@ fun HomeScreen(
             DDanSnackBar(snackBarHostState = snackBarHostState)
         },
         bottomBar = {
-            HomeBottomScreen(
+            HomeBottomItem(
                 foodCount = homeState.user?.foodQuantity ?: 0,
                 toyCount = homeState.user?.toyQuantity ?: 0,
-                onEatClick = { onEatClick() },
-                onPlayClick = { onPlayClick() }
+                onEatClick = onEatClick,
+                onPlayClick = onPlayClick
             )
         }) { paddingValues ->
         Column(
@@ -154,10 +183,9 @@ fun HomeScreen(
                 .padding(paddingValues)
         ) {
             Spacer(modifier = Modifier.padding(top = 20.dp))
-            HomeTopScreen(onStorageClick = onStorageClick, onSettingClick = onSettingClick)
+            HomeTopItem(onStorageClick = onStorageClick, onSettingClick = onSettingClick)
             Spacer(modifier = Modifier.padding(top = 16.dp))
-
-            HomeCalorieScreen(
+            HomeCalorieItem(
                 purposeCalorie = homeState.user?.purposeCalorie.toString(),
                 currentCalories = homeState.currentCalories.toString()
             )
@@ -172,9 +200,75 @@ fun HomeScreen(
                 onTooltipVisibilityChanged = onTooltipVisibilityChanged
             )
             Spacer(modifier = Modifier.padding(top = 32.dp))
-            HomeProgressbarScreen(homeState)
+            HomeProgressbarItem(homeState)
             Spacer(modifier = Modifier.padding(top = 20.dp))
         }
+    }
+}
+
+@Composable
+fun HomeTopItem(onStorageClick: () -> Unit = {}, onSettingClick: () -> Unit = {}) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Image(
+            modifier = Modifier.clickable(onClick = onStorageClick),
+            painter = painterResource(id = R.drawable.ic_storage),
+            contentDescription = "보관함"
+        )
+        Image(
+            modifier = Modifier.clickable(onClick = onSettingClick),
+            painter = painterResource(id = R.drawable.ic_setting),
+            contentDescription = "설정"
+        )
+    }
+}
+
+@Composable
+fun HomeCalorieItem(
+    purposeCalorie: String = "500",
+    currentCalories: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            modifier = Modifier.alignByBaseline(),
+            text = currentCalories,
+            fontFamily = NeoDgm,
+            fontSize = 52.sp,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.padding(start = 4.dp))
+        Text(
+            modifier = Modifier.alignByBaseline(),
+            text = "/",
+            fontFamily = NeoDgm,
+            fontSize = 42.sp,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.padding(start = 4.dp))
+        Text(
+            modifier = Modifier.alignByBaseline(),
+            text = purposeCalorie,
+            fontFamily = NeoDgm,
+            fontSize = 22.sp,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.padding(start = 4.dp))
+        Text(
+            modifier = Modifier.alignByBaseline(),
+            text = "kcal",
+            fontFamily = NeoDgm,
+            fontSize = 22.sp,
+            color = Color.White
+        )
     }
 }
 
@@ -222,6 +316,36 @@ private fun PetContent(
             }
             Spacer(modifier = Modifier.weight(2.228f))
         }
+    }
+}
+
+@Composable
+fun HomeBottomItem(
+    foodCount: Int = 0,
+    toyCount: Int = 0,
+    onEatClick: () -> Unit = {},
+    onPlayClick: () -> Unit = {}
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp)
+            .padding(bottom = 60.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        DDanActionButton(
+            modifier = Modifier.weight(1f),
+            text = "먹이주기",
+            count = "${foodCount}개 보유",
+            onClick = onEatClick
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        DDanActionButton(
+            modifier = Modifier.weight(1f),
+            text = "놀아주기",
+            count = "${toyCount}개 보유",
+            onClick = onPlayClick
+        )
     }
 }
 

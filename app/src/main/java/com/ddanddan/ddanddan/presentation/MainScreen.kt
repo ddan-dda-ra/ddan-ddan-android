@@ -67,7 +67,11 @@ fun MainScreen(
         ) {
              PetCollectionRoute(
                 navigatePopUp = navController::popBackStack,
-                onConfirmClick = navController::popBackStack
+                onConfirmClick = {
+                    navController.navigate(DDanDDanRoute.HOME.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             )
         }
         composable(

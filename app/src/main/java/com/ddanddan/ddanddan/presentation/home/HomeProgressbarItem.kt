@@ -33,7 +33,7 @@ import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
 
 @Composable
-fun HomeProgressbarScreen(
+fun HomeProgressbarItem(
     homeState: HomeState,
     modifier: Modifier = Modifier
 ) {
@@ -90,7 +90,6 @@ fun DDanDDanProgressbar(
     val defaultSegmentColor = Color.Transparent
     val filledSegments = (progress * totalSegments).toInt()
     val strokeColor = DDanDDanColorPalette.current.color_divider_level03
-
 
     // 프로그레스 바
     Box(
@@ -156,8 +155,8 @@ fun DDanDDanProgressbar(
     showBackground = true,
     backgroundColor = 0xFF111111
 )
-fun HomeProgressbarScreenPreview() {
-    HomeProgressbarScreen(
+fun HomeProgressbarItemPreview() {
+    HomeProgressbarItem(
         homeState = HomeState(pet = Pet("cat", PetTypeEnum.CAT, 1, 1.0))
     )
 }
