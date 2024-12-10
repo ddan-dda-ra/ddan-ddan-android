@@ -111,7 +111,7 @@ fun PetCollectionScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { navigatePopUp() }
+                        onClick = navigatePopUp
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
@@ -154,8 +154,8 @@ fun PetCollectionScreen(
                         PetItem(
                             pet = petCollectionState.pets.getOrNull(index),
                             mainPetId = petCollectionState.mainPetId,
-                            onSelectId = { onSelectId(it) },
-                            onOtherItemClick = { onSnackBarEvent("새로운 펫을 준비중이에요") }
+                            onSelectId = onSelectId,
+                            onOtherItemClick = onSnackBarEvent
                         )
                     }
                 }
@@ -169,7 +169,7 @@ fun PetItem(
     pet: Pet?,
     mainPetId: String,
     onSelectId: (String) -> Unit = {},
-    onOtherItemClick: () -> Unit = {}
+    onOtherItemClick: (String) -> Unit = {}
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -177,7 +177,7 @@ fun PetItem(
             if (pet != null) {
                 onSelectId(pet.id)
             } else {
-                onOtherItemClick()
+                onOtherItemClick("새로운 펫을 준비중이에요")
             }
         }) {
         Image(
