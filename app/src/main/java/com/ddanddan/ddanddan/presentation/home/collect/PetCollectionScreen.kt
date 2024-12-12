@@ -143,7 +143,7 @@ fun PetCollectionScreen(
                 .fillMaxSize().padding(horizontal = 20.dp)
         ) {
             if (petCollectionState.pets.isNotEmpty()) {
-                items(9) { index ->
+                items(if (petCollectionState.pets.size <= 9) 9 else petCollectionState.pets.size) { index ->
                     Box(
                         modifier = Modifier
                             .aspectRatio(1f)
