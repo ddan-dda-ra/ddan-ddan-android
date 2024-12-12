@@ -26,10 +26,13 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <ImageView
-            android:layout_width="280dp"
-            android:layout_height="280dp"
-            android:src="@drawable/img_finish_celebrate"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_rawRes="@raw/motion_confetti"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title"

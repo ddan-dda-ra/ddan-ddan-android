@@ -10,14 +10,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="20dp"
         android:background="@color/background"
         android:theme="@style/Theme.DdanDdan"
         >
 
         <TextView
             android:id="@+id/tv_title"
-
+            android:layout_marginHorizontal="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="오늘 소비한 칼로리로\n귀여운 펫을 키워보세요"
@@ -33,12 +32,12 @@
 
         <ImageView
             android:id="@+id/iv_viewpager"
-            android:layout_width="280dp"
-            android:layout_height="280dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_title"
-            android:layout_marginTop="180dp"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

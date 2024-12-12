@@ -83,7 +83,7 @@ class TermsActivity
     }
 
     companion object {
-        const val TERMS_URL_1 = "file:///android_asset/docs_terms_service.html"
-        const val TERMS_URL_2 = "file:///android_asset/docs_terms_private.html"
+        const val TERMS_URL_1 = "https://www.notion.so/4105267fc3b849fba10b8a3155809255"
+        const val TERMS_URL_2 = "https://www.notion.so/1d544c615c44412fa51d2ecb9f98116a"
     }
 }

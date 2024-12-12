@@ -2,6 +2,7 @@ package com.ddanddan.ddanddan.presentation.onboarding.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,24 @@ class OnboardingViewPagerAdapter: ListAdapter<CommonViewPagerEntity, OnboardingV
             with(binding) {
                 tvTitle.text = item.title
                 item.image?.let { ivViewpager.setImageResource(it) }
+                ivViewpager.layoutParams = if (item.isFullWidth) {
+                    ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_PARENT, // width
+                        ConstraintLayout.LayoutParams.MATCH_PARENT  // height
+                    )
+                } else {
+                    ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.WRAP_CONTENT, // width
+                        ConstraintLayout.LayoutParams.WRAP_CONTENT  // height
+                    ).apply {
+                        // 추가적으로 Constraint 설정 (예: 중앙 배치)
+                        startToStart = tvTitle.id
+                        endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                        topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+                        bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+                    }
+                }
+
             }
         }
     }
