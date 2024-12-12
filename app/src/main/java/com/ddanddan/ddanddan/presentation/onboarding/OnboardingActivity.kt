@@ -72,19 +72,20 @@ class OnboardingActivity
             add(
                 CommonViewPagerEntity(
                     "오늘 소비한 칼로리로\n귀여운 펫을 키워보세요",
-                    R.drawable.ic_dumbbell
+                    R.drawable.img_onboarding_1,
+                    true
                 )
             )
             add(
                 CommonViewPagerEntity(
                     "펫이 다 자라면\n또 다른 펫을 키울 수 있어요",
-                    R.drawable.ic_ddanddan
+                    R.drawable.img_onboarding_2
                 )
             )
             add(
                 CommonViewPagerEntity(
                     "꾸준히 운동해\n소중한 펫을 지켜주세요!",
-                    R.drawable.ic_dumbbell
+                    R.drawable.img_onboarding_3
                 )
             )
         }
