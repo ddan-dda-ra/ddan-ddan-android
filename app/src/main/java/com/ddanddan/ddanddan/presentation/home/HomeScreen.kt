@@ -187,7 +187,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.padding(top = 16.dp))
             HomeCalorieItem(
                 purposeCalorie = homeState.user?.purposeCalorie.toString(),
-                currentCalories = homeState.currentCalories.toString()
+                currentCalories = homeState.currentCalories.toInt().toString()
             )
             Spacer(modifier = Modifier.padding(top = 14.dp))
             PetContent(
