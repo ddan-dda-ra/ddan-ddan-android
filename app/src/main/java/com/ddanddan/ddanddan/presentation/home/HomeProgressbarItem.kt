@@ -95,7 +95,7 @@ fun DDanDDanProgressbar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(24.dp)
+            .height(28.dp)
     ) {
         Box(
             modifier = Modifier
@@ -104,20 +104,21 @@ fun DDanDDanProgressbar(
                 .padding(4.dp)
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(DDanDDanColorPalette.current.color_background),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                repeat(totalSegments) { index ->
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .background(if (index < filledSegments) progressColor else defaultSegmentColor)
-                    )
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(DDanDDanColorPalette.current.color_background)
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    repeat(totalSegments) { index ->
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .background(if (index < filledSegments) progressColor else defaultSegmentColor)
+                        )
+                    }
                 }
-            }
         }
 
         val color = DDanDDanColorPalette.current.color_background
