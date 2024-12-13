@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -38,6 +39,7 @@ import com.ddanddan.domain.entity.Pet
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanSnackBar
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -51,6 +53,7 @@ fun PetCollectionRoute(
 ) {
     val petCollectionState by viewModel.collectAsState()
 
+    val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -72,7 +75,10 @@ fun PetCollectionRoute(
             }
 
             is PetCollectionSideEffect.SnackBarMsg -> {
-                snackBarHostState.showSnackbar(sideEffect.msg)
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(sideEffect.msg)
+                }
             }
         }
     }
@@ -185,7 +191,7 @@ fun PetItem(
             contentDescription = "Pet",
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp)
+                .padding(if (pet != null) 8.dp else 24.dp)
         )
         if (pet?.id == mainPetId) {
             Box(

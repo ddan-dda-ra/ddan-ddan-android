@@ -14,7 +14,7 @@
     <string name="editname_button_text">변경 완료</string>
 
     <string name="edittarget_topbar_title">목표 칼로리 수정</string>
-    <string name="edittarget_screen_title">하루 목표 칼로리를 \n 설정해 주세요</string>
+    <string name="edittarget_screen_title">하루 목표 칼로리를 \n설정해 주세요</string>
     <string name="edittarget_button_text">변경 완료</string>
 
     <string name="setting_notice_title">약관 및 개인정보 처리 동의</string>

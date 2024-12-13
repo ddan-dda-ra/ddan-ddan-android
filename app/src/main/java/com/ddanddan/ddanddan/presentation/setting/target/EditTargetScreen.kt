@@ -95,23 +95,15 @@ fun EditTargetScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            DDanMarginVerticalSpacer(size = 24)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .height(128.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = stringResource(id = com.ddanddan.base.R.string.edittarget_screen_title),
-                    style = DDanDDanTypo.current.HeadLine3,
-                    fontFamily = NeoDgm,
-                    color = DDanDDanColorPalette.current.color_text_headline_primary
-                )
-            }
-            DDanMarginVerticalSpacer(size = 24)
+            DDanMarginVerticalSpacer(size = 32)
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = stringResource(id = com.ddanddan.base.R.string.edittarget_screen_title),
+                style = DDanDDanTypo.current.HeadLine3,
+                fontFamily = NeoDgm,
+                color = DDanDDanColorPalette.current.color_text_headline_primary
+            )
+            DDanMarginVerticalSpacer(size = 56)
             EditTargetControl(
                 target = settingState.calorie,
                 onPlusBtnClick = onPlusBtnClick,
