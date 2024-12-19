@@ -82,11 +82,11 @@ fun SignOutFirstScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            DDanMarginVerticalSpacer(size = 20)
+            DDanMarginVerticalSpacer(size = 36)
             Text(
                 modifier = Modifier.padding(start = 20.dp),
                 text = stringResource(id = com.ddanddan.base.R.string.setting_signout_subtitle1),
-                style = DDanDDanTypo.current.HeadLine3,
+                style = DDanDDanTypo.current.NeoDgm24,
                 color = DDanDDanColorPalette.current.color_text_headline_primary
             )
             DDanMarginVerticalSpacer(size = 60)
