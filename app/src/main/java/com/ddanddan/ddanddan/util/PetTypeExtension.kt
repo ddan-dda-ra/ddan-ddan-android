@@ -94,12 +94,22 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
         }
 
         PetTypeEnum.PENGUIN -> {
-            when (level) {
-                2 -> R.raw.motion_cat_level5_default
-                3 -> R.raw.motion_cat_level5_default
-                4 -> R.raw.motion_cat_level5_default
-                5 -> R.raw.motion_cat_level5_default
-                else -> R.raw.motion_cat_level4_default
+            when (isPlayAndEatLottie) {
+                false -> when (level) {
+                    2 -> R.raw.motion_penguin_level2_default
+                    3 -> R.raw.motion_penguin_level3_default
+                    4 -> R.raw.motion_penguin_level4_default
+                    5 -> R.raw.motion_penguin_level5_default
+                    else -> R.raw.motion_penguin_level1_default
+                }
+
+                else -> when (level) {
+                    2 -> R.raw.motion_penguin_level2_play_eat
+                    3 -> R.raw.motion_penguin_level3_play_eat
+                    4 -> R.raw.motion_penguin_level4_play_eat
+                    5 -> R.raw.motion_penguin_level5_play_eat
+                    else -> R.raw.motion_penguin_level1_play_eat
+                }
             }
         }
 

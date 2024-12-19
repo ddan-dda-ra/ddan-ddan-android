@@ -97,20 +97,15 @@ fun EditNickNameScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            DDanMarginVerticalSpacer(size = 108)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .height(76.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.editname_screen_title),
-                    style = DDanDDanTypo.current.HeadLine3,
-                    fontFamily = NeoDgm,
-                    color = DDanDDanColorPalette.current.color_text_headline_primary
-                )
-            }
+            DDanMarginVerticalSpacer(size = 32)
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = stringResource(id = R.string.editname_screen_title),
+                style = DDanDDanTypo.current.HeadLine3,
+                fontFamily = NeoDgm,
+                color = DDanDDanColorPalette.current.color_text_headline_primary
+            )
+            DDanMarginVerticalSpacer(size = 32)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
