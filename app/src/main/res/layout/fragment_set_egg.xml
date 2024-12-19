@@ -47,6 +47,8 @@
                 android:paddingBottom="24.29dp"
                 android:paddingHorizontal="34.29dp"
                 android:layout_margin="15dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 />
 
             <ImageView
@@ -57,6 +59,8 @@
                 android:paddingBottom="24.29dp"
                 android:paddingHorizontal="34.29dp"
                 android:layout_margin="15dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 />
 
             <ImageView
@@ -67,6 +71,8 @@
                 android:paddingBottom="24.29dp"
                 android:paddingHorizontal="34.29dp"
                 android:layout_margin="15dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 />
 
             <ImageView
@@ -77,8 +83,9 @@
                 android:paddingBottom="24.29dp"
                 android:paddingHorizontal="34.29dp"
                 android:layout_margin="15dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 />
-
         </GridLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
