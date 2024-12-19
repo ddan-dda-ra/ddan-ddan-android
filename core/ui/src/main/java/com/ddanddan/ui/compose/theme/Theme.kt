@@ -56,12 +56,12 @@ fun DDanDDanTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val CustomColorPalette = if(darkTheme) ColorPalette_Dark else ColorPalette_Light
+    val CustomColorPalette = ColorPalette_Dark
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
 
