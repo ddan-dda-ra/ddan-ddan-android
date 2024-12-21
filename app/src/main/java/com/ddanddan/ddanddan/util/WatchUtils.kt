@@ -46,26 +46,21 @@ object WatchUtils {
      */
     fun sendAccessTokenToWatch(context: Context, accessToken: String) = context.run {
         val dataClient = Wearable.getDataClient(this)
-        val encryptedToken = SecurityUtils.encrypt(accessToken)
 
-        if (encryptedToken.isNullOrEmpty()) {
-            val putDataReq = PutDataMapRequest.create("/access_token").run {
-                dataMap.putString("accessToken", encryptedToken!!)
-                dataMap.putLong("timeStamp", System.currentTimeMillis())
-                asPutDataRequest()
-            }
-
-            dataClient.putDataItem(putDataReq)
-                .addOnSuccessListener {
-                    showDebugToast(getString(R.string.watch_send_token_success))
-                    Timber.d(getString(R.string.watch_send_token_success))
-                }
-                .addOnFailureListener { e ->
-                    showDebugToast(getString(R.string.watch_send_token_failure, e.message))
-                    Timber.e(getString(R.string.watch_send_token_failure, e.message))
-                }
-        } else {
-            Timber.e(getString(R.string.token_encrypt_failure))
+        val putDataReq = PutDataMapRequest.create("/access_token").run {
+            dataMap.putString("accessToken", accessToken)
+            dataMap.putLong("timeStamp", System.currentTimeMillis())
+            asPutDataRequest().setUrgent()
         }
+
+        dataClient.putDataItem(putDataReq)
+            .addOnSuccessListener {
+                showDebugToast(getString(R.string.watch_send_token_success))
+                Timber.d(getString(R.string.watch_send_token_success))
+            }
+            .addOnFailureListener { e ->
+                showDebugToast(getString(R.string.watch_send_token_failure, e.message))
+                Timber.e(getString(R.string.watch_send_token_failure, e.message))
+            }
     }
 }
