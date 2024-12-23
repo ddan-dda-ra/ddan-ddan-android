@@ -37,8 +37,8 @@ class AuthInterceptor @Inject constructor(
                         ) as ResponseAuthToken
 
                         with(dataStore) {
-                            userToken = responseToken.accessToken ?: ""
-                            refreshToken = responseToken.refreshToken ?: ""
+                            userToken = responseToken.accessToken
+                            refreshToken = responseToken.refreshToken
                         }
                         Timber.tag("갱신된 토큰").d("accessToken: ${dataStore.userToken}, refreshToken: ${dataStore.refreshToken}")
 
