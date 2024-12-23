@@ -22,6 +22,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DdanDdan"
         tools:targetApi="34">
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="false" />
+
         <activity
             android:name=".presentation.signup.terms.TermsWebViewActivity"
             android:exported="false" />
