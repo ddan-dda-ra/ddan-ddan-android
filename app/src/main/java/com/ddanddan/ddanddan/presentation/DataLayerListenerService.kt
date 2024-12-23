@@ -23,14 +23,20 @@ class DataLayerListenerService : WearableListenerService() {
         dataEvents.forEach { event ->
             if (event.type == DataEvent.TYPE_CHANGED) {
                 val dataItem = event.dataItem
-                if (dataItem.uri.path == "/calories_data") {
-                    val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
-                    val calories = dataMap.getDouble("calories")
-                    val timeStamp = dataMap.getLong("timeStamp")
-                    Log.d("Received calories data", "$calories at $timeStamp")
 
-                    runBlocking {
-                        userRepository.saveCalories(calories) //수신한 칼로리 저장
+                when(dataItem.uri.path){
+                    "/calories_data" -> {
+                        val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
+                        val calories = dataMap.getDouble("calories")
+                        val timeStamp = dataMap.getLong("timeStamp")
+                        Log.d("Received calories data", "$calories at $timeStamp")
+
+                        runBlocking {
+                            userRepository.saveCalories(calories) //수신한 칼로리 저장
+                        }
+                    }
+                    "/refresh_token_expired" -> {
+                        //todo - 로그아웃
                     }
                 }
             }
