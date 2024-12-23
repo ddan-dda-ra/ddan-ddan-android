@@ -2,6 +2,7 @@ package com.ddanddan.ddanddan
 
 import android.app.Application
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -17,8 +18,6 @@ class MyApp : Application(), LifecycleObserver {
 
     override fun onCreate() {
         super.onCreate()
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
         if (DEBUG) {
             Timber.plant(Timber.DebugTree())
             FlipperUtil.init(this)
@@ -26,6 +25,7 @@ class MyApp : Application(), LifecycleObserver {
         KakaoSdk.init(applicationContext, KAKAO_APP_KEY)
         appContext = applicationContext
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
