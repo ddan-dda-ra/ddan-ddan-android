@@ -28,7 +28,7 @@ class SignInViewModel @Inject constructor(
                     if (it) authRepository.enableAutoLogin()
 
                     _signInState.value = if (it) SignInState.Success(
-                        bearerAccessToken = ddanddanDataStore.userToken,
+                        accessToken = ddanddanDataStore.userToken,
                         refreshToken = ddanddanDataStore.refreshToken
                     ) else SignInState.UserNotRegistered
                 }
@@ -41,7 +41,7 @@ class SignInViewModel @Inject constructor(
 
 sealed interface SignInState {
     object Init : SignInState
-    data class Success(val bearerAccessToken: String, val refreshToken: String) : SignInState
+    data class Success(val accessToken: String, val refreshToken: String) : SignInState
     object UserNotRegistered : SignInState
     data class Failure(val msg: String) : SignInState
 }

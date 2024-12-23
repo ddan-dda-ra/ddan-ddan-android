@@ -50,7 +50,7 @@ class SignInActivity
                 when (it) {
                     is SignInState.Success -> {
                         sendTokenToWatch(
-                            bearerAccessToken = it.bearerAccessToken,
+                            accessToken = it.accessToken,
                             refreshToken = it.refreshToken
                         )
                         startActivity(Intent(this@SignInActivity, MainActivity::class.java))
@@ -71,13 +71,13 @@ class SignInActivity
             }.launchIn(lifecycleScope)
     }
 
-    private fun sendTokenToWatch(bearerAccessToken: String, refreshToken: String) {
+    private fun sendTokenToWatch(accessToken: String, refreshToken: String) {
         WatchUtils.checkWatchConnection(
             context = this,
             onConnected = { nodes ->
                 WatchUtils.sendTokenToWatch(
                     context = this,
-                    accessToken = bearerAccessToken,
+                    accessToken = accessToken,
                     refreshToken = refreshToken
                 )
                 Timber.d("Access token sent to connected watches: ${nodes.map { it.displayName }}")
