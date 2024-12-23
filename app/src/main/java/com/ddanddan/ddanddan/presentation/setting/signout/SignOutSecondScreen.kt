@@ -71,17 +71,12 @@ fun SignOutSecondScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(it)
         ) {
-            DDanMarginVerticalSpacer(size = 68)
+            DDanMarginVerticalSpacer(size = 36)
             Text(
-                text = "${settingState.nickName}님",
-                style = DDanDDanTypo.current.HeadLine3,
-                color = DDanDDanColorPalette.current.color_text_headline_primary,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Text(
-                text = stringResource(id = R.string.setting_signout_title1),
-                style = DDanDDanTypo.current.HeadLine3,
+                text = "${settingState.nickName}님\n탈퇴하기 전 확인해 주세요",
+                style = DDanDDanTypo.current.NeoDgm24,
                 color = DDanDDanColorPalette.current.color_text_headline_primary,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )

@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.presentation
 
+import android.util.Log
 import com.ddanddan.domain.repository.UserRepository
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -26,7 +27,7 @@ class DataLayerListenerService : WearableListenerService() {
                     val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
                     val calories = dataMap.getDouble("calories")
                     val timeStamp = dataMap.getLong("timeStamp")
-                    Timber.d("Received calories data: $calories at $timeStamp")
+                    Log.d("Received calories data", "$calories at $timeStamp")
 
                     runBlocking {
                         userRepository.saveCalories(calories) //수신한 칼로리 저장
