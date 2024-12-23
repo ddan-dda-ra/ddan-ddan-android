@@ -1,6 +1,9 @@
 package com.ddanddan.ddanddan.presentation
 
+import android.content.Intent
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.domain.repository.UserRepository
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -37,6 +40,11 @@ class DataLayerListenerService : WearableListenerService() {
                     }
                     "/refresh_token_expired" -> {
                         //todo - 로그아웃
+                    }
+
+                    "/refresh_token_expired" -> {
+                        val intent = Intent("com.ddanddan.ddanddan.Logout") //todo - 추후 유틸이나 상수로 분리
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
                     }
                 }
             }
