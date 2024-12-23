@@ -2,7 +2,6 @@ package com.ddanddan.ddanddan.presentation.signin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ddanddan.ddanddan.util.WatchUtils
 import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.repository.AuthRepository
 import com.ddanddan.domain.repository.UserRepository
@@ -28,7 +27,9 @@ class SignInViewModel @Inject constructor(
                 .onSuccess {
                     if (it) authRepository.enableAutoLogin()
 
-                    _signInState.value = if (it) SignInState.Success(bearerAccessToken = ddanddanDataStore.userToken
+                    _signInState.value = if (it) SignInState.Success(
+                        bearerAccessToken = ddanddanDataStore.userToken,
+                        refreshToken = ddanddanDataStore.refreshToken
                     ) else SignInState.UserNotRegistered
                 }
                 .onFailure {
@@ -40,7 +41,7 @@ class SignInViewModel @Inject constructor(
 
 sealed interface SignInState {
     object Init : SignInState
-    data class Success(val bearerAccessToken: String) : SignInState
+    data class Success(val bearerAccessToken: String, val refreshToken: String) : SignInState
     object UserNotRegistered : SignInState
     data class Failure(val msg: String) : SignInState
 }

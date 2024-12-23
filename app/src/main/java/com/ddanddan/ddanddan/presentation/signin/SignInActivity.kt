@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SignInActivity
-    : BindingActivity<ActivitySigninBinding>(R.layout.activity_signin){
+    : BindingActivity<ActivitySigninBinding>(R.layout.activity_signin) {
 
     @Inject
     lateinit var kakaoProvider: KakaoProvider
@@ -49,30 +49,36 @@ class SignInActivity
             .onEach {
                 when (it) {
                     is SignInState.Success -> {
-                        sendAccessTokenToWatch(bearerAccessToken = it.bearerAccessToken)
+                        sendTokenToWatch(
+                            bearerAccessToken = it.bearerAccessToken,
+                            refreshToken = it.refreshToken
+                        )
                         startActivity(Intent(this@SignInActivity, MainActivity::class.java))
                         finish()
                     }
+
                     is SignInState.UserNotRegistered -> {
                         startActivity(Intent(this@SignInActivity, TermsActivity::class.java))
                         finish()
                     }
+
                     is SignInState.Failure -> {
                         Toast.makeText(this@SignInActivity, it.msg, Toast.LENGTH_SHORT).show()
                     }
-                    else -> { }
+
+                    else -> {}
                 }
             }.launchIn(lifecycleScope)
     }
 
-    private fun sendAccessTokenToWatch(bearerAccessToken: String){
+    private fun sendTokenToWatch(bearerAccessToken: String, refreshToken: String) {
         WatchUtils.checkWatchConnection(
             context = this,
             onConnected = { nodes ->
-                // 워치와 연결되었을 때만 토큰 전송
-                WatchUtils.sendAccessTokenToWatch(
+                WatchUtils.sendTokenToWatch(
                     context = this,
-                    accessToken = bearerAccessToken
+                    accessToken = bearerAccessToken,
+                    refreshToken = refreshToken
                 )
                 Timber.d("Access token sent to connected watches: ${nodes.map { it.displayName }}")
             },
