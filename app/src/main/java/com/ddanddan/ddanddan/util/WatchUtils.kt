@@ -42,25 +42,27 @@ object WatchUtils {
     }
 
     /**
-     * 워치로 암호화된 액세스 토큰을 전송하는 함수
+     * 워치로 토큰을 전송하는 함수
      */
-    fun sendAccessTokenToWatch(context: Context, accessToken: String) = context.run {
-        val dataClient = Wearable.getDataClient(this)
+    fun sendTokenToWatch(context: Context, accessToken: String, refreshToken: String) =
+        context.run {
+            val dataClient = Wearable.getDataClient(this)
 
-        val putDataReq = PutDataMapRequest.create("/access_token").run {
-            dataMap.putString("accessToken", accessToken)
-            dataMap.putLong("timeStamp", System.currentTimeMillis())
-            asPutDataRequest().setUrgent()
+            val putDataReq = PutDataMapRequest.create("/token").run {
+                dataMap.putString("accessToken", accessToken)
+                dataMap.putString("refreshToken", refreshToken)
+                dataMap.putLong("timeStamp", System.currentTimeMillis())
+                asPutDataRequest().setUrgent()
+            }
+
+            dataClient.putDataItem(putDataReq)
+                .addOnSuccessListener {
+                    showDebugToast(getString(R.string.watch_send_token_success))
+                    Timber.d(getString(R.string.watch_send_token_success))
+                }
+                .addOnFailureListener { e ->
+                    showDebugToast(getString(R.string.watch_send_token_failure, e.message))
+                    Timber.e(getString(R.string.watch_send_token_failure, e.message))
+                }
         }
-
-        dataClient.putDataItem(putDataReq)
-            .addOnSuccessListener {
-                showDebugToast(getString(R.string.watch_send_token_success))
-                Timber.d(getString(R.string.watch_send_token_success))
-            }
-            .addOnFailureListener { e ->
-                showDebugToast(getString(R.string.watch_send_token_failure, e.message))
-                Timber.e(getString(R.string.watch_send_token_failure, e.message))
-            }
-    }
 }
