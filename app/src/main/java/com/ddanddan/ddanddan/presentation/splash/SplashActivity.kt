@@ -29,7 +29,7 @@ class SplashActivity
 
     private fun checkNetwork() {
         if (NetworkManager.checkNetworkState(this)) {
-            initSplash(PermissionUtils.isLocationPermissionGranted(applicationContext))
+            initSplash()
         } else {
             AlertDialog.Builder(this)
                 .setTitle("인터넷 연결")
@@ -45,13 +45,11 @@ class SplashActivity
         }
     }
 
-    private fun initSplash(isGranted: Boolean) {
+    private fun initSplash() {
         Handler(Looper.getMainLooper()).postDelayed({
-            if (isGranted) {
-                if (splashViewModel.isAutoLoginEnabled()) startHome()
-                else startSignIn()
-            }
-            else startOnBoarding()
+            if (splashViewModel.isAutoLoginEnabled()) startHome()
+            else startSignIn()
+//            else startOnBoarding()
         }, 3000)
     }
 
