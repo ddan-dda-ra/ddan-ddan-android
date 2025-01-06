@@ -10,6 +10,7 @@ class SplashViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
     fun isAutoLoginEnabled(): Boolean = authRepository.getAutoLogin()
+    fun isFirstAfterInstall(): Boolean = authRepository.isFirstAfterInstall()
 
     companion object {
     }
