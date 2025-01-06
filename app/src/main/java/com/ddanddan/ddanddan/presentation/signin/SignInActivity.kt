@@ -34,9 +34,14 @@ class SignInActivity
         setClickListener()
     }
 
+    private fun disableOnboarding() {
+        viewModel.setFirstAfterInstall(false)
+    }
+
     private fun setClickListener() {
         with(binding) {
             btnKakao.setOnClickListener {
+                disableOnboarding()
                 kakaoProvider.loginWithKakao { token, error ->
                     if (error == null) token?.accessToken?.let { viewModel.login(it) }
                 }

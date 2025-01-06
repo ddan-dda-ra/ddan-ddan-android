@@ -2,15 +2,11 @@ package com.ddanddan.ddanddan.presentation.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.RecyclerView
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivityOnboardingBinding
 import com.ddanddan.ddanddan.presentation.onboarding.adapter.OnboardingViewPagerAdapter
 import com.ddanddan.ddanddan.presentation.signin.SignInActivity
-import com.ddanddan.ddanddan.util.PermissionUtils
-import com.ddanddan.ddanddan.util.custom.dialog.CommonDialogConfig
-import com.ddanddan.ddanddan.util.custom.dialog.CommonDialogFragment
 import com.ddanddan.domain.entity.CommonViewPagerEntity
 import com.ddanddan.ui.base.BindingActivity
 import com.google.android.material.tabs.TabLayoutMediator
@@ -32,39 +28,10 @@ class OnboardingActivity
         setUpListener()
     }
 
-    private val locationPermissionRequest = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) {
-        startActivity(Intent(this@OnboardingActivity, SignInActivity::class.java))
-        finish()
-    }
-
-    private fun checkLocationPermission() {
-        locationPermissionRequest.launch(
-            arrayOf(
-                PermissionUtils.ACCESS_FINE_LOCATION, PermissionUtils.ACCESS_COARSE_LOCATION
-            )
-        )
-    }
-
     private fun setUpListener() {
         binding.btnStart.setOnClickListener {
-            initDialog()
+            startActivity(Intent(this@OnboardingActivity, SignInActivity::class.java))
         }
-    }
-
-    private fun initDialog() {
-        CommonDialogFragment.newInstance(
-            commonDialogConfig = CommonDialogConfig(
-                title = getString(R.string.onboarding_tv_access_location_title),
-                description = getString(R.string.onboarding_tv_access_location_subtitle),
-                positiveButtonText = getString(R.string.onboarding_tv_access_location_allow),
-                negativeButtonText = getString(R.string.onboarding_tv_access_location_decline)
-            ),
-            onPositiveButtonClicked = { checkLocationPermission() },
-            onNegativeButtonClicked = { startActivity(Intent(this@OnboardingActivity, SignInActivity::class.java))
-            }
-        ).show(supportFragmentManager, "CommonDialogFragmentTag")
     }
 
     private fun initViewPagerItem() {

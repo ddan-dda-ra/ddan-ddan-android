@@ -37,6 +37,10 @@ class SignInViewModel @Inject constructor(
                 }
         }
     }
+
+    fun setFirstAfterInstall(isFirst: Boolean) {
+        authRepository.setFirstAfterInstall(isFirst)
+    }
 }
 
 sealed interface SignInState {

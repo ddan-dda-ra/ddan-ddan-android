@@ -17,4 +17,10 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun getAutoLogin(): Boolean = ddanddanDataStore.isLogin
+
+    override fun isFirstAfterInstall(): Boolean = ddanddanDataStore.isFirstAfterInstall
+
+    override fun setFirstAfterInstall(isFirst: Boolean) {
+        ddanddanDataStore.isFirstAfterInstall = isFirst
+    }
 }
