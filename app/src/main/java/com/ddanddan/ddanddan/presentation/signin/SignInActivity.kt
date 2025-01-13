@@ -11,6 +11,7 @@ import com.ddanddan.ddanddan.databinding.ActivitySigninBinding
 import com.ddanddan.ddanddan.presentation.MainActivity
 import com.ddanddan.ddanddan.presentation.signup.terms.TermsActivity
 import com.ddanddan.ddanddan.util.WatchUtils
+import com.ddanddan.ddanddan.util.custom.dialog.LoadingDialog
 import com.ddanddan.ddanddan.util.provider.KakaoProvider
 import com.ddanddan.ui.base.BindingActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +27,9 @@ class SignInActivity
     @Inject
     lateinit var kakaoProvider: KakaoProvider
     private val viewModel by viewModels<SignInViewModel>()
+    private val loadingDialog by lazy {
+        LoadingDialog(this@SignInActivity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +46,15 @@ class SignInActivity
         with(binding) {
             btnKakao.setOnClickListener {
                 disableOnboarding()
+                loadingDialog.show()
                 kakaoProvider.loginWithKakao { token, error ->
-                    if (error == null) token?.accessToken?.let { viewModel.login(it) }
+                    if (error == null) token?.accessToken?.let {
+                        viewModel.login(it)
+                    }
+                    else {
+                        loadingDialog.dismiss()
+                        Toast.makeText(this@SignInActivity, error.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -52,6 +63,7 @@ class SignInActivity
     private fun observer() {
         viewModel.signInState.flowWithLifecycle(lifecycle)
             .onEach {
+                if (it != SignInState.Init) loadingDialog.dismiss()
                 when (it) {
                     is SignInState.Success -> {
                         sendTokenToWatch(
