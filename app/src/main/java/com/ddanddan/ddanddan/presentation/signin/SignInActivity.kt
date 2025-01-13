@@ -48,7 +48,13 @@ class SignInActivity
                 disableOnboarding()
                 loadingDialog.show()
                 kakaoProvider.loginWithKakao { token, error ->
-                    if (error == null) token?.accessToken?.let { viewModel.login(it) }
+                    if (error == null) token?.accessToken?.let {
+                        viewModel.login(it)
+                    }
+                    else {
+                        loadingDialog.dismiss()
+                        Toast.makeText(this@SignInActivity, error.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
