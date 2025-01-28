@@ -4,6 +4,7 @@ import com.ddanddan.data.datasource.remote.RemoteUserDataSource
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.User
 import com.ddanddan.domain.ddanddanDataStore
+import com.ddanddan.domain.entity.AuthInfo
 import com.ddanddan.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -32,19 +33,17 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.postMainPet(petId).mainPet.toPet()
     }
 
-    override suspend fun login(token: String): Result<Boolean> {
-        return runCatching {
-            val result = userDataSource.login(token)
-            val bearerAccessToken = "Bearer ${result.accessToken}"
-            val bearerRefreshToken = "Bearer ${result.refreshToken}"
+    override suspend fun postLogin(token: String): AuthInfo {
+        val result = userDataSource.postLogin(token)
+        val bearerAccessToken = "Bearer ${result.accessToken}"
+        val bearerRefreshToken = "Bearer ${result.refreshToken}"
 
-            ddanddanDataStore.run {
-                userToken = bearerAccessToken
-                refreshToken = bearerRefreshToken
-            }
-
-            result.isOnboardingComplete
+        ddanddanDataStore.run {
+            userToken = bearerAccessToken
+            refreshToken = bearerRefreshToken
         }
+
+        return AuthInfo(bearerAccessToken, bearerRefreshToken, result.isOnboardingComplete)
     }
 
     override fun getCaloriesFlow(): Flow<Float> = ddanddanDataStore.caloriesFlow
