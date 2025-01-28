@@ -14,5 +14,13 @@ enum class DDanDDanRoute(val route: String) {
     SIGN_OUT_FIRST("sign_out_first"),
     SIGN_OUT_SECOND("sign_out_second"),
     WEBVIEW("webview"),
+    SIGN_IN("sign_in"),
+    SPLASH("splash"),
+    ONBOARDING("onboarding"),
+    SIGN_UP_TERM("sign_up_term"),
+    SIGN_UP_EGG("sign_up_egg"),
+    SIGN_UP_DONE("sign_up_done"),
+    SIGN_UP_NICKNAME("sign_up_nickname"),
+    SIGN_UP_TARGET("sign_up_target"),
     ERROR("error")
 }
