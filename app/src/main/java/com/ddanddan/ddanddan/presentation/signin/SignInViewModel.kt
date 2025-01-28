@@ -1,51 +1,47 @@
 package com.ddanddan.ddanddan.presentation.signin
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.ddanddan.domain.ddanddanDataStore
-import com.ddanddan.domain.repository.AuthRepository
-import com.ddanddan.domain.repository.UserRepository
+import com.ddanddan.domain.usecase.PostLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val repository: UserRepository,
-    private val authRepository: AuthRepository,
-    private val ddanddanDataStore: ddanddanDataStore
-) : ViewModel() {
+    private val postLoginUseCase: PostLoginUseCase,
+) : ContainerHost<SignInState, SignInSideEffect>, ViewModel() {
 
-    private val _signInState = MutableStateFlow<SignInState>(SignInState.Init)
-    val signInState: StateFlow<SignInState> = _signInState
+    override val container: Container<SignInState, SignInSideEffect>
+        = container<SignInState, SignInSideEffect>(SignInState())
 
-    fun login(token: String) {
-        viewModelScope.launch {
-            repository.login(token)
-                .onSuccess {
-                    if (it) authRepository.enableAutoLogin()
-
-                    _signInState.value = if (it) SignInState.Success(
-                        accessToken = ddanddanDataStore.userToken,
-                        refreshToken = ddanddanDataStore.refreshToken
-                    ) else SignInState.UserNotRegistered
-                }
-                .onFailure {
-                    _signInState.value = SignInState.Failure("회원 정보 로딩 실패")
-                }
-        }
+    private fun navigateSignUp() = intent {
+        postSideEffect(SignInSideEffect.UserNotRegistered)
     }
 
-    fun setFirstAfterInstall(isFirst: Boolean) {
-        authRepository.setFirstAfterInstall(isFirst)
+    private fun navigateHome(accessToken: String, refreshToken: String) = intent {
+        postSideEffect(SignInSideEffect.SuccessLogin(accessToken, refreshToken))
     }
-}
 
-sealed interface SignInState {
-    object Init : SignInState
-    data class Success(val accessToken: String, val refreshToken: String) : SignInState
-    object UserNotRegistered : SignInState
-    data class Failure(val msg: String) : SignInState
+    fun dismissProgressBar() = intent {
+        reduce { state.copy(isShowProgressBar = false)}
+    }
+
+    fun showProgressBar() = intent {
+        reduce { state.copy(isShowProgressBar = true) }
+    }
+
+    fun loginWithToken(token: String) = intent {
+        postLoginUseCase(token)
+            .onSuccess {
+                if (it.isOnboardingComplete) navigateHome(it.accessToken, it.refreshToken)
+                else navigateSignUp()
+            }.onFailure {
+                postSideEffect(SignInSideEffect.NetworkError("로그인에 실패했습니다."))
+            }
+    }
 }
