@@ -24,6 +24,7 @@ import com.ddanddan.ddanddan.presentation.setting.signout.SignOutFirstRoute
 import com.ddanddan.ddanddan.presentation.setting.signout.SignOutSecondRoute
 import com.ddanddan.ddanddan.presentation.setting.target.EditTargetRoute
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
+import com.ddanddan.ddanddan.presentation.signin.SignInRoute
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.ext.sharedViewModel
 
@@ -31,11 +32,12 @@ import com.ddanddan.ui.ext.sharedViewModel
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
     onNavigateOnBoarding: () -> Unit = {},
-    onNavigateLogin: () -> Unit = {}
+    onNavigateLogin: () -> Unit = {},
+    onNavigateSignUp: () -> Unit = {}
 ) {
     NavHost(
         navController = navController,
-        startDestination = DDanDDanRoute.HOME.route
+        startDestination = DDanDDanRoute.SIGN_IN.route
     ) {
         composable(DDanDDanRoute.HOME.route) { navBackStackEntry ->
             val needRefresh by navBackStackEntry.savedStateHandle
@@ -205,6 +207,15 @@ fun MainScreen(
                 isNotPage = errorCode == 0,
                 errorCode = if (errorCode == 0) null else errorCode,
                 onMoveHomeClicked = navController::popBackStack
+            )
+        }
+
+        composable(route = DDanDDanRoute.SIGN_IN.route) {
+            SignInRoute(
+                onNavigateSignUp = onNavigateSignUp,
+                onNavigateHome = {
+                    navController.navigate(DDanDDanRoute.HOME.route)
+                }
             )
         }
     }

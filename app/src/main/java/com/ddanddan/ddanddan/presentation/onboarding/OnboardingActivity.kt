@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivityOnboardingBinding
+import com.ddanddan.ddanddan.presentation.MainActivity
 import com.ddanddan.ddanddan.presentation.onboarding.adapter.OnboardingViewPagerAdapter
-import com.ddanddan.ddanddan.presentation.signin.SignInActivity
 import com.ddanddan.domain.entity.CommonViewPagerEntity
 import com.ddanddan.ui.base.BindingActivity
 import com.google.android.material.tabs.TabLayoutMediator
@@ -30,7 +30,7 @@ class OnboardingActivity
 
     private fun setUpListener() {
         binding.btnStart.setOnClickListener {
-            startActivity(Intent(this@OnboardingActivity, SignInActivity::class.java))
+            startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
         }
     }
 

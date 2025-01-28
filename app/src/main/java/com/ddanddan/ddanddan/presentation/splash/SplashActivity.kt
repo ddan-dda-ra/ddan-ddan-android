@@ -10,7 +10,6 @@ import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.databinding.ActivitySplashBinding
 import com.ddanddan.ddanddan.presentation.MainActivity
 import com.ddanddan.ddanddan.presentation.onboarding.OnboardingActivity
-import com.ddanddan.ddanddan.presentation.signin.SignInActivity
 import com.ddanddan.ddanddan.util.NetworkManager
 import com.ddanddan.ui.base.BindingActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,7 +57,7 @@ class SplashActivity
     }
 
     private fun startSignIn() {
-        startActivity(Intent(this, SignInActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.ddanddan.ddanddan.presentation.onboarding.OnboardingActivity
-import com.ddanddan.ddanddan.presentation.signin.SignInActivity
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.theme.DDanDDanTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +29,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         onNavigateLogin = {
-                            Intent(this, SignInActivity::class.java).apply {
+                            Intent(this, MainActivity::class.java).apply {
                                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                                 startActivity(this)
                                 finish()
