@@ -3,6 +3,7 @@ buildToolsVersion = "30.0.3"
 ## Kotlin
 kotlinVersion = "1.8.20"
 kotlinSerializationJsonVersion = "1.5.1"
+serializationVersion = "1.8.10"
 coroutinesAndroidVersion = "1.7.1"
 kotlinDateTimeVersion = "0.4.0"
 gsonVersion = "2.10.1"
@@ -37,8 +38,11 @@ lifecycleVersion = "2.6.1"
 ossVersion = "17.1.0"
 splashVersion = "1.0.1"
 composeVersion = "1.4.3"
+androidxWearComposeVersion = "1.4.0"
+datastoreVersion = "1.1.1"
 workManagerVersion = "2.8.1"
 billingVersion = "6.0.1"
+wearToolingPreviewVersion = "1.0.0"
 
 ## Firebase
 firebaseVersion = "30.4.0"
@@ -62,6 +66,12 @@ navigationVersion = "2.6.0"
 amplitudeVersion = "2.23.2"
 
 inAppUpdateVersion = "2.1.0"
+
+accompanistPermissionsVersion = "0.36.0"
+guavaVersion = "33.3.1-android"
+concurrentFuturesVersion = "1.2.0"
+
+healthServicesVersion = "1.0.0-rc02"
 
 orbitVersion = "6.1.1"
 
@@ -119,9 +129,11 @@ androidx-lifeCycleLiveDataKtx = { group = "androidx.lifecycle", name = "lifecycl
 androidx-lifecycleJava8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "lifecycleVersion" }
 androidx-splashScreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashVersion" }
 androidx-pagingRuntime = { group = "androidx.paging", name = "paging-runtime", version.ref = "pagingVersion" }
+androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastoreVersion" }
 androidx-workManager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManagerVersion" }
 androidx-navigationFragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationVersion" }
 androidx-navigationUi = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationVersion" }
+androidx-wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-preview", version.ref = "wearToolingPreviewVersion" }
 billing = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billingVersion" }
 
 # Compose-material3
@@ -130,7 +142,7 @@ material3-window = { group = "androidx.compose.material3", name = "material3-win
 materialDesign = { group = "com.google.android.material", name = "material", version.ref = "materialDesignVersion" }
 
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
-hilt-workmanager = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltVersion" }
+hilt-workmanager = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWorkManagerVersion" }
 hiltAndroidCompiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hiltWorkManagerCompiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltWorkManagerVersion" }
 
@@ -166,6 +178,15 @@ flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref 
 
 inAppUpdate = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "inAppUpdateVersion" }
 
+# Google Libraries
+guava = { module = "com.google.guava:guava", version.ref = "guavaVersion" }
+concurrent-futures = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFuturesVersion" }
+
+# Accompanist Libraries
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
+
+androidx-health-services = { module = "androidx.health:health-services-client", version.ref = "healthServicesVersion" }
+
 # Orbit
 orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbitVersion" }
 orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbitVersion" }
@@ -190,13 +211,14 @@ compose-constraintlayout = { group = "androidx.constraintlayout", name = "constr
 compose-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "composeLifecycleVersion" }
 compose-hilt= { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltComposeVersion" }
 compose-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "pagingVersion" }
-compose-paging-2 = {group = "androidx.paging", name = "paging-compose", version.ref="composePagingVersion"}
 compose-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
 compose-lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
 compose-mdc= {group = "com.google.android.material", name="compose-theme-adapter", version.ref="mdcVersion"}
 compose-appcompat = { group="com.google.accompanist", name="accompanist-appcompat-theme", version.ref="composeAppcompatVersion"}
 compose-pager = {group="com.google.accompanist", name="accompanist-pager", version.ref="pager-google"}
 compose-page-indicator = {group="com.google.accompanist", name="accompanist-pager-indicators", version.ref="pager-google"}
+wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidxWearComposeVersion" }
+wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidxWearComposeVersion" }
 ## Test
 jUnit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 androidTest = { group = "androidx.test.ext", name = "junit", version.ref = "androidTestVersion" }
@@ -214,6 +236,7 @@ androidApplication = { id = "com.android.application", version.ref = "gradlePlug
 androidLibrary = { id = "com.android.library", version.ref = "gradlePlugin" }
 androidKotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 androidHilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
+serialization = {id = 'org.jetbrains.kotlin.plugin.serialization', version.ref = "serializationVersion"}
 
 [bundles]
 kotlin = ["kotlin", "kotlin-coroutines", "kotlin-serialization-json", "kotlin-datetime"]
@@ -236,6 +259,7 @@ androidx = [
     "androidx-navigationUi",
     "androidx-ui-text-android",
     "billing",
+    "androidx-datastore"
 ]
 
 compose = [
@@ -251,7 +275,6 @@ compose = [
     "compose-hilt",
     "compose-lifecycle",
     "compose-paging",
-    "compose-paging-2",
     "compose-coil",
     "compose-lottie",
     "material3",
@@ -260,7 +283,9 @@ compose = [
     "compose-appcompat",
     "compose-mdc",
     "compose-page-indicator",
-    "compose-pager"
+    "compose-pager",
+    "wear-compose-foundation",
+    "wear-compose-material"
 ]
 
 kakao = [ "kakaoLogin" ]
