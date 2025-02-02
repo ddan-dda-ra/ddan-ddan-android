@@ -9,3 +9,7 @@ annotation class Logger
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class Auth
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class Mobile

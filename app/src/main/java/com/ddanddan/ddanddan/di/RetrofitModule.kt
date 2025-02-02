@@ -5,6 +5,7 @@ import com.ddanddan.ddanddan.BuildConfig.BASE_URL
 import com.ddanddan.ddanddan.FlipperUtil
 import com.ddanddan.ddanddan.di.qualifier.Auth
 import com.ddanddan.ddanddan.di.qualifier.Logger
+import com.ddanddan.ddanddan.di.qualifier.Mobile
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -45,6 +46,7 @@ object RetrofitModule {
 
     @Provides
     @Singleton
+    @Mobile
     fun provideOkHttpClient(
         @Logger loggingInterceptor: Interceptor,
         @Auth authInterceptor: Interceptor,
@@ -62,7 +64,7 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideddanddanRetrofit(
-        client: OkHttpClient,
+        @Mobile client: OkHttpClient,
         factory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
