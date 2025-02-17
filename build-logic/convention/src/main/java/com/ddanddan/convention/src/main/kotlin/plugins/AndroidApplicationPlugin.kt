@@ -69,7 +69,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
                         buildConfigField(
                             "String",
                             "BASE_URL",
-                            gradleLocalProperties(rootDir).getProperty("base.url"),
+                            gradleLocalProperties(rootDir).getProperty("dev.base.url"),
                         )
 
                         buildConfigField(
