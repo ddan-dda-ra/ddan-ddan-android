@@ -17,12 +17,6 @@ android {
         targetSdk = 34
         versionCode = 4
         versionName = "1.0"
-
-        buildConfigField(
-            "String",
-            "BASE_URL",
-            gradleLocalProperties(rootDir).getProperty("base.url"),
-        )
     }
 
     signingConfigs {
@@ -36,7 +30,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                gradleLocalProperties(rootDir).getProperty("dev.base.url"),
+            )
+        }
         release {
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                gradleLocalProperties(rootDir).getProperty("base.url"),
+            )
+            
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
