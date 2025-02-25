@@ -47,6 +47,13 @@ class AndroidApplicationPlugin : Plugin<Project> {
                     exclude("migrateToAndroidx/migration.xml")
                 }
 
+                defaultConfig {
+                    buildConfigField("String", "KAKAO_APP_KEY", gradleLocalProperties(rootDir).getProperty("kakao.key"))
+                    buildConfigField("String", "AES_KEY", gradleLocalProperties(rootDir).getProperty("AES_KEY"),)
+                    manifestPlaceholders["KAKAO_APP_KEY"] = gradleLocalProperties(rootDir).getProperty("kakaoAppKey")
+
+                }
+
                 signingConfigs {
                     getByName("debug") {
                         storeFile =
@@ -65,56 +72,27 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 }
 
                 buildTypes {
-                    debug {
-                        buildConfigField(
-                            "String",
-                            "BASE_URL",
-                            gradleLocalProperties(rootDir).getProperty("dev.base.url"),
-                        )
-
-                        buildConfigField(
-                            "String",
-                            "KAKAO_APP_KEY",
-                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
-                        )
-
-                        manifestPlaceholders["KAKAO_APP_KEY"] =
-                            gradleLocalProperties(rootDir).getProperty("kakaoAppKey")
-
-                        buildConfigField(
-                            "String",
-                            "AES_KEY",
-                            gradleLocalProperties(rootDir).getProperty("AES_KEY"),
-                        )
-                    }
-
                     release {
-                        buildConfigField(
-                            "String",
-                            "BASE_URL",
-                            gradleLocalProperties(rootDir).getProperty("base.url"),
-                        )
-
-                        buildConfigField(
-                            "String",
-                            "KAKAO_APP_KEY",
-                            gradleLocalProperties(rootDir).getProperty("kakao.key"),
-                        )
-
-                        buildConfigField(
-                            "String",
-                            "AES_KEY",
-                            gradleLocalProperties(rootDir).getProperty("AES_KEY"),
-                        )
-
-                        manifestPlaceholders["KAKAO_APP_KEY"] =
-                            gradleLocalProperties(rootDir).getProperty("kakaoAppKey")
-
                         isMinifyEnabled = false
                         proguardFiles(
                             getDefaultProguardFile("proguard-android-optimize.txt"),
                             "proguard-rules.pro",
                         )
+                    }
+                }
+
+                flavorDimensions.add("environment")
+
+                productFlavors {
+                    create("dev") {
+                        dimension = "environment"
+
+                        buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("dev.base.url"))
+                    }
+                    create("prod") {
+                        dimension = "environment"
+
+                        buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("base.url"))
                     }
                 }
 
