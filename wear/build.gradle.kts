@@ -15,14 +15,8 @@ android {
         applicationId = "com.ddanddan.ddanddan"
         minSdk = 30
         targetSdk = 34
-        versionCode = 4
+        versionCode = 8
         versionName = "1.0"
-
-        buildConfigField(
-            "String",
-            "BASE_URL",
-            gradleLocalProperties(rootDir).getProperty("base.url"),
-        )
     }
 
     signingConfigs {
@@ -44,6 +38,22 @@ android {
             )
         }
     }
+
+    flavorDimensions.add("environment")
+
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+
+            buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("dev.base.url"))
+        }
+        create("prod") {
+            dimension = "environment"
+
+            buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("base.url"))
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
