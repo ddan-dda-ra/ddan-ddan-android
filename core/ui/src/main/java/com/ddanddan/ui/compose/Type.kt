@@ -58,8 +58,8 @@ data class Type(
     val HeadLine3: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(700),
-        fontSize =  20.sp,
-        lineHeight = 28.sp,
+        fontSize =  24.sp,
+        lineHeight = 32.sp,
     ),
 
     val HeadLine4: TextStyle = TextStyle(
