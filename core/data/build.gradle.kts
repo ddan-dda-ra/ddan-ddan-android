@@ -6,46 +6,18 @@ plugins {
 }
 
 android {
-    buildTypes {
-        debug {
-            buildConfigField(
-                "String",
-                "BASE_URL",
-                gradleLocalProperties(rootDir).getProperty("base.url"),
-            )
-//            buildConfigField(
-//                "String",
-//                "KAKAO_REDIRECT_URL",
-//                gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
-//            )
-//            buildConfigField(
-//                "String",
-//                "KAKAO_API_KEY",
-//                gradleLocalProperties(rootDir).getProperty("kakao.key"),
-//            )
-//            buildConfigField(
-//                "String",
-//                "IMAGE_URL",
-//                gradleLocalProperties(rootDir).getProperty("image.url"),
-//            )
-        }
+    flavorDimensions.add("environment")
 
-        release {
-            buildConfigField(
-                "String",
-                "BASE_URL",
-                gradleLocalProperties(rootDir).getProperty("base.url"),
-            )
-//            buildConfigField(
-//                "String",
-//                "KAKAO_REDIRECT_URL",
-//                gradleLocalProperties(rootDir).getProperty("kakao.redirect"),
-//            )
-//            buildConfigField(
-//                "String",
-//                "KAKAO_API_KEY",
-//                gradleLocalProperties(rootDir).getProperty("kakao.key"),
-//            )
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+
+            buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("dev.base.url"))
+        }
+        create("prod") {
+            dimension = "environment"
+
+            buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("base.url"))
         }
     }
 
