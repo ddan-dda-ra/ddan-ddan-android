@@ -16,6 +16,7 @@ import com.ddanddan.ddanddan.presentation.home.reward.ToyRewardScreen
 import com.ddanddan.ddanddan.presentation.home.reward.level.LevelUpRoute
 import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
+import com.ddanddan.ddanddan.presentation.onboarding.OnboardingRoute
 import com.ddanddan.ddanddan.presentation.setting.SettingRoute
 import com.ddanddan.ddanddan.presentation.setting.WebViewScreen
 import com.ddanddan.ddanddan.presentation.setting.nickname.EditNickNameRoute
@@ -25,19 +26,23 @@ import com.ddanddan.ddanddan.presentation.setting.signout.SignOutSecondRoute
 import com.ddanddan.ddanddan.presentation.setting.target.EditTargetRoute
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ddanddan.presentation.signin.SignInRoute
+import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
+import com.ddanddan.ddanddan.presentation.signup.egg.SetEggRoute
+import com.ddanddan.ddanddan.presentation.signup.finish.onSignUpDoneScreen
+import com.ddanddan.ddanddan.presentation.signup.target.SetTargetRoute
+import com.ddanddan.ddanddan.presentation.signup.name.SetNameRoute
+import com.ddanddan.ddanddan.presentation.signup.terms.onTermsScreen
+import com.ddanddan.ddanddan.presentation.splash.SplashRoute
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.ext.sharedViewModel
 
 @Composable
 fun MainScreen(
-    navController: NavHostController = rememberNavController(),
-    onNavigateOnBoarding: () -> Unit = {},
-    onNavigateLogin: () -> Unit = {},
-    onNavigateSignUp: () -> Unit = {}
+    navController: NavHostController = rememberNavController()
 ) {
     NavHost(
         navController = navController,
-        startDestination = DDanDDanRoute.SIGN_IN.route
+        startDestination = DDanDDanRoute.SPLASH.route
     ) {
         composable(DDanDDanRoute.HOME.route) { navBackStackEntry ->
             val needRefresh by navBackStackEntry.savedStateHandle
@@ -105,7 +110,9 @@ fun MainScreen(
                     navController.navigate(DDanDDanRoute.SIGN_OUT_FIRST.route)
                 },
                 navigateLogin = {
-                    onNavigateLogin()
+                    navController.navigate(DDanDDanRoute.SIGN_IN.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
                 }
             )
         }
@@ -172,7 +179,11 @@ fun MainScreen(
             SignOutSecondRoute(
                 viewModel = viewModel,
                 navigatePopUp = navController::popBackStack,
-                navigateOnBoarding = onNavigateOnBoarding
+                navigateOnBoarding = {
+                    navController.navigate(DDanDDanRoute.ONBOARDING.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
             )
         }
 
@@ -212,9 +223,112 @@ fun MainScreen(
 
         composable(route = DDanDDanRoute.SIGN_IN.route) {
             SignInRoute(
-                onNavigateSignUp = onNavigateSignUp,
+                onNavigateSignUp = {
+                    navController.navigate(DDanDDanRoute.SIGN_UP_TERM.route)
+                },
                 onNavigateHome = {
-                    navController.navigate(DDanDDanRoute.HOME.route)
+                    navController.navigate(DDanDDanRoute.HOME.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(route = DDanDDanRoute.ONBOARDING.route) {
+            OnboardingRoute(
+                onNavigateSignIn = {
+                    navController.navigate(DDanDDanRoute.SIGN_IN.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(route = DDanDDanRoute.SPLASH.route) {
+            SplashRoute(
+                onNavigateHome = {
+                    navController.navigate(DDanDDanRoute.HOME.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                },
+                onNavigateOnboarding = {
+                    navController.navigate(DDanDDanRoute.ONBOARDING.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                },
+                onNavigateSignIn = {
+                    navController.navigate(DDanDDanRoute.SIGN_IN.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_UP_TERM.route) {
+            onTermsScreen(
+                navController = navController,
+                onAgreeTerms = {
+                    navController.navigate(DDanDDanRoute.SIGN_UP_NICKNAME.route)
+                }
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_UP_NICKNAME.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SignUpViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.SIGN_UP_TERM.route
+            )
+            SetNameRoute(
+                signUpViewModel = viewModel,
+                onNavigateTargetCalories = {
+                    navController.navigate(DDanDDanRoute.SIGN_UP_TARGET.route)
+                },
+                onNavigateTerms = {
+                    navController.navigate(DDanDDanRoute.SIGN_UP_TERM.route)
+                }
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_UP_TARGET.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SignUpViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.SIGN_UP_TERM.route
+            )
+            SetTargetRoute(
+                signUpViewModel = viewModel,
+                onNavigatePetType = {
+                    navController.navigate(DDanDDanRoute.SIGN_UP_EGG.route)
+                },
+                onNavigateSetName = {
+                    navController.navigate(DDanDDanRoute.SIGN_UP_NICKNAME.route)
+                }
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_UP_EGG.route) { navBackStackEntry ->
+            val viewModel = navBackStackEntry.sharedViewModel<SignUpViewModel>(
+                navController = navController,
+                navGraphRoute = DDanDDanRoute.SIGN_UP_TERM.route
+            )
+            SetEggRoute(
+                signUpViewModel = viewModel,
+                onNavigateFinish = {
+                    navController.navigate(DDanDDanRoute.SIGN_UP_DONE.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                },
+                onNavigateGoal = {
+                    navController.navigate(DDanDDanRoute.SIGN_UP_TARGET.route)
+                }
+            )
+        }
+
+        composable(DDanDDanRoute.SIGN_UP_DONE.route) {
+            onSignUpDoneScreen(
+                onNavigateHome = {
+                    navController.navigate(DDanDDanRoute.HOME.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
                 }
             )
         }
