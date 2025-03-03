@@ -33,6 +33,7 @@ import com.ddanddan.ui.compose.component.DdanScaffold
 import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import com.ddanddan.base.R.drawable
 
 @Composable
 fun SignOutSecondRoute(
@@ -145,7 +146,7 @@ fun SignOutImageColumn() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_signout_img),
+            painter = painterResource(drawable.ic_signout_img),
             contentDescription = null
         )
     }
@@ -166,7 +167,7 @@ fun SignOutConfirmCheck(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = if (isCheckBoxChecked) R.drawable.ic_check_box_select else R.drawable.ic_check_box_default),
+            painter = painterResource(id = if (isCheckBoxChecked) drawable.ic_check_box_select else drawable.ic_check_box_default),
             contentDescription = null
         )
         DDanMarginHorizontalSpacer(size = 8)

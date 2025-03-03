@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.ddanddan.ddanddan.R
+import com.ddanddan.base.R
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette

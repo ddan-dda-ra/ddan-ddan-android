@@ -29,7 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ddanddan.ddanddan.R
+import com.ddanddan.base.R
 import com.ddanddan.domain.entity.CommonViewPagerEntity
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -72,16 +72,16 @@ fun OnboardingPager(
 ) {
     val onboardingPages = listOf(
         CommonViewPagerEntity(
-            stringResource(com.ddanddan.base.R.string.onboarding_subtitle1),
+            stringResource(R.string.onboarding_subtitle1),
             R.drawable.img_onboarding_1,
             true
         ),
         CommonViewPagerEntity(
-            stringResource(com.ddanddan.base.R.string.onboarding_subtitle2),
+            stringResource(R.string.onboarding_subtitle2),
             R.drawable.img_onboarding_2
         ),
         CommonViewPagerEntity(
-            stringResource(com.ddanddan.base.R.string.onboarding_subtitle3),
+            stringResource(R.string.onboarding_subtitle3),
             R.drawable.img_onboarding_3
         )
     )
@@ -165,6 +165,6 @@ fun StartBtn(
             contentColor = DDanDDanColorPalette.current.color_text_button_primary_default
         )
     ) {
-        Text(text = stringResource(com.ddanddan.base.R.string.onboarding_button_text), style = DDanDDanTypo.current.HeadLine6)
+        Text(text = stringResource(R.string.onboarding_button_text), style = DDanDDanTypo.current.HeadLine6)
     }
 }

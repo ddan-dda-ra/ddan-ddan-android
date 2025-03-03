@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.data.provider.KakaoProvider
-import com.ddanddan.ddanddan.R
+import com.ddanddan.base.R
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanLoadingDialog
@@ -148,7 +148,7 @@ fun KakaoButton(
             contentColor = DDanDDanColorPalette.current.color_text_button_primary_default
         )
     ) {
-        Text(text = stringResource(com.ddanddan.base.R.string.signin_button_text), style = DDanDDanTypo.current.HeadLine6)
+        Text(text = stringResource(R.string.signin_button_text), style = DDanDDanTypo.current.HeadLine6)
     }
 
 }

@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddanddan.ddanddan.R
+import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.signup.SignUpSideEffect
 import com.ddanddan.ddanddan.presentation.signup.SignUpState
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
@@ -132,7 +132,7 @@ fun SetEggScreen(
             DDanMarginVerticalSpacer(size = 32)
             Text(
                 modifier = Modifier.padding(start = 20.dp),
-                text = stringResource(com.ddanddan.base.R.string.signup_egg_title),
+                text = stringResource(R.string.signup_egg_title),
                 style = DDanDDanTypo.current.HeadLine3,
                 fontFamily = NeoDgm,
                 color = DDanDDanColorPalette.current.color_text_headline_primary
@@ -157,7 +157,7 @@ fun SetEggScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
             SetEggBtn(
-                text = stringResource(com.ddanddan.base.R.string.signup_egg_button_text),
+                text = stringResource(R.string.signup_egg_button_text),
                 petTypeEnum = signUpState.petType,
                 onClick = onNextBtnClick
             )

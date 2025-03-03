@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.ddanddan.ddanddan.BuildConfig.VERSION_NAME
-import com.ddanddan.ddanddan.R
+import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -82,7 +82,7 @@ fun SettingScreen(
     onDialogConfirm: () -> Unit = {},
 ) {
     DdanScaffold(
-        topbarText = stringResource(id = com.ddanddan.base.R.string.setting_topbar_title),
+        topbarText = stringResource(id = R.string.setting_topbar_title),
         onClick = {
             navigatePopUp()
         }
@@ -102,7 +102,7 @@ fun SettingScreen(
             SettingColumn(
                 settingItems = settingState.settingItemsBottom,
                 onClick = { titleId ->
-                    if (titleId == com.ddanddan.base.R.string.setting_title_text6) {
+                    if (titleId == R.string.setting_title_text6) {
                         onLogOutClick()
                     } else {
                         onSettingItemClick(titleId)

@@ -1,7 +1,6 @@
 package com.ddanddan.ddanddan.presentation.home
 
 import androidx.lifecycle.ViewModel
-import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionSideEffect
 import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase

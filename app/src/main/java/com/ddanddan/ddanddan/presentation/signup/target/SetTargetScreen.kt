@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddanddan.ddanddan.R
+import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.setting.target.EditTargetBtn
 import com.ddanddan.ddanddan.presentation.signup.SignUpSideEffect
 import com.ddanddan.ddanddan.presentation.signup.SignUpState
@@ -90,7 +90,7 @@ fun SetTargetScreen(
             DDanMarginVerticalSpacer(size = 32)
             Text(
                 modifier = Modifier.padding(start = 20.dp),
-                text = stringResource(id = com.ddanddan.base.R.string.edittarget_screen_title),
+                text = stringResource(id = R.string.edittarget_screen_title),
                 style = DDanDDanTypo.current.HeadLine3,
                 fontFamily = NeoDgm,
                 color = DDanDDanColorPalette.current.color_text_headline_primary
@@ -103,7 +103,7 @@ fun SetTargetScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             EditTargetBtn(
-                text = stringResource(com.ddanddan.base.R.string.signup_target_button_text),
+                text = stringResource(R.string.signup_target_button_text),
                 target = signUpState.calorie,
                 onClick = onNextBtnClick
             )

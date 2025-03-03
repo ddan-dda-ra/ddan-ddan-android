@@ -29,7 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.ddanddan.ddanddan.R
+import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -69,13 +69,13 @@ fun onTermsScreen(
                     .padding(20.dp)
             ) {
                 Text(
-                    text = stringResource(com.ddanddan.base.R.string.signup_terms_title),
+                    text = stringResource(R.string.signup_terms_title),
                     style = DDanDDanTypo.current.NeoDgm24,
                     color = DDanDDanColorPalette.current.color_text_headline_primary
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = stringResource(com.ddanddan.base.R.string.signup_terms_subtitle),
+                    text = stringResource(R.string.signup_terms_subtitle),
                     style = DDanDDanTypo.current.Body1,
                     color = DDanDDanColorPalette.current.color_text_body_quaternary
                 )
@@ -101,7 +101,7 @@ fun onTermsScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(com.ddanddan.base.R.string.signup_terms_all),
+                    text = stringResource(R.string.signup_terms_all),
                     style = DDanDDanTypo.current.HeadLine7,
                     color = DDanDDanColorPalette.current.color_text_body_secondary
                 )
@@ -122,12 +122,12 @@ fun onTermsScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(com.ddanddan.base.R.string.signup_terms_necessary),
+                    text = stringResource(R.string.signup_terms_necessary),
                     style = DDanDDanTypo.current.Body1,
                     color = DDanDDanColorPalette.current.color_text_button_secondary_default
                 )
                 Text(
-                    text = stringResource(com.ddanddan.base.R.string.signup_terms_service),
+                    text = stringResource(R.string.signup_terms_service),
                     style = DDanDDanTypo.current.Body1,
                     color = DDanDDanColorPalette.current.color_text_body_secondary
                 )
@@ -158,12 +158,12 @@ fun onTermsScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(com.ddanddan.base.R.string.signup_terms_necessary),
+                    text = stringResource(R.string.signup_terms_necessary),
                     style = DDanDDanTypo.current.Body1,
                     color = DDanDDanColorPalette.current.color_text_button_secondary_default
                 )
                 Text(
-                    text = stringResource(com.ddanddan.base.R.string.signup_terms_personal),
+                    text = stringResource(R.string.signup_terms_personal),
                     style = DDanDDanTypo.current.Body1,
                     color = DDanDDanColorPalette.current.color_text_body_secondary
                 )
@@ -219,6 +219,6 @@ fun StartBtn(
             contentColor = btnContentColor
         )
     ) {
-        Text(text = stringResource(com.ddanddan.base.R.string.signup_terms_button_text), style = DDanDDanTypo.current.HeadLine6)
+        Text(text = stringResource(R.string.signup_terms_button_text), style = DDanDDanTypo.current.HeadLine6)
     }
 }

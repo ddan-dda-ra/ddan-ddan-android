@@ -1,8 +1,6 @@
 package com.ddanddan.ddanddan.presentation.setting.signout
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,13 +23,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddanddan.ddanddan.R
+import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
-import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 import com.ddanddan.ui.compose.component.DdanScaffold
 import com.ddanddan.ui.ext.noRippleClickable
@@ -70,7 +67,7 @@ fun SignOutFirstScreen(
     onSignOutBtnClick: () -> Unit = {}
 ) {
     DdanScaffold(
-        topbarText = stringResource(id = com.ddanddan.base.R.string.setting_signout_title),
+        topbarText = stringResource(id = R.string.setting_signout_title),
         onClick = {
             navigatePopUp()
         }
@@ -85,7 +82,7 @@ fun SignOutFirstScreen(
             DDanMarginVerticalSpacer(size = 36)
             Text(
                 modifier = Modifier.padding(start = 20.dp),
-                text = stringResource(id = com.ddanddan.base.R.string.setting_signout_subtitle1),
+                text = stringResource(id = R.string.setting_signout_subtitle1),
                 style = DDanDDanTypo.current.NeoDgm24,
                 color = DDanDDanColorPalette.current.color_text_headline_primary
             )
@@ -104,7 +101,7 @@ fun SignOutFirstScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 SignOutBtn(
-                    text = stringResource(id = com.ddanddan.base.R.string.setting_signout_btn_text1),
+                    text = stringResource(id = R.string.setting_signout_btn_text1),
                     isEnabled = settingState.selectedReasons.isNotEmpty(),
                     onClick = {
                         onSignOutBtnClick()
