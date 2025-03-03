@@ -6,9 +6,6 @@ import com.ddanddan.domain.usecase.PostMainPetUseCase
 import com.ddanddan.domain.usecase.PostTypePetUseCase
 import com.ddanddan.domain.usecase.PutUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -26,64 +23,59 @@ class SignUpViewModel @Inject constructor(
     override val container =
         container<SignUpState, SignUpSideEffect>(SignUpState())
 
-    private val _signUpProgress = MutableStateFlow<SignUpProgress>(SignUpProgress.Name)
-    val signUpProgress: StateFlow<SignUpProgress> = _signUpProgress.asStateFlow()
-
-    fun moveSignUpProgress(progress: SignUpProgress) {
-        _signUpProgress.value = progress
+    private fun isKoreanOnly(input: String): Boolean {
+        val regex = "^[가-힣]+$"  // 한글 음절 블록만 허용하는 정규 표현식
+        return input.matches(regex.toRegex())
     }
 
-    private val _userName = MutableStateFlow<String>("")
-    val userName: StateFlow<String> = _userName.asStateFlow()
-
-    fun updateUserName(userName: String) {
-        _userName.value = userName
+    fun setNickname(newNickname: String) = intent {
+        reduce {
+            state.copy(
+                nickname = newNickname,
+                isValidNickname = isKoreanOnly(newNickname) && newNickname.length > 2
+            )
+        }
     }
 
-    private val _goalCalories = MutableStateFlow<Int>(300)
-    val goalCalories: StateFlow<Int> = _goalCalories.asStateFlow()
-
-    fun plusGoalCalories(): Boolean {
-        if (_goalCalories.value >= 1000) return false
-        _goalCalories.value += 100
-        return true
+    fun incrementTarget() = intent {
+        if (state.calorie < 1000) {
+            reduce {
+                state.copy(calorie = state.calorie + 100)
+            }
+        }
     }
 
-    fun minusGoalCalories(): Boolean {
-        if (_goalCalories.value <= 100) return false
-        _goalCalories.value -= 100
-        return true
+    fun decrementTarget() = intent {
+        if (state.calorie > 100) {
+            reduce {
+                state.copy(calorie = state.calorie - 100)
+            }
+        }
     }
 
-    private val _petType = MutableStateFlow<PetTypeEnum?>(null)
-    val petType: StateFlow<PetTypeEnum?> = _petType.asStateFlow()
-
-    fun setPetType(petTypeEnum: PetTypeEnum) {
-        _petType.value = petTypeEnum
+    fun setPetType(petTypeEnum: PetTypeEnum) = intent {
+        reduce {
+            state.copy(petType = petTypeEnum)
+        }
     }
 
     fun putUserInfo() = intent {
-        putUserInfoUseCase(userName.value, goalCalories.value)
+        putUserInfoUseCase(state.nickname, state.calorie)
             .onSuccess {
-                reduce {
-                    state.copy(isLoading = true)
-                }
-                postTypePet()
-            }.onFailure {
-                postSideEffect(SignUpSideEffect.ToastNetworkError)
+                postPetType()
+            }
+            .onFailure {
+                postSideEffect(SignUpSideEffect.NetworkError("회원가입에 실패했습니다"))
             }
     }
 
-    private fun postTypePet() = intent {
-        petType.value?.let { postTypePetUseCase(it)
+    private fun postPetType() = intent {
+        state.petType?.let { petType -> postTypePetUseCase(petType)
             .onSuccess { pet ->
-                reduce {
-                    state.copy(newPet = pet)
-                }
                 postMainPet(pet.id)
             }
             .onFailure {
-                postSideEffect(SignUpSideEffect.ToastNetworkError)
+                postSideEffect(SignUpSideEffect.NetworkError("회원가입에 실패했습니다"))
             }
         }
     }
@@ -91,16 +83,10 @@ class SignUpViewModel @Inject constructor(
     private fun postMainPet(petId: String) = intent {
         postMainPetUseCase(petId)
             .onSuccess {
-                reduce {
-                    state.copy(isLoading = false, signUpSuccess = true)
-                }
+                postSideEffect(SignUpSideEffect.SuccessSignUp)
             }
             .onFailure {
-                postSideEffect(SignUpSideEffect.ToastNetworkError)
+                postSideEffect(SignUpSideEffect.NetworkError("회원가입에 실패했습니다"))
             }
     }
-}
-
-enum class SignUpProgress {
-    Name, Goal, Egg
 }
