@@ -9,8 +9,12 @@ class PostLoginUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(token: String) = runCatching {
-        authRepository.setFirstAfterInstall(false)
-        authRepository.enableAutoLogin()
-        userRepository.postLogin(token)
+        userRepository.postLogin(token).apply {
+            if (this.isOnboardingComplete) {
+                authRepository.enableAutoLogin()
+            } else {
+                authRepository.disableAutoLogin()
+            }
+        }
     }
 }
