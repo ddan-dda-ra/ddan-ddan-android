@@ -31,4 +31,31 @@
     <string name="setting_signout_radiobtn_txt4">앱 사용법을 모르겠어요</string>
     <string name="setting_signout_under_text">모두 다 꼼꼼히 확인했어요</string>
     <string name="setting_signout_btn_text1">탈퇴하기</string>
+
+    <string name="onboarding_subtitle1">오늘 소비한 칼로리로\n귀여운 펫을 키워보세요</string>
+    <string name="onboarding_subtitle2">펫이 다 자라면\n또 다른 펫을 키울 수 있어요</string>
+    <string name="onboarding_subtitle3">꾸준히 운동해\n소중한 펫을 지켜주세요!</string>
+    <string name="onboarding_button_text">시작하기</string>
+
+    <string name="signin_button_text">카카오톡으로 시작하기</string>
+
+    <string name="signup_egg_title">마음에 드는\n알을 선택해 주세요</string>
+    <string name="signup_egg_button_text">다음</string>
+
+    <string name="signup_done_title">딴딴에 가입하신 것을\n환영해요!</string>
+    <string name="signup_done_button_text">시작하기</string>
+
+    <string name="signup_target_button_text">다음</string>
+
+    <string name="signup_name_button_text">다음</string>
+    <string name="signup_name_placeholder">별명을 입력해 주세요</string>
+    <string name="signup_name_error">형식이 올바르지 않아요</string>
+
+    <string name="signup_terms_title">딴딴의 서비스 이용 약관에\n동의해 주세요</string>
+    <string name="signup_terms_subtitle">서비스 시작 및 가입을 위해 먼저\n가입 및 정보 제공에 동의해 주세요.</string>
+    <string name="signup_terms_all">전체동의</string>
+    <string name="signup_terms_necessary">(필수)</string>
+    <string name="signup_terms_service">서비스 이용약관</string>
+    <string name="signup_terms_personal">개인정보처리방침</string>
+    <string name="signup_terms_button_text">시작하기</string>
 </resources>

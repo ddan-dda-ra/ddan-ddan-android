@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -147,7 +148,7 @@ fun KakaoButton(
             contentColor = DDanDDanColorPalette.current.color_text_button_primary_default
         )
     ) {
-        Text(text = "카카오톡으로 시작하기", style = DDanDDanTypo.current.HeadLine6)
+        Text(text = stringResource(com.ddanddan.base.R.string.signin_button_text), style = DDanDDanTypo.current.HeadLine6)
     }
 
 }
