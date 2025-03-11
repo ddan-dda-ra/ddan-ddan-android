@@ -1,14 +1,20 @@
 package com.ddanddan.ddanddan.presentation.signup
 
-import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.enums.PetTypeEnum
 
 data class SignUpState(
-    val isLoading: Boolean = false,
-    val newPet: Pet? = null,
-    val signUpSuccess: Boolean = false
+    val nickname: String = "",
+    val isValidNickname: Boolean = true,
+    val calorie: Int = 300,
+    val petType: PetTypeEnum? = null
 )
 
 sealed class SignUpSideEffect {
-    object ToastNetworkError : SignUpSideEffect()
-    data class SnackBarMsg(val msg: String) : SignUpSideEffect()
+    object SuccessSignUp: SignUpSideEffect()
+    data class NetworkError(val msg: String): SignUpSideEffect()
+
+    object NavigateTerms: SignUpSideEffect()
+    object NavigateNickname: SignUpSideEffect()
+    object NavigateTargetCalories: SignUpSideEffect()
+    object NavigateFirstEgg: SignUpSideEffect()
 }

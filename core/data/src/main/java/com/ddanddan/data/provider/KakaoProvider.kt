@@ -1,4 +1,4 @@
-package com.ddanddan.ddanddan.util.provider
+package com.ddanddan.data.provider
 
 import android.content.Context
 import com.kakao.sdk.auth.model.OAuthToken

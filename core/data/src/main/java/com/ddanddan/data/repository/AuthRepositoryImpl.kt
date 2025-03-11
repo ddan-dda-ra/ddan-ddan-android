@@ -18,7 +18,11 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun getAutoLogin(): Boolean = ddanddanDataStore.isLogin
 
-    override fun isFirstAfterInstall(): Boolean = ddanddanDataStore.isFirstAfterInstall
+    override fun isFirstAfterInstall(): Boolean {
+        val isFirst = ddanddanDataStore.isFirstAfterInstall
+        if (isFirst) setFirstAfterInstall(false)
+        return isFirst
+    }
 
     override fun setFirstAfterInstall(isFirst: Boolean) {
         ddanddanDataStore.isFirstAfterInstall = isFirst

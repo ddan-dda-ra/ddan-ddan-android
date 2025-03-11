@@ -10,7 +10,6 @@ import com.ddanddan.model.response.ResponseUser
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -38,7 +37,7 @@ interface UserService {
     ): ResponseMainPet
 
     @POST("/v1/auth/login")
-    suspend fun login(
+    suspend fun postLogin(
         @Body token: RequestLogin
     ): ResponseLogin
 }

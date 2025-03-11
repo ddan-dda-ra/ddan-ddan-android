@@ -14,7 +14,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.ddanddan.ddanddan.BuildConfig.DEBUG
 import com.ddanddan.ddanddan.BuildConfig.KAKAO_APP_KEY
-import com.ddanddan.ddanddan.presentation.signin.SignInActivity
+import com.ddanddan.ddanddan.presentation.MainActivity
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -44,7 +44,7 @@ class MyApp : Application(), LifecycleObserver {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent?.action == "com.ddanddan.ddanddan.Logout") {
                     context?.let {
-                        val signInIntent = Intent(it, SignInActivity::class.java).apply {
+                        val signInIntent = Intent(it, MainActivity::class.java).apply {
                             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                         }
                         it.startActivity(signInIntent)

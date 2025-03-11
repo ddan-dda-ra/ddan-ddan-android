@@ -43,4 +43,5 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.constraintLayout)
+    implementation(libs.kakaoLogin)
 }

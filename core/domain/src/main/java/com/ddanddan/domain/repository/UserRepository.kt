@@ -1,5 +1,6 @@
 package com.ddanddan.domain.repository
 
+import com.ddanddan.domain.entity.AuthInfo
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.User
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,7 @@ interface UserRepository {
     suspend fun deleteUser(cause: String): Boolean
     suspend fun getMainPet(): Pet
     suspend fun postMainPet(petId: String): Pet
-    suspend fun login(token: String): Result<Boolean>
+    suspend fun postLogin(token: String): AuthInfo
     fun getCaloriesFlow(): Flow<Float>
     suspend fun saveCalories(calories: Double): Unit
 }

@@ -53,6 +53,7 @@ import com.ddanddan.ui.enums.TooltipType
 import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import com.ddanddan.base.R.drawable
 
 @Composable
 fun HomeRoute(
@@ -216,12 +217,12 @@ fun HomeTopItem(onStorageClick: () -> Unit = {}, onSettingClick: () -> Unit = {}
     ) {
         Image(
             modifier = Modifier.clickable(onClick = onStorageClick),
-            painter = painterResource(id = R.drawable.ic_storage),
+            painter = painterResource(id = drawable.ic_storage),
             contentDescription = "보관함"
         )
         Image(
             modifier = Modifier.clickable(onClick = onSettingClick),
-            painter = painterResource(id = R.drawable.ic_setting),
+            painter = painterResource(id = drawable.ic_setting),
             contentDescription = "설정"
         )
     }
