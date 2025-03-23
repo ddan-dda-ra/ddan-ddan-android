@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,9 +26,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.domain.enums.PetTypeEnum
@@ -35,6 +39,7 @@ import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.Pretendard
 import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
+import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
 
@@ -103,6 +108,79 @@ private fun getPetImage(petTypeEnum: PetTypeEnum, petLevel: Int): Int {
             4 -> R.drawable.ic_hamster_level4
             else -> R.drawable.ic_hamster_level5
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TopRankerView(
+    modifier: Modifier = Modifier,
+    criteria: RankCriteria = RankCriteria.TOTAL_CALORIES,
+    rank: Int = 1,
+    nickname: String = "일이삼등입니다다다다다다",
+    contents: Int = 1024,
+    mainPetType: PetTypeEnum = PetTypeEnum.CAT,
+    petLevel: Int = 1
+) {
+    ConstraintLayout(
+        modifier = modifier
+    ) {
+        val (crownImage, contentColumn) = createRefs()
+
+        Column(
+            modifier = Modifier
+                .constrainAs(contentColumn) {
+                    top.linkTo(crownImage.top, margin = 17.dp)
+                    start.linkTo(parent.start)
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                }
+                .background(
+                    color = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .height(152.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp)
+            ,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(getPetImage(petTypeEnum = mainPetType, petLevel = petLevel)),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(64.dp)
+            )
+            DDanMarginVerticalSpacer(10)
+            Text(
+                text = nickname,
+                style = DDanDDanTypo.current.Body2,
+                color = DDanDDanColorPalette.current.color_text_headline_teritary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${contents}kcal" else "+${contents}일",
+                style = DDanDDanTypo.current.Body1,
+                color = DDanDDanColorPalette.current.color_text_body_primary
+            )
+        }
+
+        Image(
+            painter = when (rank) {
+                1 -> painterResource(R.drawable.ic_crown_1)
+                2 -> painterResource(R.drawable.ic_crown_2)
+                else -> painterResource(R.drawable.ic_crown_3)
+            },
+            contentDescription = "왕관 이미지",
+            modifier = Modifier
+                .constrainAs(crownImage) {
+                    top.linkTo(parent.top, margin = if (rank == 1) 0.dp else 19.dp)
+                    start.linkTo(contentColumn.start)
+                    end.linkTo(contentColumn.end)
+                }
+                .size(32.dp)
+        )
     }
 }
 
