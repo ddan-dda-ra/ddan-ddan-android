@@ -3,6 +3,7 @@ package com.ddanddan.ddanddan.presentation.rank
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,15 +16,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +55,7 @@ import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
@@ -190,6 +202,86 @@ private fun RankListView(
         // 4~100등
         items(97) { index ->
             SimpleRankerView(rank = index + 4)
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun RankTapLayout(
+    modifier: Modifier = Modifier,
+    pagerState: PagerState = rememberPagerState { 2 }
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val tabs = listOf(RankCriteria.TOTAL_CALORIES, RankCriteria.TOTAL_SUCCEEDED_DAYS)
+
+    Column(
+        modifier = modifier
+    ) {
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            modifier = Modifier.fillMaxWidth(),
+            indicator = { tabPositions ->
+                SecondaryIndicator(
+                    modifier = Modifier
+                        .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                        .padding(
+                            start = if (pagerState.currentPage == 0) 20.dp else 0.dp,
+                            end = if (pagerState.currentPage == 1) 20.dp else 0.dp
+                        ),
+                    color = DDanDDanColorPalette.current.color_outline_level04_active,
+                    height = 2.dp
+                )
+            },
+            divider = {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = DDanDDanColorPalette.current.color_outline_level04_disabled
+                )
+            },
+            containerColor = Color.Transparent,
+            contentColor = DDanDDanColorPalette.current.color_text_headline_secondary
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    text = { Text(
+                        text = stringResource(title.toTitle()),
+                        modifier = Modifier.padding(10.dp),
+                        style = DDanDDanTypo.current.HeadLine6,
+                        fontFamily = Pretendard,
+                        color = if (pagerState.currentPage == index)
+                            DDanDDanColorPalette.current.color_text_headline_secondary
+                        else
+                            DDanDDanColorPalette.current.color_text_body_quinary
+                    ) },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    modifier = Modifier.height(42.dp)
+                )
+            }
+        }
+
+        HorizontalPager(
+            state = pagerState
+        ) { page ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // 페이지별 컨텐츠
+                when (page) {
+                    0 -> RankListView(RankCriteria.TOTAL_CALORIES)
+                    1 -> RankListView(RankCriteria.TOTAL_SUCCEEDED_DAYS)
+                }
+            }
         }
     }
 }
