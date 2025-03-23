@@ -2,6 +2,7 @@ package com.ddanddan.ddanddan.presentation.rank
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SnackbarHostState
@@ -42,6 +44,7 @@ import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
+import java.time.LocalDate
 
 @Composable
 fun RankRoute(
@@ -107,6 +110,86 @@ private fun getPetImage(petTypeEnum: PetTypeEnum, petLevel: Int): Int {
             3 -> R.drawable.ic_hamster_level3
             4 -> R.drawable.ic_hamster_level4
             else -> R.drawable.ic_hamster_level5
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun RankListView(
+    criteria: RankCriteria = RankCriteria.TOTAL_CALORIES,
+    onSystemIconClick: () -> Unit = {}
+) {
+    val today = LocalDate.now()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp)
+    ) {
+        item {
+            DDanMarginVerticalSpacer(24)
+            Text(
+                text = "${today.year}년 ${today.monthValue}월 기준",
+                style = DDanDDanTypo.current.Body2,
+                fontFamily = Pretendard,
+                color = DDanDDanColorPalette.current.color_text_headline_teritary,
+            )
+            DDanMarginVerticalSpacer(4)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(
+                    text = stringResource(criteria.toSubTitle()),
+                    style = DDanDDanTypo.current.NeoDgm24,
+                    fontFamily = NeoDgm,
+                    color = DDanDDanColorPalette.current.color_text_headline_secondary,
+                )
+                DDanMarginHorizontalSpacer(4)
+                Image(
+                    painter = painterResource(R.drawable.ic_system_line),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(width = 20.dp, height = 24.dp)
+                        .padding(bottom = 4.dp)
+                        .clickable {
+                            onSystemIconClick()
+                        }
+                )
+            }
+            DDanMarginVerticalSpacer(32)
+        }
+
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                TopRankerView(
+                    modifier = Modifier.weight(1f),
+                    criteria = criteria,
+                    rank = 2
+                )
+                DDanMarginHorizontalSpacer(13)
+                TopRankerView(
+                    modifier = Modifier.weight(1f),
+                    criteria = criteria,
+                    rank = 1
+                )
+                DDanMarginHorizontalSpacer(13)
+                TopRankerView(
+                    modifier = Modifier.weight(1f),
+                    criteria = criteria,
+                    rank = 3
+                )
+            }
+            DDanMarginVerticalSpacer(17)
+        }
+
+        // 4~100등
+        items(97) { index ->
+            SimpleRankerView(rank = index + 4)
         }
     }
 }
