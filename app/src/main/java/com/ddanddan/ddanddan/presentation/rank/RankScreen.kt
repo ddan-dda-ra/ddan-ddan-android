@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
@@ -93,39 +94,6 @@ fun RankScreen(
     }
 }
 
-private fun getPetImage(petTypeEnum: PetTypeEnum, petLevel: Int): Int {
-    return when (petTypeEnum) {
-        PetTypeEnum.CAT -> when (petLevel) {
-            1 -> R.drawable.ic_cat_level1
-            2 -> R.drawable.ic_cat_level2
-            3 -> R.drawable.ic_cat_level3
-            4 -> R.drawable.ic_cat_level4
-            else -> R.drawable.ic_cat_level5
-        }
-        PetTypeEnum.DOG -> when (petLevel) {
-            1 -> R.drawable.ic_dog_level1
-            2 -> R.drawable.ic_dog_level2
-            3 -> R.drawable.ic_dog_level3
-            4 -> R.drawable.ic_dog_level4
-            else -> R.drawable.ic_dog_level5
-        }
-        PetTypeEnum.PENGUIN -> when (petLevel) {
-            1 -> R.drawable.ic_penguin_level1
-            2 -> R.drawable.ic_penguin_level2
-            3 -> R.drawable.ic_penguin_level3
-            4 -> R.drawable.ic_penguin_level4
-            else -> R.drawable.ic_penguin_level5
-        }
-        PetTypeEnum.HAMSTER -> when (petLevel) {
-            1 -> R.drawable.ic_hamster_level1
-            2 -> R.drawable.ic_hamster_level2
-            3 -> R.drawable.ic_hamster_level3
-            4 -> R.drawable.ic_hamster_level4
-            else -> R.drawable.ic_hamster_level5
-        }
-    }
-}
-
 @Preview (showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
 private fun MyRecordBottomSheet(
@@ -134,7 +102,7 @@ private fun MyRecordBottomSheet(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) // 상단 모서리만 둥글게
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
     ) {
         SimpleRankerView(
@@ -340,7 +308,7 @@ fun TopRankerView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(getPetImage(petTypeEnum = mainPetType, petLevel = petLevel)),
+                painter = painterResource(mainPetType.toAnimal(petLevel)),
                 contentDescription = null,
                 modifier = Modifier
                     .size(64.dp)
@@ -417,7 +385,7 @@ fun SimpleRankerView(
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = getPetImage(mainPetType, petLevel)),
+                painter = painterResource(id = mainPetType.toAnimal(petLevel)),
                 contentDescription = "왕관 이미지",
                 modifier = Modifier.size(42.dp)
             )
