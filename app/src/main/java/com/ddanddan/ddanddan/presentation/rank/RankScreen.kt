@@ -89,7 +89,8 @@ fun RankScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-
+            RankTapLayout(modifier = Modifier.weight(1f))
+            MyRecordBottomSheet()
         }
     }
 }
