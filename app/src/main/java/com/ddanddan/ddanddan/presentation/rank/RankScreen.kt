@@ -126,6 +126,25 @@ private fun getPetImage(petTypeEnum: PetTypeEnum, petLevel: Int): Int {
     }
 }
 
+@Preview (showBackground = true, backgroundColor = 0xFFFFFF)
+@Composable
+private fun MyRecordBottomSheet(
+    rankState: RankState = RankState()
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) // 상단 모서리만 둥글게
+            .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
+    ) {
+        SimpleRankerView(
+            criteria = rankState.criteria,
+//            rank, nickname, contents, mainPetType, petLevel,
+            isMyRecord = true
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun RankListView(
