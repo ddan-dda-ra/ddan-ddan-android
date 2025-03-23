@@ -1,6 +1,8 @@
 package com.ddanddan.ddanddan.presentation.rank
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +31,7 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -124,7 +127,7 @@ private fun RankListView(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp),
     ) {
         item {
             DDanMarginVerticalSpacer(24)
@@ -191,9 +194,14 @@ private fun RankListView(
         items(97) { index ->
             SimpleRankerView(rank = index + 4)
         }
+
+        item {
+            DDanMarginVerticalSpacer(24)
+        }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 private fun RankTapLayout(
@@ -264,10 +272,11 @@ private fun RankTapLayout(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // 페이지별 컨텐츠
-                when (page) {
-                    0 -> RankListView(RankCriteria.TOTAL_CALORIES)
-                    1 -> RankListView(RankCriteria.TOTAL_SUCCEEDED_DAYS)
+                CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+                    when (page) {
+                        0 -> RankListView(RankCriteria.TOTAL_CALORIES)
+                        1 -> RankListView(RankCriteria.TOTAL_SUCCEEDED_DAYS)
+                    }
                 }
             }
         }
