@@ -11,16 +11,9 @@ data class RankState(
     val otherRanking: List<Rank> = listOf(),
     val goldRank: Rank? = null,
     val silverRank: Rank? = null,
-    val bronzeRank: Rank? = null
-) {
-    fun toStr(): String = "$criteria\n" +
-            "myRank: ${myRank.toStr()}\n" +
-            "others: ${otherRanking.map { it.toStr() }}"
-}
-
-fun Rank?.toStr(): String {
-    return "${this?.rank} ${this?.userName}\n"
-}
+    val bronzeRank: Rank? = null,
+    val showToolTip: Boolean = false
+)
 
 sealed class RankSideEffect {
     object NavigatePopUp : RankSideEffect()

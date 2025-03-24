@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,6 +61,7 @@ import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
+import com.ddanddan.ui.ext.noRippleClickable
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -90,7 +90,9 @@ fun RankRoute(
         rankState = rankState,
         snackBarHostState = snackBarHostState,
         navigatePopUp = rankViewModel::onBackButtonClicked,
-        changeTab = rankViewModel::setCriteriaTab
+        changeTab = rankViewModel::setCriteriaTab,
+        dismissToolTip = rankViewModel::dismissToolTip,
+        showToolTip = rankViewModel::showToolTip
     )
 }
 
@@ -100,7 +102,9 @@ fun RankScreen(
     rankState: RankState = RankState(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     navigatePopUp: () -> Unit = {},
-    changeTab: (RankCriteria) -> Unit = {}
+    changeTab: (RankCriteria) -> Unit = {},
+    dismissToolTip: () -> Unit = {},
+    showToolTip: () -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.rank_topbar_title),
@@ -117,7 +121,13 @@ fun RankScreen(
                 .padding(paddingValues)
                 .background(DDanDDanColorPalette.current.color_background)
         ) {
-            RankTapLayout(modifier = Modifier.weight(1f), onTabChange = changeTab, rankState = rankState)
+            RankTapLayout(
+                modifier = Modifier.weight(1f),
+                onTabChange = changeTab,
+                rankState = rankState,
+                showToolTip = showToolTip,
+                dismissToolTip = dismissToolTip
+            )
             MyRecordBottomSheet(rankState = rankState)
         }
     }
@@ -153,7 +163,8 @@ private fun MyRecordBottomSheet(
 @Composable
 private fun RankListView(
     rankState: RankState = RankState(),
-    onSystemIconClick: () -> Unit = {}
+    showToolTip: () -> Unit = {},
+    dismissToolTip: () -> Unit = {}
 ) {
     val today = LocalDate.now()
     LazyColumn(
@@ -171,68 +182,128 @@ private fun RankListView(
                 modifier = Modifier.height(22.dp)
             )
             DDanMarginVerticalSpacer(4)
-            Row(
+            ConstraintLayout(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.Bottom
+                    .fillMaxWidth()
             ) {
+                val (title, icon, ranking, tooltip) = createRefs()
+
                 Text(
                     text = stringResource(rankState.criteria.toSubTitle()),
                     style = DDanDDanTypo.current.NeoDgm24,
                     fontFamily = NeoDgm,
                     color = DDanDDanColorPalette.current.color_text_headline_secondary,
+                    modifier = Modifier.constrainAs(title) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                    }
                 )
-                DDanMarginHorizontalSpacer(8)
+
                 Image(
                     painter = painterResource(R.drawable.ic_system_line),
                     contentDescription = null,
                     modifier = Modifier
                         .size(width = 20.dp, height = 20.dp)
-                        .clickable {
-                            onSystemIconClick()
+                        .noRippleClickable {
+                            if (rankState.showToolTip) dismissToolTip() else showToolTip()
+                        }
+                        .constrainAs(icon) {
+                            bottom.linkTo(title.bottom)
+                            start.linkTo(title.end, margin = 8.dp)
                         }
                 )
-            }
-            DDanMarginVerticalSpacer(32)
-        }
 
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                TopRankerView(
-                    modifier = Modifier.weight(1f),
-                    criteria = rankState.criteria,
-                    rank = rankState.silverRank?.rank ?: 2,
-                    nickname = rankState.silverRank?.userName,
-                    contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.silverRank?.totalCalories
-                        else rankState.silverRank?.totalSucceededDays,
-                    mainPetType = rankState.silverRank?.mainPetType,
-                    petLevel = rankState.silverRank?.petLevel
-                )
-                DDanMarginHorizontalSpacer(13)
-                TopRankerView(
-                    modifier = Modifier.weight(1f),
-                    criteria = rankState.criteria,
-                    rank = 1,
-                    nickname = rankState.goldRank?.userName,
-                    contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.goldRank?.totalCalories
-                    else rankState.goldRank?.totalSucceededDays,
-                    mainPetType = rankState.goldRank?.mainPetType,
-                    petLevel = rankState.goldRank?.petLevel
-                )
-                DDanMarginHorizontalSpacer(13)
-                TopRankerView(
-                    modifier = Modifier.weight(1f),
-                    criteria = rankState.criteria,
-                    rank = rankState.bronzeRank?.rank ?: 3,
-                    nickname = rankState.bronzeRank?.userName,
-                    contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.bronzeRank?.totalCalories
-                        else rankState.bronzeRank?.totalSucceededDays,
-                    mainPetType = rankState.bronzeRank?.mainPetType,
-                    petLevel = rankState.bronzeRank?.petLevel
-                )
+                if (rankState.showToolTip) {
+                    ConstraintLayout (
+                        modifier = Modifier
+                            .constrainAs(tooltip) {
+                                top.linkTo(icon.bottom)
+                                start.linkTo(icon.start)
+                                end.linkTo(icon.end)
+                            }
+                            .noRippleClickable {
+                                dismissToolTip()
+                            }
+                    ) {
+                        val (polygon, msg) = createRefs()
+                        Image(
+                            painter = painterResource(R.drawable.ic_tooltip_polygon),
+                            modifier = Modifier.size(16.dp)
+                                .constrainAs(polygon) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                },
+                            contentDescription = null
+                        )
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(DDanDDanColorPalette.current.elevation_color_elevation_level01)
+                                .constrainAs(msg) {
+                                    top.linkTo(polygon.top, margin = 8.dp)
+                                    start.linkTo(parent.start)
+                                    bottom.linkTo(parent.bottom)
+                                    end.linkTo(parent.end)
+                                }
+                        ) {
+                            Text(
+                                text = stringResource(if (rankState.criteria == RankCriteria.TOTAL_CALORIES) R.string.rank_tooltip_calorie else R.string.rank_tooltip_target),
+                                style = DDanDDanTypo.current.SubTitle1,
+                                fontFamily = Pretendard,
+                                color = DDanDDanColorPalette.current.color_text_headline_secondary,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier.constrainAs(ranking) {
+                        top.linkTo(title.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                ) {
+                    DDanMarginVerticalSpacer(32)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        TopRankerView(
+                            modifier = Modifier.weight(1f),
+                            criteria = rankState.criteria,
+                            rank = rankState.silverRank?.rank ?: 2,
+                            nickname = rankState.silverRank?.userName,
+                            contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.silverRank?.totalCalories
+                            else rankState.silverRank?.totalSucceededDays,
+                            mainPetType = rankState.silverRank?.mainPetType,
+                            petLevel = rankState.silverRank?.petLevel
+                        )
+                        DDanMarginHorizontalSpacer(13)
+                        TopRankerView(
+                            modifier = Modifier.weight(1f),
+                            criteria = rankState.criteria,
+                            rank = 1,
+                            nickname = rankState.goldRank?.userName,
+                            contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.goldRank?.totalCalories
+                            else rankState.goldRank?.totalSucceededDays,
+                            mainPetType = rankState.goldRank?.mainPetType,
+                            petLevel = rankState.goldRank?.petLevel
+                        )
+                        DDanMarginHorizontalSpacer(13)
+                        TopRankerView(
+                            modifier = Modifier.weight(1f),
+                            criteria = rankState.criteria,
+                            rank = rankState.bronzeRank?.rank ?: 3,
+                            nickname = rankState.bronzeRank?.userName,
+                            contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.bronzeRank?.totalCalories
+                            else rankState.bronzeRank?.totalSucceededDays,
+                            mainPetType = rankState.bronzeRank?.mainPetType,
+                            petLevel = rankState.bronzeRank?.petLevel
+                        )
+                    }
+                }
             }
             DDanMarginVerticalSpacer(17)
         }
@@ -264,7 +335,9 @@ private fun RankTapLayout(
     modifier: Modifier = Modifier,
     pagerState: PagerState = rememberPagerState { 2 },
     rankState: RankState = RankState(),
-    onTabChange: (RankCriteria) -> Unit = { }
+    onTabChange: (RankCriteria) -> Unit = { },
+    showToolTip: () -> Unit = { },
+    dismissToolTip: () -> Unit = { }
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf(RankCriteria.TOTAL_CALORIES, RankCriteria.TOTAL_SUCCEEDED_DAYS)
@@ -333,7 +406,7 @@ private fun RankTapLayout(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                    RankListView(rankState = rankState)
+                    RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip)
                 }
             }
         }

@@ -19,6 +19,7 @@ class RankViewModel @Inject constructor(
         container<RankState, RankSideEffect>(RankState())
 
     fun setCriteriaTab(criteria: RankCriteria) = intent {
+        dismissToolTip()
         reduce {
             state.copy(
                 criteria = criteria
@@ -47,5 +48,21 @@ class RankViewModel @Inject constructor(
             .onFailure {
                 postSideEffect(RankSideEffect.NetworkError("정보를 가져오는데 실패했습니다"))
             }
+    }
+
+    fun showToolTip() = intent {
+        reduce {
+            state.copy(
+                showToolTip = true
+            )
+        }
+    }
+
+    fun dismissToolTip() = intent {
+        reduce {
+            state.copy(
+                showToolTip = false
+            )
+        }
     }
 }
