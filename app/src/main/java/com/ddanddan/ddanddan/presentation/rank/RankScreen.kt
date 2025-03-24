@@ -32,6 +32,8 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -47,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toColor
@@ -60,15 +63,35 @@ import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import java.time.LocalDate
 
 @Composable
 fun RankRoute(
-    onNavigateHome: () -> Unit
+    rankViewModel: RankViewModel = hiltViewModel(),
+    navigatePopUp: () -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
+    val rankState by rankViewModel.collectAsState()
 
-    RankScreen()
+    LaunchedEffect(Unit) {
+        rankViewModel.setCriteriaTab(RankCriteria.TOTAL_CALORIES)
+    }
+
+    rankViewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is RankSideEffect.NavigatePopUp -> navigatePopUp()
+            is RankSideEffect.NetworkError -> {}
+        }
+    }
+
+    RankScreen(
+        rankState = rankState,
+        snackBarHostState = snackBarHostState,
+        navigatePopUp = rankViewModel::onBackButtonClicked,
+        changeTab = rankViewModel::setCriteriaTab
+    )
 }
 
 @Preview
@@ -76,7 +99,8 @@ fun RankRoute(
 fun RankScreen(
     rankState: RankState = RankState(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    navigatePopUp: () -> Unit = {}
+    navigatePopUp: () -> Unit = {},
+    changeTab: (RankCriteria) -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.rank_topbar_title),
@@ -91,9 +115,10 @@ fun RankScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(DDanDDanColorPalette.current.color_background)
         ) {
-            RankTapLayout(modifier = Modifier.weight(1f))
-            MyRecordBottomSheet()
+            RankTapLayout(modifier = Modifier.weight(1f), onTabChange = changeTab, rankState = rankState)
+            MyRecordBottomSheet(rankState = rankState)
         }
     }
 }
@@ -109,18 +134,24 @@ private fun MyRecordBottomSheet(
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
     ) {
-        SimpleRankerView(
-            criteria = rankState.criteria,
-//            rank, nickname, contents, mainPetType, petLevel,
-            isMyRecord = true
-        )
+        if (rankState.myRank != null) {
+            SimpleRankerView(
+                criteria = rankState.criteria,
+                rank = rankState.myRank.rank,
+                nickname = rankState.myRank.userName,
+                contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.myRank.totalCalories else rankState.myRank.totalSucceededDays,
+                mainPetType = rankState.myRank.mainPetType,
+                petLevel = rankState.myRank.petLevel,
+                isMyRecord = true
+            )
+        }
     }
 }
 
 @Preview
 @Composable
 private fun RankListView(
-    criteria: RankCriteria = RankCriteria.TOTAL_CALORIES,
+    rankState: RankState = RankState(),
     onSystemIconClick: () -> Unit = {}
 ) {
     val today = LocalDate.now()
@@ -136,6 +167,7 @@ private fun RankListView(
                 style = DDanDDanTypo.current.Body2,
                 fontFamily = Pretendard,
                 color = DDanDDanColorPalette.current.color_text_headline_teritary,
+                modifier = Modifier.height(22.dp)
             )
             DDanMarginVerticalSpacer(4)
             Row(
@@ -144,18 +176,17 @@ private fun RankListView(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = stringResource(criteria.toSubTitle()),
+                    text = stringResource(rankState.criteria.toSubTitle()),
                     style = DDanDDanTypo.current.NeoDgm24,
                     fontFamily = NeoDgm,
                     color = DDanDDanColorPalette.current.color_text_headline_secondary,
                 )
-                DDanMarginHorizontalSpacer(4)
+                DDanMarginHorizontalSpacer(8)
                 Image(
                     painter = painterResource(R.drawable.ic_system_line),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(width = 20.dp, height = 24.dp)
-                        .padding(bottom = 4.dp)
+                        .size(width = 20.dp, height = 20.dp)
                         .clickable {
                             onSystemIconClick()
                         }
@@ -171,28 +202,51 @@ private fun RankListView(
             ) {
                 TopRankerView(
                     modifier = Modifier.weight(1f),
-                    criteria = criteria,
-                    rank = 2
+                    criteria = rankState.criteria,
+                    rank = rankState.silverRank?.rank ?: 2,
+                    nickname = rankState.silverRank?.userName,
+                    contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.silverRank?.totalCalories
+                        else rankState.silverRank?.totalSucceededDays,
+                    mainPetType = rankState.silverRank?.mainPetType,
+                    petLevel = rankState.silverRank?.petLevel
                 )
                 DDanMarginHorizontalSpacer(13)
                 TopRankerView(
                     modifier = Modifier.weight(1f),
-                    criteria = criteria,
-                    rank = 1
+                    criteria = rankState.criteria,
+                    rank = 1,
+                    nickname = rankState.goldRank?.userName,
+                    contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.goldRank?.totalCalories
+                    else rankState.goldRank?.totalSucceededDays,
+                    mainPetType = rankState.goldRank?.mainPetType,
+                    petLevel = rankState.goldRank?.petLevel
                 )
                 DDanMarginHorizontalSpacer(13)
                 TopRankerView(
                     modifier = Modifier.weight(1f),
-                    criteria = criteria,
-                    rank = 3
+                    criteria = rankState.criteria,
+                    rank = rankState.bronzeRank?.rank ?: 3,
+                    nickname = rankState.bronzeRank?.userName,
+                    contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.bronzeRank?.totalCalories
+                        else rankState.bronzeRank?.totalSucceededDays,
+                    mainPetType = rankState.bronzeRank?.mainPetType,
+                    petLevel = rankState.bronzeRank?.petLevel
                 )
             }
             DDanMarginVerticalSpacer(17)
         }
 
         // 4~100등
-        items(97) { index ->
-            SimpleRankerView(rank = index + 4)
+        items(rankState.otherRanking.size) { idx ->
+            SimpleRankerView(
+                criteria = rankState.criteria,
+                rank = rankState.otherRanking[idx].rank,
+                nickname = rankState.otherRanking[idx].userName,
+                contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.otherRanking[idx].totalCalories
+                    else rankState.otherRanking[idx].totalSucceededDays,
+                mainPetType = rankState.otherRanking[idx].mainPetType,
+                petLevel = rankState.otherRanking[idx].petLevel
+            )
         }
 
         item {
@@ -206,10 +260,16 @@ private fun RankListView(
 @Composable
 private fun RankTapLayout(
     modifier: Modifier = Modifier,
-    pagerState: PagerState = rememberPagerState { 2 }
+    pagerState: PagerState = rememberPagerState { 2 },
+    rankState: RankState = RankState(),
+    onTabChange: (RankCriteria) -> Unit = { }
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf(RankCriteria.TOTAL_CALORIES, RankCriteria.TOTAL_SUCCEEDED_DAYS)
+
+    LaunchedEffect(pagerState.currentPage) {
+        onTabChange(tabs[pagerState.currentPage])
+    }
 
     Column(
         modifier = modifier
@@ -237,7 +297,6 @@ private fun RankTapLayout(
                 )
             },
             containerColor = Color.Transparent,
-            contentColor = DDanDDanColorPalette.current.color_text_headline_secondary
         ) {
             tabs.forEachIndexed { index, title ->
                 Tab(
@@ -267,16 +326,12 @@ private fun RankTapLayout(
         ) { page ->
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                    when (page) {
-                        0 -> RankListView(RankCriteria.TOTAL_CALORIES)
-                        1 -> RankListView(RankCriteria.TOTAL_SUCCEEDED_DAYS)
-                    }
+                    RankListView(rankState = rankState)
                 }
             }
         }
@@ -289,10 +344,10 @@ fun TopRankerView(
     modifier: Modifier = Modifier,
     criteria: RankCriteria = RankCriteria.TOTAL_CALORIES,
     rank: Int = 1,
-    nickname: String = "일이삼등입니다다다다다다",
-    contents: Int = 1024,
-    mainPetType: PetTypeEnum = PetTypeEnum.CAT,
-    petLevel: Int = 1
+    nickname: String? = "일이삼등입니다다다다다다",
+    contents: Int? = 1024,
+    mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
+    petLevel: Int? = 1
 ) {
     ConstraintLayout(
         modifier = modifier
@@ -325,16 +380,21 @@ fun TopRankerView(
             )
             DDanMarginVerticalSpacer(10)
             Text(
-                text = nickname,
+                text = nickname?:"",
                 style = DDanDDanTypo.current.Body2,
+                fontFamily = Pretendard,
                 color = DDanDDanColorPalette.current.color_text_headline_teritary,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.height(22.dp)
             )
             Text(
-                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${contents}kcal" else "+${contents}일",
+                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${contents?:0}kcal" else "+${contents?:0}일",
                 style = DDanDDanTypo.current.Body1,
-                color = DDanDDanColorPalette.current.color_text_body_primary
+                fontFamily = Pretendard,
+                fontWeight = FontWeight.W700,
+                color = DDanDDanColorPalette.current.color_text_body_primary,
+                modifier = Modifier.height(24.dp)
             )
         }
 
@@ -361,10 +421,10 @@ fun TopRankerView(
 fun SimpleRankerView(
     criteria: RankCriteria = RankCriteria.TOTAL_CALORIES,
     rank: Int = 4,
-    nickname: String = "일이삼사오육칠팔구십",
-    contents: Int = 987,
-    mainPetType: PetTypeEnum = PetTypeEnum.CAT,
-    petLevel: Int = 1,
+    nickname: String? = "일이삼사오육칠팔구십",
+    contents: Int? = 987,
+    mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
+    petLevel: Int? = 1,
     isMyRecord: Boolean = false
 ) {
     Row(
@@ -403,7 +463,7 @@ fun SimpleRankerView(
         DDanMarginHorizontalSpacer(12)
         Text(
             modifier = Modifier.padding(vertical = 12.dp),
-            text = nickname,
+            text = nickname?:"",
             style = DDanDDanTypo.current.Body1,
             fontFamily = Pretendard,
             color = DDanDDanColorPalette.current.color_text_body_teritary
@@ -431,7 +491,7 @@ fun SimpleRankerView(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = if (criteria == RankCriteria.TOTAL_CALORIES) contents.toString() else "+$contents",
+                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${contents?:0}" else "+${contents?:0}",
                 style = DDanDDanTypo.current.Body1,
                 fontWeight = FontWeight.W700,
                 fontFamily = Pretendard,
