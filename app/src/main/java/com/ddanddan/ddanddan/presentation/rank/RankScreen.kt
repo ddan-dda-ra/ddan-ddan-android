@@ -142,6 +142,7 @@ private fun MyRecordBottomSheet(
                 contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.myRank.totalCalories else rankState.myRank.totalSucceededDays,
                 mainPetType = rankState.myRank.mainPetType,
                 petLevel = rankState.myRank.petLevel,
+                isBottomSheet = true,
                 isMyRecord = true
             )
         }
@@ -245,7 +246,8 @@ private fun RankListView(
                 contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.otherRanking[idx].totalCalories
                     else rankState.otherRanking[idx].totalSucceededDays,
                 mainPetType = rankState.otherRanking[idx].mainPetType,
-                petLevel = rankState.otherRanking[idx].petLevel
+                petLevel = rankState.otherRanking[idx].petLevel,
+                isMyRecord = rankState.otherRanking[idx].userId == rankState.myRank?.userId
             )
         }
 
@@ -425,10 +427,11 @@ fun SimpleRankerView(
     contents: Int? = 987,
     mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
     petLevel: Int? = 1,
+    isBottomSheet: Boolean = false,
     isMyRecord: Boolean = false
 ) {
     Row(
-        modifier = if (!isMyRecord) Modifier.padding(top = 20.dp) else Modifier.padding(20.dp),
+        modifier = if (!isBottomSheet) Modifier.padding(top = 20.dp) else Modifier.padding(20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -440,7 +443,7 @@ fun SimpleRankerView(
             lineHeight = 22.sp,
             textAlign = TextAlign.Center,
             modifier =
-                if (!isMyRecord) Modifier.size(width = 24.dp, height = 20.dp)
+                if (!isBottomSheet) Modifier.size(width = 24.dp, height = 20.dp)
                 else Modifier
                     .wrapContentWidth()
                     .defaultMinSize(minWidth = 24.dp)
@@ -472,17 +475,18 @@ fun SimpleRankerView(
             DDanMarginHorizontalSpacer(8)
             Box(
                 modifier = Modifier
-                    .size(width = 22.dp, height = 20.dp)
+                    .height(20.dp)
                     .clip(CircleShape)
                     .background(DDanDDanColorPalette.current.color_icon_level01),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "나",
+                    text = if (isBottomSheet) "나" else "me",
                     style = DDanDDanTypo.current.Caption1,
                     fontFamily = Pretendard,
                     color = DDanDDanColorPalette.current.color_text_body_quinary,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.wrapContentWidth().padding(horizontal = 6.dp)
                 )
             }
         }

@@ -14,5 +14,5 @@ data class ResponseRank(
     val totalCalories: Int,
     val totalSucceededDays: Int
 ) {
-    fun toRank() = Rank(rank, userName, mainPetType, petLevel, totalCalories, totalSucceededDays)
+    fun toRank() = Rank(rank, userId, userName, mainPetType, petLevel, totalCalories, totalSucceededDays)
 }
