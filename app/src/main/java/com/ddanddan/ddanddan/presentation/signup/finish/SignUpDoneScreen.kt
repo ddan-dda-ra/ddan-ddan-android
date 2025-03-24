@@ -50,7 +50,7 @@ fun onSignUpDoneScreen(
             DDanMarginVerticalSpacer(size = 32)
             Text(
                 modifier = Modifier.padding(start = 20.dp),
-                text = stringResource(com.ddanddan.base.R.string.signup_done_button_text),
+                text = stringResource(com.ddanddan.base.R.string.signup_done_title),
                 style = DDanDDanTypo.current.HeadLine3,
                 fontFamily = NeoDgm,
                 color = DDanDDanColorPalette.current.color_text_headline_primary
