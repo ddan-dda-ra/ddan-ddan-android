@@ -17,6 +17,7 @@ import com.ddanddan.ddanddan.presentation.home.reward.level.LevelUpRoute
 import com.ddanddan.ddanddan.presentation.home.reward.pet.NewPetRoute
 import com.ddanddan.ddanddan.presentation.navigation.DDanDDanRoute
 import com.ddanddan.ddanddan.presentation.onboarding.OnboardingRoute
+import com.ddanddan.ddanddan.presentation.rank.RankRoute
 import com.ddanddan.ddanddan.presentation.setting.SettingRoute
 import com.ddanddan.ddanddan.presentation.setting.WebViewScreen
 import com.ddanddan.ddanddan.presentation.setting.nickname.EditNickNameRoute
@@ -29,8 +30,8 @@ import com.ddanddan.ddanddan.presentation.signin.SignInRoute
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
 import com.ddanddan.ddanddan.presentation.signup.egg.SetEggRoute
 import com.ddanddan.ddanddan.presentation.signup.finish.onSignUpDoneScreen
-import com.ddanddan.ddanddan.presentation.signup.target.SetTargetRoute
 import com.ddanddan.ddanddan.presentation.signup.name.SetNameRoute
+import com.ddanddan.ddanddan.presentation.signup.target.SetTargetRoute
 import com.ddanddan.ddanddan.presentation.signup.terms.onTermsScreen
 import com.ddanddan.ddanddan.presentation.splash.SplashRoute
 import com.ddanddan.domain.enums.PetTypeEnum
@@ -52,7 +53,8 @@ fun MainScreen(
             HomeRoute(
                 needRefresh = needRefresh,
                 onStorageClick = { petId ->
-                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
+//                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
+                    navController.navigate(DDanDDanRoute.RANKING.route)
                 },
                 onSettingClick = {
                     navController.navigate(DDanDDanRoute.SETTING.route)
@@ -331,6 +333,10 @@ fun MainScreen(
                     }
                 }
             )
+        }
+
+        composable(DDanDDanRoute.RANKING.route) {
+            RankRoute(navigatePopUp = navController::popBackStack)
         }
     }
 }
