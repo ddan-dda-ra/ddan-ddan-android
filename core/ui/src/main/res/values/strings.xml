@@ -58,4 +58,10 @@
     <string name="signup_terms_service">서비스 이용약관</string>
     <string name="signup_terms_personal">개인정보처리방침</string>
     <string name="signup_terms_button_text">시작하기</string>
+
+    <string name="rank_topbar_title">월간 랭킹</string>
+    <string name="rank_tablayout_calorie_title">칼로리</string>
+    <string name="rank_tablayout_calorie_subtitle">칼로리를\n많이 소비했어요</string>
+    <string name="rank_tablayout_target_title">목표</string>
+    <string name="rank_tablayout_target_subtitle">꾸준하게\n목표를 달성했어요</string>
 </resources>
