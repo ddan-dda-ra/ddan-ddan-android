@@ -1,12 +1,31 @@
 package com.ddanddan.ddanddan.presentation.rank
 
 import com.ddanddan.ddanddan.R
+import com.ddanddan.domain.entity.Rank
 import javax.annotation.concurrent.Immutable
 
 @Immutable
 data class RankState(
-    val criteria: RankCriteria = RankCriteria.TOTAL_CALORIES
-)
+    val criteria: RankCriteria = RankCriteria.TOTAL_CALORIES,
+    val myRank: Rank? = null,
+    val otherRanking: List<Rank> = listOf(),
+    val goldRank: Rank? = null,
+    val silverRank: Rank? = null,
+    val bronzeRank: Rank? = null
+) {
+    fun toStr(): String = "$criteria\n" +
+            "myRank: ${myRank.toStr()}\n" +
+            "others: ${otherRanking.map { it.toStr() }}"
+}
+
+fun Rank?.toStr(): String {
+    return "${this?.rank} ${this?.userName}\n"
+}
+
+sealed class RankSideEffect {
+    object NavigatePopUp : RankSideEffect()
+    data class NetworkError(val msg: String): RankSideEffect()
+}
 
 enum class RankCriteria { TOTAL_CALORIES, TOTAL_SUCCEEDED_DAYS }
 
