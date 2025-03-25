@@ -23,6 +23,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -38,7 +39,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -59,8 +64,9 @@ import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.Pretendard
 import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
-import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.compose.component.DDanTransparentSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
+import com.ddanddan.ui.compose.component.showSnackbar
 import com.ddanddan.ui.ext.noRippleClickable
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
@@ -72,8 +78,10 @@ fun RankRoute(
     rankViewModel: RankViewModel = hiltViewModel(),
     navigatePopUp: () -> Unit
 ) {
-    val snackBarHostState = remember { SnackbarHostState() }
     val rankState by rankViewModel.collectAsState()
+
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         rankViewModel.setCriteriaTab(RankCriteria.TOTAL_CALORIES)
@@ -83,6 +91,17 @@ fun RankRoute(
         when (sideEffect) {
             is RankSideEffect.NavigatePopUp -> navigatePopUp()
             is RankSideEffect.NetworkError -> {}
+            is RankSideEffect.SnackBarMsg -> {
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(
+                        message = sideEffect.msg,
+                        iconResId = sideEffect.icon,
+                        duration = SnackbarDuration.Short,
+                        bottomPadding = 88
+                    )
+                }
+            }
         }
     }
 
@@ -92,7 +111,8 @@ fun RankRoute(
         navigatePopUp = rankViewModel::onBackButtonClicked,
         changeTab = rankViewModel::setCriteriaTab,
         dismissToolTip = rankViewModel::dismissToolTip,
-        showToolTip = rankViewModel::showToolTip
+        showToolTip = rankViewModel::showToolTip,
+        onSnackBarEvent = rankViewModel::showSnackBarEvent
     )
 }
 
@@ -104,16 +124,17 @@ fun RankScreen(
     navigatePopUp: () -> Unit = {},
     changeTab: (RankCriteria) -> Unit = {},
     dismissToolTip: () -> Unit = {},
-    showToolTip: () -> Unit = {}
+    showToolTip: () -> Unit = {},
+    onSnackBarEvent: (String, Int) -> Unit = { _, _ -> }
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.rank_topbar_title),
         snackbarHost = {
-            DDanSnackBar(snackBarHostState = snackBarHostState)
+            DDanTransparentSnackBar(snackBarHostState = snackBarHostState)
         },
         onClick = {
             navigatePopUp()
-        }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -126,7 +147,8 @@ fun RankScreen(
                 onTabChange = changeTab,
                 rankState = rankState,
                 showToolTip = showToolTip,
-                dismissToolTip = dismissToolTip
+                dismissToolTip = dismissToolTip,
+                onOverScroll = onSnackBarEvent
             )
             MyRecordBottomSheet(rankState = rankState)
         }
@@ -323,7 +345,7 @@ private fun RankListView(
         }
 
         item {
-            DDanMarginVerticalSpacer(24)
+            DDanMarginVerticalSpacer(20)
         }
     }
 }
@@ -337,7 +359,8 @@ private fun RankTapLayout(
     rankState: RankState = RankState(),
     onTabChange: (RankCriteria) -> Unit = { },
     showToolTip: () -> Unit = { },
-    dismissToolTip: () -> Unit = { }
+    dismissToolTip: () -> Unit = { },
+    onOverScroll: (String, Int) -> Unit = { _, _ -> }
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf(RankCriteria.TOTAL_CALORIES, RankCriteria.TOTAL_SUCCEEDED_DAYS)
@@ -396,9 +419,7 @@ private fun RankTapLayout(
             }
         }
 
-        HorizontalPager(
-            state = pagerState
-        ) { page ->
+        HorizontalPager(state = pagerState) {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -406,7 +427,27 @@ private fun RankTapLayout(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                    RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip)
+                    Box(
+                        modifier = Modifier.nestedScroll(
+                            connection = object : NestedScrollConnection {
+                                override fun onPostScroll(
+                                    consumed: Offset,
+                                    available: Offset,
+                                    source: NestedScrollSource
+                                ): Offset {
+                                    if (available.y < 0) {
+                                        if (rankState.otherRanking.size + 3 < 100)
+                                            onOverScroll("랭킹은 100등까지만 노출해요", R.drawable.ic_system_fill)
+                                        else
+                                            onOverScroll("랭킹이 아직 ${rankState.otherRanking.size + 3}등까지 밖에 없어요", R.drawable.ic_system_fill)
+                                    }
+                                    return super.onPostScroll(consumed, available, source)
+                                }
+                            }
+                        )
+                    ) {
+                        RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip)
+                    }
                 }
             }
         }
