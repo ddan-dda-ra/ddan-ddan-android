@@ -464,7 +464,7 @@ fun TopRankerView(
                 modifier = Modifier.height(22.dp)
             )
             Text(
-                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${contents?:0}kcal" else "+${contents?:0}일",
+                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${contents?:0}kcal" else if ((contents?:0) == 0) "0일" else "+${contents}일",
                 style = DDanDDanTypo.current.Body1,
                 fontFamily = Pretendard,
                 fontWeight = FontWeight.W700,
@@ -568,7 +568,7 @@ fun SimpleRankerView(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${contents?:0}" else "+${contents?:0}",
+                text = if (criteria == RankCriteria.TOTAL_CALORIES || (contents?:0) == 0) "${contents?:0}" else "+${contents?:0}",
                 style = DDanDDanTypo.current.Body1,
                 fontWeight = FontWeight.W700,
                 fontFamily = Pretendard,
