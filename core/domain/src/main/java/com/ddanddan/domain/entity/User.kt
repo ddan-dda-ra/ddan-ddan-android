@@ -7,3 +7,7 @@ data class User(
     val foodQuantity: Int,
     val toyQuantity: Int
 )
+
+data class UserSetting(
+    val isAppPushOn: Boolean
+)

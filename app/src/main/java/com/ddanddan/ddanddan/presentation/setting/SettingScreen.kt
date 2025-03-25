@@ -79,7 +79,7 @@ fun SettingRoute(
         onLogOutClick = viewModel::showDialog,
         onDialogDismiss = viewModel::dismissDialog,
         onDialogConfirm = viewModel::navigateLogin,
-        onPushToggleClick = viewModel::onPushToggleClick
+        onPushToggleClick = viewModel::onPushNotificationToggle
     )
 }
 

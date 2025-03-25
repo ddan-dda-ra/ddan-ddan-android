@@ -14,4 +14,5 @@ interface UserRepository {
     suspend fun postLogin(token: String): AuthInfo
     fun getCaloriesFlow(): Flow<Float>
     suspend fun saveCalories(calories: Double): Unit
+    suspend fun patchPushSetting(isOn: Boolean): Boolean
 }
