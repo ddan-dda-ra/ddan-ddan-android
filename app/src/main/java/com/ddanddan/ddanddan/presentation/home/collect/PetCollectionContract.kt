@@ -7,7 +7,8 @@ import com.ddanddan.domain.entity.Pet
 data class PetCollectionState(
     val isLoading: Boolean = false,
     val pets: List<Pet> = emptyList(),
-    val mainPetId: String = ""
+    val mainPetId: String = "",
+    val selectedPetId: String = ""
 )
 
 sealed class PetCollectionSideEffect {

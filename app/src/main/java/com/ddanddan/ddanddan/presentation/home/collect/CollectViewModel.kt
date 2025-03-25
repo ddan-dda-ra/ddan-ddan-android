@@ -32,7 +32,7 @@ class CollectViewModel @Inject constructor(
 
     fun changeSelectId(id: String) = intent {
         reduce {
-            state.copy(mainPetId = id)
+            state.copy(selectedPetId = id)
         }
     }
 
@@ -63,7 +63,7 @@ class CollectViewModel @Inject constructor(
         reduce {
             state.copy(isLoading = true)
         }
-        postMainPetUseCase(state.mainPetId)
+        postMainPetUseCase(state.selectedPetId)
             .onSuccess {
                 postSideEffect(PetCollectionSideEffect.SuccessChangePet)
             }.onFailure {
@@ -84,7 +84,7 @@ class CollectViewModel @Inject constructor(
         getMainPetUseCase()
             .onSuccess {
                 reduce {
-                    state.copy(mainPetId = it.id)
+                    state.copy(mainPetId = it.id, selectedPetId = it.id)
                 }
             }.onFailure {
                 if (it is HttpException) {

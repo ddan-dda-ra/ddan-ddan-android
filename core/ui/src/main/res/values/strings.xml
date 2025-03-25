@@ -37,6 +37,8 @@
     <string name="setting_signout_under_text">모두 다 꼼꼼히 확인했어요</string>
     <string name="setting_signout_btn_text1">탈퇴하기</string>
 
+    <string name="petcollection_button_text">선택 완료</string>
+
     <string name="onboarding_subtitle1">오늘 소비한 칼로리로\n귀여운 펫을 키워보세요</string>
     <string name="onboarding_subtitle2">펫이 다 자라면\n또 다른 펫을 키울 수 있어요</string>
     <string name="onboarding_subtitle3">꾸준히 운동해\n소중한 펫을 지켜주세요!</string>
