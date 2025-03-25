@@ -15,5 +15,5 @@ sealed class PetCollectionSideEffect {
     object NavigatePopUp : PetCollectionSideEffect()
     object SuccessChangePet : PetCollectionSideEffect()
     data class NetworkError(val code: Int?) : PetCollectionSideEffect()
-    data class SnackBarMsg(val msg: String) : PetCollectionSideEffect()
+    data class SnackBarMsg(val msg: String, val icon: Int) : PetCollectionSideEffect()
 }

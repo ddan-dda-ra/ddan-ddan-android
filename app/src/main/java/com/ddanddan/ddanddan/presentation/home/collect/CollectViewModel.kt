@@ -22,8 +22,8 @@ class CollectViewModel @Inject constructor(
     override val container =
         container<PetCollectionState, PetCollectionSideEffect>(PetCollectionState())
 
-    fun showSnackBarEvent(msg: String) = intent {
-        postSideEffect(PetCollectionSideEffect.SnackBarMsg(msg))
+    fun showSnackBarEvent(msg: String, icon: Int) = intent {
+        postSideEffect(PetCollectionSideEffect.SnackBarMsg(msg, icon))
     }
 
     fun onBackButtonClicked() = intent {

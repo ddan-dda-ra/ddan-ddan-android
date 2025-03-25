@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -38,13 +39,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.base.R
-import com.ddanddan.ddanddan.presentation.home.reward.level.BottomButton
-import com.ddanddan.ddanddan.presentation.signup.SignUpState
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
-import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.compose.component.DDanTransparentSnackBar
+import com.ddanddan.ui.compose.component.showSnackbar
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -83,7 +83,11 @@ fun PetCollectionRoute(
             is PetCollectionSideEffect.SnackBarMsg -> {
                 scope.launch {
                     snackBarHostState.currentSnackbarData?.dismiss()
-                    snackBarHostState.showSnackbar(sideEffect.msg)
+                    snackBarHostState.showSnackbar(
+                        message = sideEffect.msg,
+                        iconResId = sideEffect.icon,
+                        duration = SnackbarDuration.Short
+                    )
                 }
             }
         }
@@ -107,7 +111,7 @@ fun PetCollectionScreen(
     navigatePopUp: () -> Unit = {},
     onConfirmClick: () -> Unit = {},
     onSelectId: (String) -> Unit = {},
-    onSnackBarEvent: (String) -> Unit = {},
+    onSnackBarEvent: (String, Int) -> Unit = { _, _ -> },
 ) {
     Scaffold(
         containerColor = DDanDDanColorPalette.current.color_background,
@@ -143,7 +147,7 @@ fun PetCollectionScreen(
             SetPetBtn(state = petCollectionState, text = stringResource(R.string.petcollection_button_text), onClick = onConfirmClick)
         },
         snackbarHost = {
-            DDanSnackBar(snackBarHostState = snackBarHostState)
+            DDanTransparentSnackBar(snackBarHostState = snackBarHostState)
         }
     ) { paddingValues ->
         LazyVerticalGrid(
@@ -181,7 +185,7 @@ fun PetItem(
     pet: Pet?,
     selectedPetId: String,
     onSelectId: (String) -> Unit = {},
-    onOtherItemClick: (String) -> Unit = {}
+    onOtherItemClick: (String, Int) -> Unit = { _, _ -> }
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -189,7 +193,7 @@ fun PetItem(
             if (pet != null) {
                 onSelectId(pet.id)
             } else {
-                onOtherItemClick("새로운 펫을 준비중이에요")
+                onOtherItemClick("새로운 펫을 준비중이에요", R.drawable.ic_clock_fill)
             }
         }) {
         Image(
