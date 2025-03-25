@@ -5,7 +5,8 @@ data class User(
     val name: String?,
     val purposeCalorie: Int,
     val foodQuantity: Int,
-    val toyQuantity: Int
+    val toyQuantity: Int,
+    val setting: UserSetting?
 )
 
 data class UserSetting(

@@ -57,7 +57,7 @@ class SettingViewModel @Inject constructor(
         getUserInfoUseCase()
             .onSuccess {
                 reduce {
-                    state.copy(nickName = it.name ?: "", calorie = it.purposeCalorie)
+                    state.copy(nickName = it.name ?: "", calorie = it.purposeCalorie, isPushAllowed = it.setting?.isAppPushOn == true)
                 }
             }.onFailure {
                 postSideEffect(SettingSideEffect.NetworkError("정보를 불러오는데 실패했습니다."))
