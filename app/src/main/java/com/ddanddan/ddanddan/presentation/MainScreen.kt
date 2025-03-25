@@ -52,8 +52,8 @@ fun MainScreen(
 
             HomeRoute(
                 needRefresh = needRefresh,
-                onStorageClick = { petId ->
-//                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
+                onRankingClick = {
+//                    petId -> navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
                     navController.navigate(DDanDDanRoute.RANKING.route)
                 },
                 onSettingClick = {

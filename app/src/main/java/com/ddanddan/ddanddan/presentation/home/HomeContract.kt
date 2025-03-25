@@ -23,6 +23,7 @@ sealed class HomeSideEffect {
     data class NetworkError(val code: Int?) : HomeSideEffect()
     data class NavigateLevelUp(val level: Int, val petType: PetTypeEnum) : HomeSideEffect()
     data class NavigateNewPet(val petType: PetTypeEnum) : HomeSideEffect()
-    data class NavigatePetCollection(val petId: String) : HomeSideEffect()
+//    data class NavigatePetCollection(val petId: String) : HomeSideEffect()
+    object NavigateRanking: HomeSideEffect()
     data class SnackBarMsg(val msg: String) : HomeSideEffect()
 }

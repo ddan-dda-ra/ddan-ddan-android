@@ -174,8 +174,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onStorageClick() = intent {
-        postSideEffect(HomeSideEffect.NavigatePetCollection(state.pet?.id ?: ""))
+    fun onRankingClick() = intent {
+//        postSideEffect(HomeSideEffect.NavigatePetCollection(state.pet?.id ?: ""))
+        postSideEffect(HomeSideEffect.NavigateRanking)
     }
 
     fun onSettingClick() = intent {
