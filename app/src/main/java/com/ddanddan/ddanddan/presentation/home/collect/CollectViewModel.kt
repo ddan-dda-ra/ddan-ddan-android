@@ -1,8 +1,7 @@
 package com.ddanddan.ddanddan.presentation.home.collect
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.ddanddan.ddanddan.presentation.home.HomeSideEffect
+import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetPetListUseCase
 import com.ddanddan.domain.usecase.PostMainPetUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,9 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
     private val getPetListUseCase: GetPetListUseCase,
-    private val postMainPetUseCase: PostMainPetUseCase
+    private val postMainPetUseCase: PostMainPetUseCase,
+    private val getMainPetUseCase: GetMainPetUseCase
 ) : ContainerHost<PetCollectionState, PetCollectionSideEffect>, ViewModel() {
     override val container =
         container<PetCollectionState, PetCollectionSideEffect>(PetCollectionState())
@@ -41,10 +40,11 @@ class CollectViewModel @Inject constructor(
         reduce {
             state.copy(isLoading = true)
         }
+        getMainPet()
         getPetListUseCase()
             .onSuccess {
                 reduce {
-                    state.copy(pets = it, mainPetId = savedStateHandle["petId"] ?: "")
+                    state.copy(pets = it, mainPetId = state.mainPetId)
                 }
             }.onFailure {
                 if (it is HttpException) {
@@ -78,5 +78,20 @@ class CollectViewModel @Inject constructor(
                 isLoading = false
             )
         }
+    }
+
+    private suspend fun getMainPet() = intent {
+        getMainPetUseCase()
+            .onSuccess {
+                reduce {
+                    state.copy(mainPetId = it.id)
+                }
+            }.onFailure {
+                if (it is HttpException) {
+                    postSideEffect(PetCollectionSideEffect.NetworkError(it.code()))
+                } else {
+                    postSideEffect(PetCollectionSideEffect.NetworkError(null))
+                }
+            }
     }
 }

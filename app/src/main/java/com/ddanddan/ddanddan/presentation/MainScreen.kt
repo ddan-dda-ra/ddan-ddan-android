@@ -70,10 +70,7 @@ fun MainScreen(
                 }
             )
         }
-        composable(
-            route = DDanDDanRoute.PET_COLLECTION.route + "?petId={petId}",
-            arguments = listOf(navArgument("petId") { type = NavType.StringType; defaultValue = "" })
-        ) {
+        composable(route = DDanDDanRoute.PET_COLLECTION.route) {
              PetCollectionRoute(
                 navigatePopUp = navController::popBackStack,
                 onConfirmClick = {
@@ -97,8 +94,7 @@ fun MainScreen(
                         ?.savedStateHandle
                         ?.set("needRefresh", it)
                     navController.popBackStack()
-                }
-                ,
+                },
                 onNickNameClick = {
                     navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
                 },
