@@ -241,7 +241,7 @@ fun SettingTitle(title: String, onClick: () -> Unit) {
         ) {
             Text(
                 text = title,
-                style = DDanDDanTypo.current.HeadLine6,
+                style = DDanDDanTypo.current.HeadLine7,
                 color = DDanDDanColorPalette.current.color_text_body_primary
             )
             Icon(
