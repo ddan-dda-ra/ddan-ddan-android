@@ -3,7 +3,6 @@ package com.ddanddan.ddanddan.presentation.setting.viewModel
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
-import com.ddanddan.domain.repository.AuthRepository
 import com.ddanddan.domain.usecase.DeleteUserUseCase
 import com.ddanddan.domain.usecase.DisableAutoLoginUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
@@ -100,6 +99,7 @@ class SettingViewModel @Inject constructor(
 
     fun onSettingItemClick(titleId: Int) = intent {
         val sideEffect = when (titleId) {
+            com.ddanddan.base.R.string.setting_title_text0 -> SettingSideEffect.NavigatePetCollection
             com.ddanddan.base.R.string.setting_title_text1 -> SettingSideEffect.EditNickname
             com.ddanddan.base.R.string.setting_title_text2 -> SettingSideEffect.EditTargetCalories
             com.ddanddan.base.R.string.setting_title_text4 -> SettingSideEffect.AgreeToTerms

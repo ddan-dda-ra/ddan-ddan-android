@@ -55,6 +55,7 @@ fun SettingRoute(
     onAgreeClick: () -> Unit,
     onSignOutClick: () -> Unit,
     navigateLogin: () -> Unit,
+    onPetCollectionClick: () -> Unit
 ) {
     val settingState by viewModel.collectAsState()
 
@@ -66,6 +67,7 @@ fun SettingRoute(
             is SettingSideEffect.AgreeToTerms -> onAgreeClick()
             is SettingSideEffect.DeleteAccount -> onSignOutClick()
             is SettingSideEffect.NavigateLogin -> navigateLogin()
+            is SettingSideEffect.NavigatePetCollection -> onPetCollectionClick()
             else -> {}
         }
     }

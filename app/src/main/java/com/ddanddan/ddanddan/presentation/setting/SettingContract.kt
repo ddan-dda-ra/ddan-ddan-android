@@ -43,4 +43,5 @@ sealed class SettingSideEffect {
     object NavigateSignOutSecond : SettingSideEffect()
     object NavigateOnBoarding : SettingSideEffect()
     object NavigateLogin : SettingSideEffect()
+    object NavigatePetCollection : SettingSideEffect()
 }

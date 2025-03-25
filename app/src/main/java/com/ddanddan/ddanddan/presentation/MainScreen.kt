@@ -111,6 +111,9 @@ fun MainScreen(
                     navController.navigate(DDanDDanRoute.SIGN_IN.route) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }
+                },
+                onPetCollectionClick = {
+                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route)
                 }
             )
         }
