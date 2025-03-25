@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.di
 
 import com.ddanddan.data.service.PetService
+import com.ddanddan.data.service.RankService
 import com.ddanddan.data.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -19,4 +20,8 @@ object ServiceModule {
     @Singleton
     @Provides
     fun provideUserService(retrofit: Retrofit): UserService = retrofit.create(UserService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideRankService(retrofit: Retrofit): RankService = retrofit.create(RankService::class.java)
 }
