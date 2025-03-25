@@ -133,4 +133,8 @@ class SettingViewModel @Inject constructor(
         if (isDeleteUser) postSideEffect(SettingSideEffect.NavigateOnBoarding)
         else postSideEffect(SettingSideEffect.NetworkError("회원탈퇴에 실패했습니다."))
     }
+
+    fun onPushToggleClick() = intent {
+        reduce { state.copy(isPushAllowed = !state.isPushAllowed) }
+    }
 }

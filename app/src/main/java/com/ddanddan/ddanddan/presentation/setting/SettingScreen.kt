@@ -1,11 +1,13 @@
 package com.ddanddan.ddanddan.presentation.setting
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,8 +16,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,9 +37,12 @@ import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
+import com.ddanddan.ui.compose.Pretendard
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
+import com.ddanddan.ui.compose.component.DDanToggleButton
 import com.ddanddan.ui.compose.component.DDanTwoButtonDialog
 import com.ddanddan.ui.compose.component.DdanScaffold
+import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -68,7 +76,8 @@ fun SettingRoute(
         onSettingItemClick = viewModel::onSettingItemClick,
         onLogOutClick = viewModel::showDialog,
         onDialogDismiss = viewModel::dismissDialog,
-        onDialogConfirm = viewModel::navigateLogin
+        onDialogConfirm = viewModel::navigateLogin,
+        onPushToggleClick = viewModel::onPushToggleClick
     )
 }
 
@@ -80,6 +89,7 @@ fun SettingScreen(
     onLogOutClick: () -> Unit = {},
     onDialogDismiss: () -> Unit = {},
     onDialogConfirm: () -> Unit = {},
+    onPushToggleClick: () -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.setting_topbar_title),
@@ -90,15 +100,48 @@ fun SettingScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = DDanDDanColorPalette.current.elevation_color_elevation_level01)
+                .background(color = DDanDDanColorPalette.current.color_background)
                 .padding(it)
         ) {
             val versionName = VERSION_NAME
-            SettingColumn(
-                settingItems = settingState.settingItems,
-                onClick = { titleId -> onSettingItemClick(titleId) }
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp)
+            ) {
+                Text(
+                    modifier = Modifier.height(22.dp)
+                        .wrapContentHeight(Alignment.CenterVertically),
+                    text = stringResource(R.string.setting_part_text1),
+                    style = DDanDDanTypo.current.Body2,
+                    fontFamily = Pretendard,
+                    color = DDanDDanColorPalette.current.color_text_headline_teritary
+                )
+                DDanMarginVerticalSpacer(8)
+                SettingBoxColumn(
+                    settingItems = settingState.settingItems,
+                    onClick = { titleId -> onSettingItemClick(titleId) }
+                )
+                DDanMarginVerticalSpacer(28)
+                Text(
+                    modifier = Modifier.height(22.dp)
+                        .wrapContentHeight(Alignment.CenterVertically),
+                    text = stringResource(R.string.setting_part_text2),
+                    style = DDanDDanTypo.current.Body2,
+                    fontFamily = Pretendard,
+                    color = DDanDDanColorPalette.current.color_text_headline_teritary
+                )
+                DDanMarginVerticalSpacer(8)
+                SettingToggleTitle(
+                    state = settingState,
+                    title = stringResource(R.string.setting_title_push),
+                    onToggleClick = onPushToggleClick
+                )
+                DDanMarginVerticalSpacer(28)
+            }
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 8.dp,
+                color = DDanDDanColorPalette.current.elevation_color_elevation_level01
             )
-            DDanMarginVerticalSpacer(size = 8)
             SettingColumn(
                 settingItems = settingState.settingItemsBottom,
                 onClick = { titleId ->
@@ -155,12 +198,37 @@ fun SettingColumn(
 }
 
 @Composable
+fun SettingBoxColumn(
+    settingItems: List<Pair<Int, Int?>>,
+    onClick: (Int) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(color = DDanDDanColorPalette.current.color_background),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(12.dp) // 아이템 간격 설정
+    ) {
+        items(settingItems) { item ->
+            SettingBoxTitle(
+                title = stringResource(id = item.first),
+                description = item.second?.let { stringResource(it) },
+                onClick = {
+                    onClick(item.first)
+                }
+            )
+        }
+    }
+}
+
+@Composable
 fun SettingTitle(title: String, onClick: () -> Unit) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .clickable { onClick() }
         .background(color = DDanDDanColorPalette.current.color_background)
-        .height(46.dp)
+        .height(48.dp)
     ) {
         Row(
             modifier = Modifier
@@ -180,6 +248,74 @@ fun SettingTitle(title: String, onClick: () -> Unit) {
                 modifier = Modifier.size(20.dp)
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun SettingToggleTitle(
+    state: SettingState = SettingState(),
+    title: String = "전체 푸시 알림",
+    onToggleClick: () -> Unit = {}
+) {
+    Row(modifier = Modifier
+        .background(
+            color = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+            shape = RoundedCornerShape(8.dp)
+        )
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 20.dp)
+        .noRippleClickable { onToggleClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = DDanDDanTypo.current.HeadLine7,
+            fontFamily = Pretendard,
+            color = DDanDDanColorPalette.current.color_text_headline_primary
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        DDanToggleButton(
+            isOn = state.isPushAllowed
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SettingBoxTitle(title: String = "펫 보관함", description: String? = "null", onClick: () -> Unit = {}) {
+    Row(modifier = Modifier
+        .background(
+            color = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+            shape = RoundedCornerShape(8.dp)
+        )
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 20.dp)
+        .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Text(
+                text = title,
+                style = DDanDDanTypo.current.HeadLine7,
+                fontFamily = Pretendard,
+                color = DDanDDanColorPalette.current.color_text_headline_primary
+            )
+            if (description != null) {
+                DDanMarginVerticalSpacer(4)
+                Text(
+                    text = description,
+                    style = DDanDDanTypo.current.Body2,
+                    fontFamily = Pretendard,
+                    color = DDanDDanColorPalette.current.color_text_headline_teritary
+                )
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = painterResource(R.drawable.ic_arrow_right_l),
+            contentDescription = null
+        )
     }
 }
 
