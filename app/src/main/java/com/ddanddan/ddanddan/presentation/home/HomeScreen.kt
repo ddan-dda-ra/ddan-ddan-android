@@ -336,15 +336,17 @@ fun HomeBottomItem(
     ) {
         DDanActionButton(
             modifier = Modifier.weight(1f),
+            icon = R.drawable.ic_action_apple,
             text = "먹이주기",
-            count = "${foodCount}개 보유",
+            count = foodCount,
             onClick = onEatClick
         )
         Spacer(modifier = Modifier.width(12.dp))
         DDanActionButton(
             modifier = Modifier.weight(1f),
+            icon = R.drawable.ic_action_star,
             text = "놀아주기",
-            count = "${toyCount}개 보유",
+            count = toyCount,
             onClick = onPlayClick
         )
     }
