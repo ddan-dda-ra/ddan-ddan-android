@@ -137,7 +137,7 @@ fun SetNameField(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .border(1.dp, 
-                    color = if (signUpState.isValidNickname) DDanDDanColorPalette.current.elevation_color_elevation_level01
+                    color = if (nickName.isBlank() || signUpState.isValidNickname) DDanDDanColorPalette.current.elevation_color_elevation_level01
                         else DDanDDanColorPalette.current.color_outline_level01_error,
                     shape = RoundedCornerShape(4.dp)
                 ),
@@ -158,7 +158,7 @@ fun SetNameField(
                 placeholderColor = DDanDDanColorPalette.current.color_text_body_quinary,
             ),
         )
-        if (!signUpState.isValidNickname) {
+        if (!signUpState.isValidNickname && nickName.isNotBlank()) {
             DDanMarginVerticalSpacer(8)
             Text(
                 text = stringResource(R.string.signup_name_error),
