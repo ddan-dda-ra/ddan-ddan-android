@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RequestLogin (
     val token: String,
-    val tokenType: String
+    val tokenType: String,
+    val deviceToken: String?
 )
