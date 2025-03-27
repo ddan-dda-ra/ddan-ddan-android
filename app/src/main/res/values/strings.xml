@@ -16,6 +16,9 @@
     <string name="setting_signout_text2">모두 다 꼼꼼히 확인했어요</string>
     <string name="setting_signout_btn2">탈퇴하기</string>
 
+    <string name="ddan_notification_channel_id">ddan_notification_channel</string>
+    <string name="ddan_notification_channel_description">딴딴 알림</string>
+
     <string-array name = "basic_tooltip_msg">
         <item>안녕</item>
         <item>배고파요</item>
