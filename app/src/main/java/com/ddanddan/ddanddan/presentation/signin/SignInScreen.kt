@@ -31,6 +31,7 @@ import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanLoadingDialog
 import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.google.firebase.messaging.FirebaseMessaging
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -55,7 +56,12 @@ fun SignInRoute(
         signInState = signInState,
         onProgressBarDismiss = signInViewModel::dismissProgressBar,
         onProgressBarShow = signInViewModel::showProgressBar,
-        onLoginWithToken = signInViewModel::loginWithToken
+        onLoginWithToken = { token ->
+            FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                val deviceToken = if (it.isSuccessful) it.result else null
+                signInViewModel.loginWithToken(token, deviceToken)
+            }
+        }
     )
 }
 
