@@ -11,7 +11,7 @@ interface UserRepository {
     suspend fun deleteUser(cause: String): Boolean
     suspend fun getMainPet(): Pet
     suspend fun postMainPet(petId: String): Pet
-    suspend fun postLogin(token: String): AuthInfo
+    suspend fun postLogin(token: String, deviceToken: String?): AuthInfo
     fun getCaloriesFlow(): Flow<Float>
     suspend fun saveCalories(calories: Double): Unit
 }
