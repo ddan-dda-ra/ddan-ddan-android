@@ -30,9 +30,9 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 apply("com.android.application")
                 apply("androidx.navigation.safeargs")
                 apply("com.google.android.gms.oss-licenses-plugin")
-//                apply("com.google.gms.google-services")
-//                apply("com.google.firebase.appdistribution")
-//                apply("com.google.firebase.crashlytics")
+                apply("com.google.gms.google-services")
+                apply("com.google.firebase.appdistribution")
+                apply("com.google.firebase.crashlytics")
             }
 
             extensions.configure<ApplicationExtension> {
@@ -113,7 +113,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 // androidx
                 implementation(libs.getBundle("androidx"))
 
-//                // firebase
+                // firebase
                 implementation(platform(libs.getLibrary("firebase-bom")))
                 implementation(libs.getBundle("firebase"))
 
