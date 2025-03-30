@@ -67,8 +67,10 @@ fun HomeProgressbarItem(
             Text(
                 text = "${homeState.pet?.expPercent?.toInt()}%",
                 color = DDanDDanColorPalette.current.color_text_headline_primary,
-                style = DDanDDanTypo.current.SubTitle1
-            )
+                fontSize = 16.sp,
+                fontWeight = FontWeight(400),
+                fontFamily = NeoDgm
+                )
         }
 
         Spacer(modifier = Modifier.height(8.dp))

@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.presentation.rank
 
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionSideEffect
 import com.ddanddan.domain.entity.Rank
 import javax.annotation.concurrent.Immutable
 
@@ -18,6 +19,7 @@ data class RankState(
 sealed class RankSideEffect {
     object NavigatePopUp : RankSideEffect()
     data class NetworkError(val msg: String): RankSideEffect()
+    data class SnackBarMsg(val msg: String, val icon: Int) : RankSideEffect()
 }
 
 enum class RankCriteria { TOTAL_CALORIES, TOTAL_SUCCEEDED_DAYS }

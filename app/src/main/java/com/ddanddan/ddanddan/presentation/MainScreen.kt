@@ -52,8 +52,8 @@ fun MainScreen(
 
             HomeRoute(
                 needRefresh = needRefresh,
-                onStorageClick = { petId ->
-//                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
+                onRankingClick = {
+//                    petId -> navController.navigate(DDanDDanRoute.PET_COLLECTION.route + "?petId=${petId}")
                     navController.navigate(DDanDDanRoute.RANKING.route)
                 },
                 onSettingClick = {
@@ -70,10 +70,7 @@ fun MainScreen(
                 }
             )
         }
-        composable(
-            route = DDanDDanRoute.PET_COLLECTION.route + "?petId={petId}",
-            arguments = listOf(navArgument("petId") { type = NavType.StringType; defaultValue = "" })
-        ) {
+        composable(route = DDanDDanRoute.PET_COLLECTION.route) {
              PetCollectionRoute(
                 navigatePopUp = navController::popBackStack,
                 onConfirmClick = {
@@ -97,8 +94,7 @@ fun MainScreen(
                         ?.savedStateHandle
                         ?.set("needRefresh", it)
                     navController.popBackStack()
-                }
-                ,
+                },
                 onNickNameClick = {
                     navController.navigate(DDanDDanRoute.EDIT_NICKNAME.route)
                 },
@@ -115,6 +111,9 @@ fun MainScreen(
                     navController.navigate(DDanDDanRoute.SIGN_IN.route) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }
+                },
+                onPetCollectionClick = {
+                    navController.navigate(DDanDDanRoute.PET_COLLECTION.route)
                 }
             )
         }

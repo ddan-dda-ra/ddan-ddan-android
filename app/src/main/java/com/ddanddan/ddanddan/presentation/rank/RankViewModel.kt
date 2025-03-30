@@ -65,4 +65,8 @@ class RankViewModel @Inject constructor(
             )
         }
     }
+
+    fun showSnackBarEvent(msg: String, icon: Int) = intent {
+        postSideEffect(RankSideEffect.SnackBarMsg(msg, icon))
+    }
 }

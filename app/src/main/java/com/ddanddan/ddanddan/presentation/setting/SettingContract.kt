@@ -4,9 +4,10 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class SettingState(
-    val settingItems: List<Int> = listOf(
-        com.ddanddan.base.R.string.setting_title_text1,
-        com.ddanddan.base.R.string.setting_title_text2
+    val settingItems: List<Pair<Int, Int?>> = listOf(
+        Pair(com.ddanddan.base.R.string.setting_title_text0, com.ddanddan.base.R.string.setting_description_text0),
+        Pair(com.ddanddan.base.R.string.setting_title_text1, null),
+        Pair(com.ddanddan.base.R.string.setting_title_text2, null)
     ),
     val settingItemsBottom: List<Int> = listOf(
         com.ddanddan.base.R.string.setting_title_text4,
@@ -26,6 +27,7 @@ data class SettingState(
     val isCheckBoxChecked: Boolean = false,
     val needRefreshHomeScreen: Boolean = false,
     val isShowLogoutDialog: Boolean = false,
+    val isPushAllowed: Boolean = false
 )
 
 sealed class SettingSideEffect {
@@ -41,4 +43,5 @@ sealed class SettingSideEffect {
     object NavigateSignOutSecond : SettingSideEffect()
     object NavigateOnBoarding : SettingSideEffect()
     object NavigateLogin : SettingSideEffect()
+    object NavigatePetCollection : SettingSideEffect()
 }

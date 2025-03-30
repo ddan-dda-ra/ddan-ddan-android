@@ -4,7 +4,7 @@ import com.ddanddan.domain.enums.PetTypeEnum
 
 data class SignUpState(
     val nickname: String = "",
-    val isValidNickname: Boolean = true,
+    val isValidNickname: Boolean = false,
     val calorie: Int = 300,
     val petType: PetTypeEnum? = null
 )

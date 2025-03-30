@@ -48,8 +48,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getCaloriesFlow(): Flow<Float> = ddanddanDataStore.caloriesFlow
 
-
     override suspend fun saveCalories(calories: Double) {
         ddanddanDataStore.calories = calories.toFloat()
     }
+
+    override suspend fun patchPushSetting(isOn: Boolean): Boolean = userDataSource.patchPushSetting(isOn).isAppPushOn
 }

@@ -59,7 +59,7 @@ import com.ddanddan.base.R.drawable
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     needRefresh: Boolean,
-    onStorageClick: (String) -> Unit,
+    onRankingClick: () -> Unit,
     onSettingClick: () -> Unit,
     onNavigateLevelUp: (level: Int, petType: String) -> Unit,
     onNavigateNewPet: (petType: String) -> Unit,
@@ -120,8 +120,8 @@ fun HomeRoute(
 
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is HomeSideEffect.NavigatePetCollection -> {
-                onStorageClick(sideEffect.petId)
+            is HomeSideEffect.NavigateRanking -> {
+                onRankingClick()
             }
             is HomeSideEffect.NavigateSetting -> {
                 onSettingClick()
@@ -145,7 +145,7 @@ fun HomeRoute(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
         composition = composition,
-        onStorageClick = homeViewModel::onStorageClick,
+        onRankingClick = homeViewModel::onRankingClick,
         onSettingClick = homeViewModel::onSettingClick,
         onEatClick = homeViewModel::postFoodPet,
         onPlayClick = homeViewModel::postPlayPet,
@@ -159,7 +159,7 @@ fun HomeScreen(
     homeState: HomeState = HomeState(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     composition: LottieComposition? = null,
-    onStorageClick: () -> Unit = {},
+    onRankingClick: () -> Unit = {},
     onSettingClick: () -> Unit = {},
     onEatClick: () -> Unit = {},
     onPlayClick: () -> Unit = {},
@@ -184,7 +184,7 @@ fun HomeScreen(
                 .padding(paddingValues)
         ) {
             Spacer(modifier = Modifier.padding(top = 20.dp))
-            HomeTopItem(onStorageClick = onStorageClick, onSettingClick = onSettingClick)
+            HomeTopItem(onRankingClick = onRankingClick, onSettingClick = onSettingClick)
             Spacer(modifier = Modifier.padding(top = 16.dp))
             HomeCalorieItem(
                 purposeCalorie = homeState.user?.purposeCalorie.toString(),
@@ -208,7 +208,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeTopItem(onStorageClick: () -> Unit = {}, onSettingClick: () -> Unit = {}) {
+fun HomeTopItem(onRankingClick: () -> Unit = {}, onSettingClick: () -> Unit = {}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -216,13 +216,13 @@ fun HomeTopItem(onStorageClick: () -> Unit = {}, onSettingClick: () -> Unit = {}
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            modifier = Modifier.clickable(onClick = onStorageClick),
-            painter = painterResource(id = drawable.ic_storage),
-            contentDescription = "보관함"
+            modifier = Modifier.clickable(onClick = onRankingClick),
+            painter = painterResource(id = drawable.ic_trophy),
+            contentDescription = "랭킹"
         )
         Image(
             modifier = Modifier.clickable(onClick = onSettingClick),
-            painter = painterResource(id = drawable.ic_setting),
+            painter = painterResource(id = drawable.ic_hamburger),
             contentDescription = "설정"
         )
     }
@@ -336,15 +336,17 @@ fun HomeBottomItem(
     ) {
         DDanActionButton(
             modifier = Modifier.weight(1f),
+            icon = R.drawable.ic_action_apple,
             text = "먹이주기",
-            count = "${foodCount}개 보유",
+            count = foodCount,
             onClick = onEatClick
         )
         Spacer(modifier = Modifier.width(12.dp))
         DDanActionButton(
             modifier = Modifier.weight(1f),
+            icon = R.drawable.ic_action_star,
             text = "놀아주기",
-            count = "${toyCount}개 보유",
+            count = toyCount,
             onClick = onPlayClick
         )
     }

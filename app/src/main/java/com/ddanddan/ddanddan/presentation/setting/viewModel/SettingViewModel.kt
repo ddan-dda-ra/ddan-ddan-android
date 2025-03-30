@@ -3,12 +3,17 @@ package com.ddanddan.ddanddan.presentation.setting.viewModel
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
-import com.ddanddan.domain.repository.AuthRepository
 import com.ddanddan.domain.usecase.DeleteUserUseCase
 import com.ddanddan.domain.usecase.DisableAutoLoginUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
+import com.ddanddan.domain.usecase.PatchPushSettingUseCase
 import com.ddanddan.domain.usecase.PutUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -21,7 +26,8 @@ class SettingViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val putUserInfoUseCase: PutUserInfoUseCase,
     private val deleteUserUseCase: DeleteUserUseCase,
-    private val disableAutoLoginUseCase: DisableAutoLoginUseCase
+    private val disableAutoLoginUseCase: DisableAutoLoginUseCase,
+    private val patchPushSettingUseCase: PatchPushSettingUseCase
 ) :
     ContainerHost<SettingState, SettingSideEffect>, ViewModel() {
     override val container =
@@ -30,7 +36,6 @@ class SettingViewModel @Inject constructor(
     init {
         getUserInfo()
     }
-
 
     fun incrementTarget() = intent {
         if (state.calorie < 1000) {
@@ -52,7 +57,7 @@ class SettingViewModel @Inject constructor(
         getUserInfoUseCase()
             .onSuccess {
                 reduce {
-                    state.copy(nickName = it.name ?: "", calorie = it.purposeCalorie)
+                    state.copy(nickName = it.name ?: "", calorie = it.purposeCalorie, isPushAllowed = it.setting?.isAppPushOn == true)
                 }
             }.onFailure {
                 postSideEffect(SettingSideEffect.NetworkError("정보를 불러오는데 실패했습니다."))
@@ -100,6 +105,7 @@ class SettingViewModel @Inject constructor(
 
     fun onSettingItemClick(titleId: Int) = intent {
         val sideEffect = when (titleId) {
+            com.ddanddan.base.R.string.setting_title_text0 -> SettingSideEffect.NavigatePetCollection
             com.ddanddan.base.R.string.setting_title_text1 -> SettingSideEffect.EditNickname
             com.ddanddan.base.R.string.setting_title_text2 -> SettingSideEffect.EditTargetCalories
             com.ddanddan.base.R.string.setting_title_text4 -> SettingSideEffect.AgreeToTerms
@@ -132,5 +138,30 @@ class SettingViewModel @Inject constructor(
         val isDeleteUser = deleteUserUseCase(state.selectedReasons.toString())
         if (isDeleteUser) postSideEffect(SettingSideEffect.NavigateOnBoarding)
         else postSideEffect(SettingSideEffect.NetworkError("회원탈퇴에 실패했습니다."))
+    }
+
+    private var debounceJob: Job? = null
+
+    fun onPushNotificationToggle() = intent {
+        debounceJob?.cancel()
+        reduce {
+            state.copy(isPushAllowed = !state.isPushAllowed)
+        }
+        debounceJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(1000)
+            patchPushNotification()
+        }
+    }
+
+    private fun patchPushNotification() = intent {
+        patchPushSettingUseCase(state.isPushAllowed)
+            .onSuccess {
+                reduce {
+                    state.copy(isPushAllowed = it)
+                }
+            }
+            .onFailure {
+                postSideEffect(SettingSideEffect.NetworkError("푸시 알림 설정에 실패했습니다."))
+            }
     }
 }

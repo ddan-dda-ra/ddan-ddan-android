@@ -8,15 +8,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -29,16 +33,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.base.R
-import com.ddanddan.ddanddan.presentation.home.reward.level.BottomButton
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
-import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.compose.component.DDanTransparentSnackBar
+import com.ddanddan.ui.compose.component.showSnackbar
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -77,7 +83,11 @@ fun PetCollectionRoute(
             is PetCollectionSideEffect.SnackBarMsg -> {
                 scope.launch {
                     snackBarHostState.currentSnackbarData?.dismiss()
-                    snackBarHostState.showSnackbar(sideEffect.msg)
+                    snackBarHostState.showSnackbar(
+                        message = sideEffect.msg,
+                        iconResId = sideEffect.icon,
+                        duration = SnackbarDuration.Short
+                    )
                 }
             }
         }
@@ -101,7 +111,7 @@ fun PetCollectionScreen(
     navigatePopUp: () -> Unit = {},
     onConfirmClick: () -> Unit = {},
     onSelectId: (String) -> Unit = {},
-    onSnackBarEvent: (String) -> Unit = {},
+    onSnackBarEvent: (String, Int) -> Unit = { _, _ -> },
 ) {
     Scaffold(
         containerColor = DDanDDanColorPalette.current.color_background,
@@ -134,10 +144,10 @@ fun PetCollectionScreen(
             )
         },
         bottomBar = {
-            BottomButton(btnText = "선택 완료", onButtonClick = onConfirmClick)
+            SetPetBtn(state = petCollectionState, text = stringResource(R.string.petcollection_button_text), onClick = onConfirmClick)
         },
         snackbarHost = {
-            DDanSnackBar(snackBarHostState = snackBarHostState)
+            DDanTransparentSnackBar(snackBarHostState = snackBarHostState)
         }
     ) { paddingValues ->
         LazyVerticalGrid(
@@ -159,7 +169,7 @@ fun PetCollectionScreen(
                     ) {
                         PetItem(
                             pet = petCollectionState.pets.getOrNull(index),
-                            mainPetId = petCollectionState.mainPetId,
+                            selectedPetId = petCollectionState.selectedPetId,
                             onSelectId = onSelectId,
                             onOtherItemClick = onSnackBarEvent
                         )
@@ -173,9 +183,9 @@ fun PetCollectionScreen(
 @Composable
 fun PetItem(
     pet: Pet?,
-    mainPetId: String,
+    selectedPetId: String,
     onSelectId: (String) -> Unit = {},
-    onOtherItemClick: (String) -> Unit = {}
+    onOtherItemClick: (String, Int) -> Unit = { _, _ -> }
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -183,7 +193,7 @@ fun PetItem(
             if (pet != null) {
                 onSelectId(pet.id)
             } else {
-                onOtherItemClick("새로운 펫을 준비중이에요")
+                onOtherItemClick("새로운 펫을 준비중이에요", R.drawable.ic_clock_fill)
             }
         }) {
         Image(
@@ -193,7 +203,7 @@ fun PetItem(
                 .fillMaxSize()
                 .padding(if (pet != null) 8.dp else 24.dp)
         )
-        if (pet?.id == mainPetId) {
+        if (pet?.id == selectedPetId) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -204,5 +214,38 @@ fun PetItem(
                     )
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun SetPetBtn(
+    state: PetCollectionState = PetCollectionState(),
+    text: String = "",
+    onClick: () -> Unit = {}
+) {
+    val buttonColors =
+        if (state.selectedPetId != state.mainPetId) DDanDDanColorPalette.current.color_button_active else DDanDDanColorPalette.current.color_button_disabled
+    val textColors =
+        if (state.selectedPetId != state.mainPetId) DDanDDanColorPalette.current.color_text_button_primary_default else DDanDDanColorPalette.current.color_text_button_primary_disabled
+    androidx.compose.material3.Button(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shape = RoundedCornerShape(0.dp),
+        enabled = state.selectedPetId != state.mainPetId,
+        onClick = {
+            onClick()
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColors,
+            disabledContainerColor = buttonColors
+        ),
+    ) {
+        androidx.compose.material.Text(
+            text = text,
+            style = DDanDDanTypo.current.HeadLine6,
+            color = textColors
+        )
     }
 }

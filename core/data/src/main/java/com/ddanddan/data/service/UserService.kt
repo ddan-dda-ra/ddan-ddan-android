@@ -2,15 +2,18 @@ package com.ddanddan.data.service
 
 import com.ddanddan.model.request.RequestLogin
 import com.ddanddan.model.request.RequestMainPet
+import com.ddanddan.model.request.RequestUserSetting
 import com.ddanddan.model.request.RequestSignOut
 import com.ddanddan.model.request.RequestUser
 import com.ddanddan.model.response.ResponseLogin
 import com.ddanddan.model.response.ResponseMainPet
 import com.ddanddan.model.response.ResponseUser
+import com.ddanddan.model.response.ResponseUserSetting
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Body
 import retrofit2.http.HTTP
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 
@@ -40,4 +43,9 @@ interface UserService {
     suspend fun postLogin(
         @Body token: RequestLogin
     ): ResponseLogin
+
+    @PATCH("/v1/users/me/settings")
+    suspend fun patchPushSetting(
+        @Body requestBody: RequestUserSetting
+    ): ResponseUserSetting
 }
