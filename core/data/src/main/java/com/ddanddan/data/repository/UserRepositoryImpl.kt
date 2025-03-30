@@ -33,8 +33,8 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.postMainPet(petId).mainPet.toPet()
     }
 
-    override suspend fun postLogin(token: String): AuthInfo {
-        val result = userDataSource.postLogin(token)
+    override suspend fun postLogin(token: String, deviceToken: String?): AuthInfo {
+        val result = userDataSource.postLogin(token, deviceToken)
         val bearerAccessToken = "Bearer ${result.accessToken}"
         val bearerRefreshToken = "Bearer ${result.refreshToken}"
 

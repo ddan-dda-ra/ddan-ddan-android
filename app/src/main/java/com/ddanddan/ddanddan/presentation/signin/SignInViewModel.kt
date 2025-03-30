@@ -35,8 +35,8 @@ class SignInViewModel @Inject constructor(
         reduce { state.copy(isShowProgressBar = true) }
     }
 
-    fun loginWithToken(token: String) = intent {
-        postLoginUseCase(token)
+    fun loginWithToken(token: String, deviceToken: String?) = intent {
+        postLoginUseCase(token, deviceToken)
             .onSuccess {
                 if (it.isOnboardingComplete) navigateHome(it.accessToken, it.refreshToken)
                 else navigateSignUp()
