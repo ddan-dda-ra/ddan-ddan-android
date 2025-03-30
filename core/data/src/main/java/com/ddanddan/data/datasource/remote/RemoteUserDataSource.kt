@@ -22,7 +22,6 @@ class RemoteUserDataSource @Inject constructor(
     }
     suspend fun getMainPet(): ResponseMainPet = userService.getMainPet()
     suspend fun postMainPet(petId: String) = userService.postMainPet(RequestMainPet(petId))
-    suspend fun postLogin(token: String) = userService.postLogin(RequestLogin(token, "KAKAO"))
     suspend fun patchPushSetting(isOn: Boolean) = userService.patchPushSetting(RequestUserSetting(isOn))
     suspend fun postLogin(token: String, deviceToken: String?) = userService.postLogin(RequestLogin(token, "KAKAO", deviceToken))
 }
