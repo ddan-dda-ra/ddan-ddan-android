@@ -54,6 +54,7 @@ fun SignInRoute(
 
     SignInScreen(
         signInState = signInState,
+        snackBarHostState = snackBarHostState,
         onProgressBarDismiss = signInViewModel::dismissProgressBar,
         onProgressBarShow = signInViewModel::showProgressBar,
         onLoginWithToken = { token ->

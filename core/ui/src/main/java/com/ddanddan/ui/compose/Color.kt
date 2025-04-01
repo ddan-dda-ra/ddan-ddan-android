@@ -86,6 +86,7 @@ data class ColorPalette(
 
     val elevation_color_elevation_level01: Color = Color.Unspecified,
     val elevation_color_elevation_level02: Color = Color.Unspecified,
+    val elevation_color_elevation_level03: Color = Color.Unspecified,
     val elevation_color_elevation_alternative: Color = Color.Unspecified,
 
     val color_graphic_kakao: Color = Color.Unspecified,
@@ -147,6 +148,7 @@ val ColorPalette_Dark = ColorPalette(
 
     elevation_color_elevation_level01 = Color(color = 0xFF212121),
     elevation_color_elevation_level02 = Color(color = 0xFF333333),
+    elevation_color_elevation_level03 = Color(color = 0xCC333333),
     elevation_color_elevation_alternative = Color(color = 0xFF13E695),
 
     color_graphic_kakao = Color(color = 0xFFFEE500),
@@ -234,6 +236,7 @@ val ColorPalette_Light = ColorPalette(
 
     elevation_color_elevation_level01 = Color(color = 0xFFF5F5F5), // elevation level 1
     elevation_color_elevation_level02 = Color(color = 0xFFE9E9E9), // elevation level 2
+    elevation_color_elevation_level03 = Color(color = 0xCCE9E9E9), // elevation level 3
     elevation_color_elevation_alternative = Color(color = 0xFF33EDA7), // elevation level 2
 
     color_background = Color(color = 0xFFFFFFFF), // background color
