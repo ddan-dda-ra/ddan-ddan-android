@@ -38,7 +38,7 @@ fun DDanTransparentSnackBar(
             Box(
                 modifier = Modifier
                     .background(
-                        color = Color(0xCC333333),
+                        color = DDanDDanColorPalette.current.color_icon_level03,
                         shape = RoundedCornerShape(1000.dp)
                     )
                     .fillMaxWidth()
