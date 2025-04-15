@@ -1,10 +1,12 @@
 package com.ddanddan.data.service
 
+import com.ddanddan.model.request.RequestDailyCalories
 import com.ddanddan.model.request.RequestLogin
 import com.ddanddan.model.request.RequestMainPet
 import com.ddanddan.model.request.RequestUserSetting
 import com.ddanddan.model.request.RequestSignOut
 import com.ddanddan.model.request.RequestUser
+import com.ddanddan.model.response.ResponseDailyCalories
 import com.ddanddan.model.response.ResponseLogin
 import com.ddanddan.model.response.ResponseMainPet
 import com.ddanddan.model.response.ResponseUser
@@ -48,4 +50,9 @@ interface UserService {
     suspend fun patchPushSetting(
         @Body requestBody: RequestUserSetting
     ): ResponseUserSetting
+
+    @PATCH("/v1/users/me/daily-calorie")
+    suspend fun patchDailyCalories(
+        @Body requestBody: RequestDailyCalories
+    ): ResponseDailyCalories
 }

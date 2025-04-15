@@ -2,6 +2,7 @@ package com.ddanddan.ddanddan.presentation.rank
 
 import androidx.lifecycle.ViewModel
 import com.ddanddan.domain.usecase.GetRankingUseCase
+import com.ddanddan.domain.usecase.PatchDailyCaloriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RankViewModel @Inject constructor(
-    private val getRankingUseCase: GetRankingUseCase
+    private val getRankingUseCase: GetRankingUseCase,
+    private val patchDailyCaloriesUseCase: PatchDailyCaloriesUseCase
 ) : ViewModel(), ContainerHost<RankState, RankSideEffect> {
 
     override val container =
@@ -44,6 +46,21 @@ class RankViewModel @Inject constructor(
                         otherRanking = others.drop(3)
                     )
                 }
+            }
+            .onFailure {
+                if (!state.isPatchAttempted) {
+                    postSideEffect(RankSideEffect.UserDataEmpty)
+                } else {
+                    postSideEffect(RankSideEffect.NetworkError("정보를 가져오는데 실패했습니다"))
+                }
+            }
+    }
+
+    fun patchDailyCalories() = intent {
+        patchDailyCaloriesUseCase(0)
+            .onSuccess {
+                reduce { state.copy(isPatchAttempted = true) }
+                getRanking()
             }
             .onFailure {
                 postSideEffect(RankSideEffect.NetworkError("정보를 가져오는데 실패했습니다"))

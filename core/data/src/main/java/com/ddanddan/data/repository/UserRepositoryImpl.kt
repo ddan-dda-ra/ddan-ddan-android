@@ -53,4 +53,8 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun patchPushSetting(isOn: Boolean): Boolean = userDataSource.patchPushSetting(isOn).isAppPushOn
+
+    override suspend fun patchDailyCalories(calorie: Int) {
+        userDataSource.patchDailyCalories(calorie)
+    }
 }
