@@ -1,6 +1,7 @@
 package com.ddanddan.data.datasource.remote
 
 import com.ddanddan.data.service.UserService
+import com.ddanddan.model.request.RequestDailyCalories
 import com.ddanddan.model.request.RequestLogin
 import com.ddanddan.model.request.RequestMainPet
 import com.ddanddan.model.request.RequestUserSetting
@@ -24,4 +25,5 @@ class RemoteUserDataSource @Inject constructor(
     suspend fun postMainPet(petId: String) = userService.postMainPet(RequestMainPet(petId))
     suspend fun patchPushSetting(isOn: Boolean) = userService.patchPushSetting(RequestUserSetting(isOn))
     suspend fun postLogin(token: String, deviceToken: String?) = userService.postLogin(RequestLogin(token, "KAKAO", deviceToken))
+    suspend fun patchDailyCalories(calorie: Int) = userService.patchDailyCalories(RequestDailyCalories(calorie))
 }
