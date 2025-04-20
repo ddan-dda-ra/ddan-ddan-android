@@ -132,20 +132,19 @@ fun SetNameField(
     Column {
         OutlinedTextField(
             value = nickName,
+            singleLine = true,
             placeholder = { Text(stringResource(R.string.signup_name_placeholder)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .border(1.dp, 
-                    color = if (nickName.isBlank() || signUpState.isValidNickname) DDanDDanColorPalette.current.elevation_color_elevation_level01
+                    color = if (nickName.isBlank() || signUpState.isValidNickname && !signUpState.isNickNameLengthOver) DDanDDanColorPalette.current.elevation_color_elevation_level01
                         else DDanDDanColorPalette.current.color_outline_level01_error,
                     shape = RoundedCornerShape(4.dp)
                 ),
             textStyle = DDanDDanTypo.current.Body1,
             onValueChange = { newText ->
-                if (newText.length <= maxChar) {
-                    onValueChange(newText)
-                }
+                onValueChange(newText)
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 textColor = DDanDDanColorPalette.current.color_text_body_primary,
@@ -162,6 +161,13 @@ fun SetNameField(
             DDanMarginVerticalSpacer(8)
             Text(
                 text = stringResource(R.string.signup_name_error),
+                style = DDanDDanTypo.current.Caption2,
+                color = DDanDDanColorPalette.current.Error300
+            )
+        } else if (signUpState.isNickNameLengthOver) {
+            DDanMarginVerticalSpacer(8)
+            Text(
+                text = stringResource(R.string.signup_name_over),
                 style = DDanDDanTypo.current.Caption2,
                 color = DDanDDanColorPalette.current.Error300
             )

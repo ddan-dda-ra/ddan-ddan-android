@@ -83,6 +83,10 @@ class RankViewModel @Inject constructor(
         }
     }
 
+    fun goToMyRanking() = intent {
+        postSideEffect(RankSideEffect.GoToMyRanking(state.myRank?.rank ?: 0))
+    }
+
     fun showSnackBarEvent(msg: String, icon: Int) = intent {
         postSideEffect(RankSideEffect.SnackBarMsg(msg, icon))
     }

@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.presentation.setting.nickname
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -122,14 +123,14 @@ fun EditNickNameScreen(
                 )
                 DDanMarginVerticalSpacer(size = 8)
                 EditNameField(
-                    nickName = settingState.nickName,
+                    settingState = settingState,
                     onValueChange = onValueChange
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
             EditCardBtn(
+                settingState = settingState,
                 text = stringResource(id = R.string.editname_button_text),
-                nickName = settingState.nickName,
                 onClick = onEditBtnClick
             )
             DDanMarginVerticalSpacer(size = 20)
@@ -139,51 +140,71 @@ fun EditNickNameScreen(
 
 @Composable
 fun EditNameField(
-    nickName: String,
+    settingState: SettingState = SettingState(),
     onValueChange: (String) -> Unit = {},
 ) {
-    val maxChar = 10
-
-    OutlinedTextField(
-        value = nickName,
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        onValueChange = { newText ->
-            if (newText.length <= maxChar) {
+    Column {
+        OutlinedTextField(
+            value = settingState.nickName,
+            singleLine = true,
+            placeholder = { Text(stringResource(R.string.signup_name_placeholder)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .border(1.dp,
+                    color = if (settingState.isValidNickname && !settingState.isNickNameLengthOver) DDanDDanColorPalette.current.elevation_color_elevation_level01
+                    else DDanDDanColorPalette.current.color_outline_level01_error,
+                    shape = RoundedCornerShape(4.dp)
+                ),
+            textStyle = DDanDDanTypo.current.Body1,
+            onValueChange = { newText ->
                 onValueChange(newText)
-            }
-        },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = DDanDDanColorPalette.current.color_text_body_primary,
-            focusedBorderColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
-            unfocusedBorderColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
-            unfocusedLabelColor = DDanDDanColorPalette.current.color_text_body_quinary,
-            focusedLabelColor = DDanDDanColorPalette.current.color_text_body_quinary,
-            backgroundColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
-        ),
-    )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = DDanDDanColorPalette.current.color_text_body_primary,
+                focusedBorderColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+                unfocusedBorderColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+                unfocusedLabelColor = DDanDDanColorPalette.current.color_text_body_quinary,
+                focusedLabelColor = DDanDDanColorPalette.current.color_text_body_quinary,
+                backgroundColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+                cursorColor = DDanDDanColorPalette.current.color_icon_level02_active,
+                placeholderColor = DDanDDanColorPalette.current.color_text_body_quinary,
+            ),
+        )
+        if (!settingState.isValidNickname) {
+            DDanMarginVerticalSpacer(8)
+            Text(
+                text = stringResource(R.string.signup_name_error),
+                style = DDanDDanTypo.current.Caption2,
+                color = DDanDDanColorPalette.current.Error300
+            )
+        } else if (settingState.isNickNameLengthOver) {
+            DDanMarginVerticalSpacer(8)
+            Text(
+                text = stringResource(R.string.signup_name_over),
+                style = DDanDDanTypo.current.Caption2,
+                color = DDanDDanColorPalette.current.Error300
+            )
+        }
+    }
 }
 
 @Composable
 fun EditCardBtn(
+    settingState: SettingState = SettingState(),
     text: String,
-    nickName: String,
     onClick: () -> Unit = {}
 ) {
-    // 각 필드의 현재 상태를 수집
-    val isAllValid = nickName.isNotEmpty()
-
     val buttonColors =
-        if (isAllValid) DDanDDanColorPalette.current.color_button_active else DDanDDanColorPalette.current.color_button_disabled
+        if (settingState.isValidNickname) DDanDDanColorPalette.current.color_button_active else DDanDDanColorPalette.current.color_button_disabled
     val textColors =
-        if (isAllValid) DDanDDanColorPalette.current.color_text_button_primary_default else DDanDDanColorPalette.current.color_text_button_primary_disabled
+        if (settingState.isValidNickname) DDanDDanColorPalette.current.color_text_button_primary_default else DDanDDanColorPalette.current.color_text_button_primary_disabled
     androidx.compose.material3.Button(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
         shape = RoundedCornerShape(0.dp),
-        enabled = isAllValid,
+        enabled = settingState.isValidNickname,
         onClick = {
             onClick()
         },

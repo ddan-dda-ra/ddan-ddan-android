@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,12 +49,13 @@ import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.component.DDanActionButton
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
-import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.enums.TooltipType
 import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import com.ddanddan.base.R.drawable
+import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.compose.component.showSnackbar
 
 @Composable
 fun HomeRoute(
@@ -136,7 +138,12 @@ fun HomeRoute(
                 onNavigateError(sideEffect.code)
             }
             is HomeSideEffect.SnackBarMsg -> {
-                snackBarHostState.showSnackbar(sideEffect.msg)
+                snackBarHostState.showSnackbar(
+                    message = sideEffect.msg,
+                    iconResId = R.drawable.ic_system_fill,
+                    duration = SnackbarDuration.Short,
+                    bottomPadding = 0
+                )
             }
         }
     }

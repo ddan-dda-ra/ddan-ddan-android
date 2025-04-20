@@ -28,12 +28,19 @@ class SignUpViewModel @Inject constructor(
         return input.matches(regex.toRegex())
     }
 
-    fun setNickname(newNickname: String) = intent {
+    fun setNickname(newNickName: String) = intent {
         reduce {
-            state.copy(
-                nickname = newNickname,
-                isValidNickname = isKoreanOnly(newNickname) && newNickname.length > 2
-            )
+            if (newNickName.length <= 10) {
+                state.copy(
+                    nickname = newNickName,
+                    isValidNickname = isKoreanOnly(newNickName) && newNickName.length >= 2,
+                    isNickNameLengthOver = if (newNickName.length <= 9) false else state.isNickNameLengthOver
+                )
+            } else {
+                state.copy(
+                    isNickNameLengthOver = true
+                )
+            }
         }
     }
 

@@ -43,7 +43,7 @@ import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
-import com.ddanddan.ui.compose.component.DDanTransparentSnackBar
+import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.showSnackbar
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
@@ -147,7 +147,7 @@ fun PetCollectionScreen(
             SetPetBtn(state = petCollectionState, text = stringResource(R.string.petcollection_button_text), onClick = onConfirmClick)
         },
         snackbarHost = {
-            DDanTransparentSnackBar(snackBarHostState = snackBarHostState)
+            DDanSnackBar(snackBarHostState = snackBarHostState)
         }
     ) { paddingValues ->
         LazyVerticalGrid(

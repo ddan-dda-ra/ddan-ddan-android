@@ -1,6 +1,5 @@
 package com.ddanddan.ddanddan.presentation.signin
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -124,7 +123,6 @@ fun SignInScreen (
                         }
                         else {
                             onProgressBarDismiss()
-                            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

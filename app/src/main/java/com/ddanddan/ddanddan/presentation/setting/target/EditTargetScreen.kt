@@ -1,14 +1,17 @@
 package com.ddanddan.ddanddan.presentation.setting.target
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -32,6 +35,7 @@ import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
+import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
@@ -142,12 +146,24 @@ fun EditTargetControl(
             }
         )
 
-        Text(
-            text = target.toString(),
-            style = DDanDDanTypo.current.HeadLine4,
-            color = DDanDDanColorPalette.current.color_text_button_secondary_default,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        DDanMarginHorizontalSpacer(size = 20)
+        Box(
+            modifier = Modifier
+                .size(width = 88.dp, height = 80.dp)
+                .background(
+                    color = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            androidx.compose.material3.Text(
+                text = target.toString(),
+                style = DDanDDanTypo.current.HeadLine4,
+                color = DDanDDanColorPalette.current.color_text_button_secondary_default,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+        DDanMarginHorizontalSpacer(size = 20)
 
         Image(
             painter = painterResource(id = R.drawable.icon_system_plus),

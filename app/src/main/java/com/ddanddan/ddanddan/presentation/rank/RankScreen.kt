@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -41,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -64,7 +67,7 @@ import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.Pretendard
 import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
-import com.ddanddan.ui.compose.component.DDanTransparentSnackBar
+import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
 import com.ddanddan.ui.compose.component.showSnackbar
 import com.ddanddan.ui.ext.noRippleClickable
@@ -82,6 +85,7 @@ fun RankRoute(
 
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
+    val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
         rankViewModel.setCriteriaTab(RankCriteria.TOTAL_CALORIES)
@@ -105,6 +109,18 @@ fun RankRoute(
             is RankSideEffect.UserDataEmpty -> {
                 rankViewModel.patchDailyCalories()
             }
+            is RankSideEffect.GoToMyRanking -> {
+                val myRank = rankState.myRank?.rank ?: 0
+                if (myRank <= 3) {
+                    scope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                } else {
+                    scope.launch {
+                        listState.animateScrollToItem(myRank - 3)
+                    }
+                }
+            }
         }
     }
 
@@ -115,7 +131,9 @@ fun RankRoute(
         changeTab = rankViewModel::setCriteriaTab,
         dismissToolTip = rankViewModel::dismissToolTip,
         showToolTip = rankViewModel::showToolTip,
-        onSnackBarEvent = rankViewModel::showSnackBarEvent
+        onSnackBarEvent = rankViewModel::showSnackBarEvent,
+        goToMyRanking = rankViewModel::goToMyRanking,
+        listState = listState
     )
 }
 
@@ -128,12 +146,14 @@ fun RankScreen(
     changeTab: (RankCriteria) -> Unit = {},
     dismissToolTip: () -> Unit = {},
     showToolTip: () -> Unit = {},
-    onSnackBarEvent: (String, Int) -> Unit = { _, _ -> }
+    onSnackBarEvent: (String, Int) -> Unit = { _, _ -> },
+    goToMyRanking: () -> Unit = { },
+    listState: LazyListState = rememberLazyListState()
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.rank_topbar_title),
         snackbarHost = {
-            DDanTransparentSnackBar(snackBarHostState = snackBarHostState)
+            DDanSnackBar(snackBarHostState = snackBarHostState)
         },
         onClick = {
             navigatePopUp()
@@ -151,9 +171,10 @@ fun RankScreen(
                 rankState = rankState,
                 showToolTip = showToolTip,
                 dismissToolTip = dismissToolTip,
-                onOverScroll = onSnackBarEvent
+                onOverScroll = onSnackBarEvent,
+                listState = listState
             )
-            MyRecordBottomSheet(rankState = rankState)
+            MyRecordBottomSheet(rankState = rankState, onClick = goToMyRanking)
         }
     }
 }
@@ -161,13 +182,15 @@ fun RankScreen(
 @Preview (showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
 private fun MyRecordBottomSheet(
-    rankState: RankState = RankState()
+    rankState: RankState = RankState(),
+    onClick: () -> Unit = { }
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
+            .noRippleClickable { onClick() }
     ) {
         if (rankState.myRank != null) {
             SimpleRankerView(
@@ -189,13 +212,15 @@ private fun MyRecordBottomSheet(
 private fun RankListView(
     rankState: RankState = RankState(),
     showToolTip: () -> Unit = {},
-    dismissToolTip: () -> Unit = {}
+    dismissToolTip: () -> Unit = {},
+    listState: LazyListState = rememberLazyListState()
 ) {
     val today = LocalDate.now()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp),
+        state = listState
     ) {
         item {
             DDanMarginVerticalSpacer(24)
@@ -238,51 +263,6 @@ private fun RankListView(
                         }
                 )
 
-                if (rankState.showToolTip) {
-                    ConstraintLayout (
-                        modifier = Modifier
-                            .constrainAs(tooltip) {
-                                top.linkTo(icon.bottom)
-                                start.linkTo(icon.start)
-                                end.linkTo(icon.end)
-                            }
-                            .noRippleClickable {
-                                dismissToolTip()
-                            }
-                    ) {
-                        val (polygon, msg) = createRefs()
-                        Image(
-                            painter = painterResource(R.drawable.ic_tooltip_polygon),
-                            modifier = Modifier.size(16.dp)
-                                .constrainAs(polygon) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                },
-                            contentDescription = null
-                        )
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(DDanDDanColorPalette.current.elevation_color_elevation_level01)
-                                .constrainAs(msg) {
-                                    top.linkTo(polygon.top, margin = 8.dp)
-                                    start.linkTo(parent.start)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end)
-                                }
-                        ) {
-                            Text(
-                                text = stringResource(if (rankState.criteria == RankCriteria.TOTAL_CALORIES) R.string.rank_tooltip_calorie else R.string.rank_tooltip_target),
-                                style = DDanDDanTypo.current.SubTitle1,
-                                fontFamily = Pretendard,
-                                color = DDanDDanColorPalette.current.color_text_headline_secondary,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                            )
-                        }
-                    }
-                }
-
                 Column(
                     modifier = Modifier.constrainAs(ranking) {
                         top.linkTo(title.bottom)
@@ -314,7 +294,8 @@ private fun RankListView(
                             contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.goldRank?.totalCalories
                             else rankState.goldRank?.totalSucceededDays,
                             mainPetType = rankState.goldRank?.mainPetType,
-                            petLevel = rankState.goldRank?.petLevel
+                            petLevel = rankState.goldRank?.petLevel,
+                            isCenter = true
                         )
                         DDanMarginHorizontalSpacer(13)
                         TopRankerView(
@@ -327,6 +308,52 @@ private fun RankListView(
                             mainPetType = rankState.bronzeRank?.mainPetType,
                             petLevel = rankState.bronzeRank?.petLevel
                         )
+                    }
+                }
+
+                if (rankState.showToolTip) {
+                    ConstraintLayout (
+                        modifier = Modifier
+                            .constrainAs(tooltip) {
+                                top.linkTo(icon.bottom)
+                                start.linkTo(icon.start)
+                                end.linkTo(icon.end)
+                            }
+                            .noRippleClickable {
+                                dismissToolTip()
+                            }
+                    ) {
+                        val (polygon, msg) = createRefs()
+                        Image(
+                            painter = painterResource(R.drawable.ic_tooltip_polygon),
+                            colorFilter = ColorFilter.tint(DDanDDanColorPalette.current.elevation_color_elevation_level02),
+                            modifier = Modifier.size(16.dp)
+                                .constrainAs(polygon) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                },
+                            contentDescription = null
+                        )
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
+                                .constrainAs(msg) {
+                                    top.linkTo(polygon.top, margin = 8.dp)
+                                    start.linkTo(parent.start)
+                                    bottom.linkTo(parent.bottom)
+                                    end.linkTo(parent.end)
+                                }
+                        ) {
+                            Text(
+                                text = stringResource(if (rankState.criteria == RankCriteria.TOTAL_CALORIES) R.string.rank_tooltip_calorie else R.string.rank_tooltip_target),
+                                style = DDanDDanTypo.current.SubTitle1,
+                                fontFamily = Pretendard,
+                                color = DDanDDanColorPalette.current.color_text_headline_secondary,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -363,7 +390,8 @@ private fun RankTapLayout(
     onTabChange: (RankCriteria) -> Unit = { },
     showToolTip: () -> Unit = { },
     dismissToolTip: () -> Unit = { },
-    onOverScroll: (String, Int) -> Unit = { _, _ -> }
+    onOverScroll: (String, Int) -> Unit = { _, _ -> },
+    listState: LazyListState = rememberLazyListState()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf(RankCriteria.TOTAL_CALORIES, RankCriteria.TOTAL_SUCCEEDED_DAYS)
@@ -440,16 +468,16 @@ private fun RankTapLayout(
                                 ): Offset {
                                     if (available.y < 0) {
                                         if (rankState.otherRanking.size + 3 < 100)
-                                            onOverScroll("랭킹은 100등까지만 노출해요", R.drawable.ic_system_fill)
-                                        else
                                             onOverScroll("랭킹이 아직 ${rankState.otherRanking.size + 3}등까지 밖에 없어요", R.drawable.ic_system_fill)
+                                        else
+                                            onOverScroll("랭킹은 100등까지만 노출해요", R.drawable.ic_system_fill)
                                     }
                                     return super.onPostScroll(consumed, available, source)
                                 }
                             }
                         )
                     ) {
-                        RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip)
+                        RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip, listState = listState)
                     }
                 }
             }
@@ -466,7 +494,8 @@ fun TopRankerView(
     nickname: String? = "일이삼등입니다다다다다다",
     contents: Int? = 1024,
     mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
-    petLevel: Int? = 1
+    petLevel: Int? = 1,
+    isCenter: Boolean = false
 ) {
     ConstraintLayout(
         modifier = modifier
@@ -508,7 +537,7 @@ fun TopRankerView(
                 modifier = Modifier.height(22.dp)
             )
             Text(
-                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${contents?:0}kcal" else if ((contents?:0) == 0) "0일" else "+${contents}일",
+                text = if (criteria == RankCriteria.TOTAL_CALORIES) "${String.format("%,d", contents?:0)}kcal" else if ((contents?:0) == 0) "0일" else "+${contents}일",
                 style = DDanDDanTypo.current.Body1,
                 fontFamily = Pretendard,
                 fontWeight = FontWeight.W700,
@@ -526,7 +555,7 @@ fun TopRankerView(
             contentDescription = "왕관 이미지",
             modifier = Modifier
                 .constrainAs(crownImage) {
-                    top.linkTo(parent.top, margin = if (rank == 1) 0.dp else 19.dp)
+                    top.linkTo(parent.top, margin = if (isCenter) 0.dp else 19.dp)
                     start.linkTo(contentColumn.start)
                     end.linkTo(contentColumn.end)
                 }
@@ -612,7 +641,7 @@ fun SimpleRankerView(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = if (criteria == RankCriteria.TOTAL_CALORIES || (contents?:0) == 0) "${contents?:0}" else "+${contents?:0}",
+                text = if (criteria == RankCriteria.TOTAL_CALORIES || (contents?:0) == 0) String.format("%,d", contents?:0) else "+${contents?:0}",
                 style = DDanDDanTypo.current.Body1,
                 fontWeight = FontWeight.W700,
                 fontFamily = Pretendard,
