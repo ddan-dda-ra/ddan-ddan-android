@@ -67,7 +67,7 @@ import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.Pretendard
 import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
-import com.ddanddan.ui.compose.component.DDanTransparentSnackBar
+import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.DdanScaffold
 import com.ddanddan.ui.compose.component.showSnackbar
 import com.ddanddan.ui.ext.noRippleClickable
@@ -153,7 +153,7 @@ fun RankScreen(
     DdanScaffold(
         topbarText = stringResource(id = R.string.rank_topbar_title),
         snackbarHost = {
-            DDanTransparentSnackBar(snackBarHostState = snackBarHostState)
+            DDanSnackBar(snackBarHostState = snackBarHostState)
         },
         onClick = {
             navigatePopUp()

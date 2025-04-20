@@ -54,7 +54,7 @@ import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import com.ddanddan.base.R.drawable
-import com.ddanddan.ui.compose.component.DDanTransparentSnackBar
+import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.showSnackbar
 
 @Composable
@@ -176,7 +176,7 @@ fun HomeScreen(
     Scaffold(
         containerColor = DDanDDanColorPalette.current.color_background,
         snackbarHost = {
-            DDanTransparentSnackBar(snackBarHostState = snackBarHostState)
+            DDanSnackBar(snackBarHostState = snackBarHostState)
         },
         bottomBar = {
             HomeBottomItem(
