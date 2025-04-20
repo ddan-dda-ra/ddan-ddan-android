@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -83,6 +85,7 @@ fun RankRoute(
 
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
+    val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
         rankViewModel.setCriteriaTab(RankCriteria.TOTAL_CALORIES)
@@ -106,6 +109,18 @@ fun RankRoute(
             is RankSideEffect.UserDataEmpty -> {
                 rankViewModel.patchDailyCalories()
             }
+            is RankSideEffect.GoToMyRanking -> {
+                val myRank = rankState.myRank?.rank ?: 0
+                if (myRank <= 3) {
+                    scope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                } else {
+                    scope.launch {
+                        listState.animateScrollToItem(myRank - 3)
+                    }
+                }
+            }
         }
     }
 
@@ -116,7 +131,9 @@ fun RankRoute(
         changeTab = rankViewModel::setCriteriaTab,
         dismissToolTip = rankViewModel::dismissToolTip,
         showToolTip = rankViewModel::showToolTip,
-        onSnackBarEvent = rankViewModel::showSnackBarEvent
+        onSnackBarEvent = rankViewModel::showSnackBarEvent,
+        goToMyRanking = rankViewModel::goToMyRanking,
+        listState = listState
     )
 }
 
@@ -129,7 +146,9 @@ fun RankScreen(
     changeTab: (RankCriteria) -> Unit = {},
     dismissToolTip: () -> Unit = {},
     showToolTip: () -> Unit = {},
-    onSnackBarEvent: (String, Int) -> Unit = { _, _ -> }
+    onSnackBarEvent: (String, Int) -> Unit = { _, _ -> },
+    goToMyRanking: () -> Unit = { },
+    listState: LazyListState = rememberLazyListState()
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.rank_topbar_title),
@@ -152,9 +171,10 @@ fun RankScreen(
                 rankState = rankState,
                 showToolTip = showToolTip,
                 dismissToolTip = dismissToolTip,
-                onOverScroll = onSnackBarEvent
+                onOverScroll = onSnackBarEvent,
+                listState = listState
             )
-            MyRecordBottomSheet(rankState = rankState)
+            MyRecordBottomSheet(rankState = rankState, onClick = goToMyRanking)
         }
     }
 }
@@ -162,13 +182,15 @@ fun RankScreen(
 @Preview (showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
 private fun MyRecordBottomSheet(
-    rankState: RankState = RankState()
+    rankState: RankState = RankState(),
+    onClick: () -> Unit = { }
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
+            .noRippleClickable { onClick() }
     ) {
         if (rankState.myRank != null) {
             SimpleRankerView(
@@ -190,13 +212,15 @@ private fun MyRecordBottomSheet(
 private fun RankListView(
     rankState: RankState = RankState(),
     showToolTip: () -> Unit = {},
-    dismissToolTip: () -> Unit = {}
+    dismissToolTip: () -> Unit = {},
+    listState: LazyListState = rememberLazyListState()
 ) {
     val today = LocalDate.now()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp),
+        state = listState
     ) {
         item {
             DDanMarginVerticalSpacer(24)
@@ -366,7 +390,8 @@ private fun RankTapLayout(
     onTabChange: (RankCriteria) -> Unit = { },
     showToolTip: () -> Unit = { },
     dismissToolTip: () -> Unit = { },
-    onOverScroll: (String, Int) -> Unit = { _, _ -> }
+    onOverScroll: (String, Int) -> Unit = { _, _ -> },
+    listState: LazyListState = rememberLazyListState()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf(RankCriteria.TOTAL_CALORIES, RankCriteria.TOTAL_SUCCEEDED_DAYS)
@@ -443,16 +468,16 @@ private fun RankTapLayout(
                                 ): Offset {
                                     if (available.y < 0) {
                                         if (rankState.otherRanking.size + 3 < 100)
-                                            onOverScroll("랭킹은 100등까지만 노출해요", R.drawable.ic_system_fill)
-                                        else
                                             onOverScroll("랭킹이 아직 ${rankState.otherRanking.size + 3}등까지 밖에 없어요", R.drawable.ic_system_fill)
+                                        else
+                                            onOverScroll("랭킹은 100등까지만 노출해요", R.drawable.ic_system_fill)
                                     }
                                     return super.onPostScroll(consumed, available, source)
                                 }
                             }
                         )
                     ) {
-                        RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip)
+                        RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip, listState = listState)
                     }
                 }
             }
