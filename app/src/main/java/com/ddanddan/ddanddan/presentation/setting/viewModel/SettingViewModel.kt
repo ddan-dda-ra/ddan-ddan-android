@@ -66,10 +66,23 @@ class SettingViewModel @Inject constructor(
 
     fun changeNickName(newNickName: String) = intent {
         reduce {
-            state.copy(
-                nickName = newNickName
-            )
+            if (newNickName.length <= 10) {
+                state.copy(
+                    nickName = newNickName,
+                    isValidNickname = isKoreanOnly(newNickName) && newNickName.length >= 2,
+                    isNickNameLengthOver = if (newNickName.length <= 9) false else state.isNickNameLengthOver
+                )
+            } else {
+                state.copy(
+                    isNickNameLengthOver = true
+                )
+            }
         }
+    }
+
+    private fun isKoreanOnly(input: String): Boolean {
+        val regex = "^[가-힣]+$"  // 한글 음절 블록만 허용하는 정규 표현식
+        return input.matches(regex.toRegex())
     }
 
     fun updateSelection(reason: String) = intent {

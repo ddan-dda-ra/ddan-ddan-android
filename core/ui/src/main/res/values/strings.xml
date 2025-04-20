@@ -57,6 +57,7 @@
     <string name="signup_name_button_text">다음</string>
     <string name="signup_name_placeholder">별명을 입력해 주세요</string>
     <string name="signup_name_error">형식이 올바르지 않아요</string>
+    <string name="signup_name_over">최대 10자까지 입력할 수 있어요</string>
 
     <string name="signup_terms_title">딴딴의 서비스 이용 약관에\n동의해 주세요</string>
     <string name="signup_terms_subtitle">서비스 시작 및 가입을 위해 먼저\n가입 및 정보 제공에 동의해 주세요.</string>

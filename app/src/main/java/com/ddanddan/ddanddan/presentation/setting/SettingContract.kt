@@ -28,7 +28,8 @@ data class SettingState(
     val needRefreshHomeScreen: Boolean = false,
     val isShowLogoutDialog: Boolean = false,
     val isPushAllowed: Boolean = false,
-    val isValidNickname: Boolean = true
+    val isValidNickname: Boolean = true,
+    val isNickNameLengthOver: Boolean = false
 )
 
 sealed class SettingSideEffect {
