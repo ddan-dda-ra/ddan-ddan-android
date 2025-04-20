@@ -27,7 +27,8 @@ data class SettingState(
     val isCheckBoxChecked: Boolean = false,
     val needRefreshHomeScreen: Boolean = false,
     val isShowLogoutDialog: Boolean = false,
-    val isPushAllowed: Boolean = false
+    val isPushAllowed: Boolean = false,
+    val isValidNickname: Boolean = true
 )
 
 sealed class SettingSideEffect {

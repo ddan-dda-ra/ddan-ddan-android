@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.presentation.setting.nickname
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -139,30 +140,51 @@ fun EditNickNameScreen(
 
 @Composable
 fun EditNameField(
+    settingState: SettingState = SettingState(),
     nickName: String,
     onValueChange: (String) -> Unit = {},
 ) {
     val maxChar = 10
 
-    OutlinedTextField(
-        value = nickName,
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        onValueChange = { newText ->
-            if (newText.length <= maxChar) {
-                onValueChange(newText)
-            }
-        },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = DDanDDanColorPalette.current.color_text_body_primary,
-            focusedBorderColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
-            unfocusedBorderColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
-            unfocusedLabelColor = DDanDDanColorPalette.current.color_text_body_quinary,
-            focusedLabelColor = DDanDDanColorPalette.current.color_text_body_quinary,
-            backgroundColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
-        ),
-    )
+    Column {
+        OutlinedTextField(
+            value = nickName,
+            singleLine = true,
+            placeholder = { Text(stringResource(R.string.signup_name_placeholder)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .border(1.dp,
+                    color = if (nickName.isBlank() || settingState.isValidNickname) DDanDDanColorPalette.current.elevation_color_elevation_level01
+                    else DDanDDanColorPalette.current.color_outline_level01_error,
+                    shape = RoundedCornerShape(4.dp)
+                ),
+            textStyle = DDanDDanTypo.current.Body1,
+            onValueChange = { newText ->
+                if (newText.length <= maxChar) {
+                    onValueChange(newText)
+                }
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = DDanDDanColorPalette.current.color_text_body_primary,
+                focusedBorderColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+                unfocusedBorderColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+                unfocusedLabelColor = DDanDDanColorPalette.current.color_text_body_quinary,
+                focusedLabelColor = DDanDDanColorPalette.current.color_text_body_quinary,
+                backgroundColor = DDanDDanColorPalette.current.elevation_color_elevation_level01,
+                cursorColor = DDanDDanColorPalette.current.color_icon_level02_active,
+                placeholderColor = DDanDDanColorPalette.current.color_text_body_quinary,
+            ),
+        )
+        if (!settingState.isValidNickname && nickName.isNotBlank()) {
+            DDanMarginVerticalSpacer(8)
+            Text(
+                text = stringResource(R.string.signup_name_error),
+                style = DDanDDanTypo.current.Caption2,
+                color = DDanDDanColorPalette.current.Error300
+            )
+        }
+    }
 }
 
 @Composable

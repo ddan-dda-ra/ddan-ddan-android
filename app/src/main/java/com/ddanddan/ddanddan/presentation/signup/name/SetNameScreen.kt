@@ -132,6 +132,7 @@ fun SetNameField(
     Column {
         OutlinedTextField(
             value = nickName,
+            singleLine = true,
             placeholder = { Text(stringResource(R.string.signup_name_placeholder)) },
             modifier = Modifier
                 .fillMaxWidth()
