@@ -72,5 +72,5 @@
     <string name="rank_tablayout_target_title">목표</string>
     <string name="rank_tablayout_target_subtitle">꾸준하게\n목표를 달성했어요</string>
     <string name="rank_tooltip_calorie">한 달 동안 칼로리를 많이 소비한 순서에요</string>
-    <string name="rank_tooltip_target">한 달 동안 목표한 칼로리를 누적 달성한 순서에요</string>
+    <string name="rank_tooltip_target">한 달 동안 목표한 칼로리를\n누적 달성한 순서에요</string>
 </resources>

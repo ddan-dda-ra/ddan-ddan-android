@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -238,51 +239,6 @@ private fun RankListView(
                         }
                 )
 
-                if (rankState.showToolTip) {
-                    ConstraintLayout (
-                        modifier = Modifier
-                            .constrainAs(tooltip) {
-                                top.linkTo(icon.bottom)
-                                start.linkTo(icon.start)
-                                end.linkTo(icon.end)
-                            }
-                            .noRippleClickable {
-                                dismissToolTip()
-                            }
-                    ) {
-                        val (polygon, msg) = createRefs()
-                        Image(
-                            painter = painterResource(R.drawable.ic_tooltip_polygon),
-                            modifier = Modifier.size(16.dp)
-                                .constrainAs(polygon) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                },
-                            contentDescription = null
-                        )
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(DDanDDanColorPalette.current.elevation_color_elevation_level01)
-                                .constrainAs(msg) {
-                                    top.linkTo(polygon.top, margin = 8.dp)
-                                    start.linkTo(parent.start)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end)
-                                }
-                        ) {
-                            Text(
-                                text = stringResource(if (rankState.criteria == RankCriteria.TOTAL_CALORIES) R.string.rank_tooltip_calorie else R.string.rank_tooltip_target),
-                                style = DDanDDanTypo.current.SubTitle1,
-                                fontFamily = Pretendard,
-                                color = DDanDDanColorPalette.current.color_text_headline_secondary,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                            )
-                        }
-                    }
-                }
-
                 Column(
                     modifier = Modifier.constrainAs(ranking) {
                         top.linkTo(title.bottom)
@@ -328,6 +284,52 @@ private fun RankListView(
                             mainPetType = rankState.bronzeRank?.mainPetType,
                             petLevel = rankState.bronzeRank?.petLevel
                         )
+                    }
+                }
+
+                if (rankState.showToolTip) {
+                    ConstraintLayout (
+                        modifier = Modifier
+                            .constrainAs(tooltip) {
+                                top.linkTo(icon.bottom)
+                                start.linkTo(icon.start)
+                                end.linkTo(icon.end)
+                            }
+                            .noRippleClickable {
+                                dismissToolTip()
+                            }
+                    ) {
+                        val (polygon, msg) = createRefs()
+                        Image(
+                            painter = painterResource(R.drawable.ic_tooltip_polygon),
+                            colorFilter = ColorFilter.tint(DDanDDanColorPalette.current.elevation_color_elevation_level02),
+                            modifier = Modifier.size(16.dp)
+                                .constrainAs(polygon) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                },
+                            contentDescription = null
+                        )
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
+                                .constrainAs(msg) {
+                                    top.linkTo(polygon.top, margin = 8.dp)
+                                    start.linkTo(parent.start)
+                                    bottom.linkTo(parent.bottom)
+                                    end.linkTo(parent.end)
+                                }
+                        ) {
+                            Text(
+                                text = stringResource(if (rankState.criteria == RankCriteria.TOTAL_CALORIES) R.string.rank_tooltip_calorie else R.string.rank_tooltip_target),
+                                style = DDanDDanTypo.current.SubTitle1,
+                                fontFamily = Pretendard,
+                                color = DDanDDanColorPalette.current.color_text_headline_secondary,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
                     }
                 }
             }
