@@ -314,7 +314,8 @@ private fun RankListView(
                             contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.goldRank?.totalCalories
                             else rankState.goldRank?.totalSucceededDays,
                             mainPetType = rankState.goldRank?.mainPetType,
-                            petLevel = rankState.goldRank?.petLevel
+                            petLevel = rankState.goldRank?.petLevel,
+                            isCenter = true
                         )
                         DDanMarginHorizontalSpacer(13)
                         TopRankerView(
@@ -466,7 +467,8 @@ fun TopRankerView(
     nickname: String? = "일이삼등입니다다다다다다",
     contents: Int? = 1024,
     mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
-    petLevel: Int? = 1
+    petLevel: Int? = 1,
+    isCenter: Boolean = false
 ) {
     ConstraintLayout(
         modifier = modifier
@@ -526,7 +528,7 @@ fun TopRankerView(
             contentDescription = "왕관 이미지",
             modifier = Modifier
                 .constrainAs(crownImage) {
-                    top.linkTo(parent.top, margin = if (rank == 1) 0.dp else 19.dp)
+                    top.linkTo(parent.top, margin = if (isCenter) 0.dp else 19.dp)
                     start.linkTo(contentColumn.start)
                     end.linkTo(contentColumn.end)
                 }
