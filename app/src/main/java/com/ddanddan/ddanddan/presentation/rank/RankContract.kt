@@ -13,13 +13,15 @@ data class RankState(
     val goldRank: Rank? = null,
     val silverRank: Rank? = null,
     val bronzeRank: Rank? = null,
-    val showToolTip: Boolean = false
+    val showToolTip: Boolean = false,
+    val isPatchAttempted: Boolean = false
 )
 
 sealed class RankSideEffect {
     object NavigatePopUp : RankSideEffect()
     data class NetworkError(val msg: String): RankSideEffect()
     data class SnackBarMsg(val msg: String, val icon: Int) : RankSideEffect()
+    object UserDataEmpty: RankSideEffect()
 }
 
 enum class RankCriteria { TOTAL_CALORIES, TOTAL_SUCCEEDED_DAYS }

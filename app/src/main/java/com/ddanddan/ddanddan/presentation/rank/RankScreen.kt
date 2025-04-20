@@ -102,6 +102,9 @@ fun RankRoute(
                     )
                 }
             }
+            is RankSideEffect.UserDataEmpty -> {
+                rankViewModel.patchDailyCalories()
+            }
         }
     }
 
