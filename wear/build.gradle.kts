@@ -82,7 +82,7 @@ dependencies {
     implementation(libs.materialDesign)
     implementation(libs.kotlin.serialization.json)
     implementation(libs.play.services.wearable)
-    implementation(libs.androidx.wear.tooling.preview)
+    implementation(libs.androidx.compose.ui.tooling)
     androidTestImplementation(libs.jUnit)
     androidTestImplementation(libs.espresso)
 
