@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- Required for HR sensor -->
-    <uses-permission android:name="android.permission.BODY_SENSORS" />
     <!-- Needed in order to re-register for data on device startup. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
@@ -34,6 +32,17 @@
 
         <activity
             android:name=".presentation.MainActivity"
+            android:exported="true"
+            android:taskAffinity="">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".presentation.kangmin.NewMainActivity"
             android:exported="true"
             android:taskAffinity="">
             <intent-filter>
