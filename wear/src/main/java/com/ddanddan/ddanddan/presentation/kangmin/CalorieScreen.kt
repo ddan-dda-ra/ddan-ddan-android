@@ -1,0 +1,109 @@
+package com.ddanddan.ddanddan.presentation.kangmin
+
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
+import com.ddanddan.ui.compose.DDanDDanColorPalette
+
+@Composable
+fun CalorieScreen() {
+    CircularProgressWatchFace() {
+        Image(painter = painterResource(R.drawable.ic_penguin_level4), "")
+    }
+}
+
+@Composable
+fun CircularProgressWatchFace(
+    modifier: Modifier = Modifier,
+    progress: Float = 0.1f, // 0.0f ~ 1.0f 범위의 진행도
+    progressColor: Color = Color(0xFFF8A5FF), // 핑크색 프로그레스 바
+    backgroundColor: Color = Color(0xFF333333), // 배경색 (어두운 회색)
+    strokeWidth: Dp = 16.dp, // 프로그레스 바 두께
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(
+        modifier = modifier
+            .aspectRatio(1f) // 정사각형 비율 유지
+            .background(DDanDDanColorPalette.current.color_background, shape = CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        // 배경 원
+        Canvas(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            val strokeWidthPx = strokeWidth.toPx()
+            // 선이 Canvas 밖으로 넘어가지 않게하는 로직
+            // strokeWidthPx를 빼지않으면 선이 꽉차서 보이지않음
+            val diameter = size.minDimension - strokeWidthPx
+            // 원을 Canvas 정중앙에 배치하기 위한 좌상단 좌표
+            val topLeft = Offset(
+                (size.width - diameter) / 2,
+                (size.height - diameter) / 2
+            )
+            val size = Size(diameter, diameter)
+
+            // 배경 원 그리기
+            drawArc(
+                color = backgroundColor,
+                startAngle = 0f,
+                sweepAngle = 360f,
+                useCenter = false,
+                topLeft = topLeft,
+                size = size,
+                style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
+            )
+
+            // 프로그레스 원 그리기
+            drawArc(
+                color = progressColor,
+                startAngle = 270f, // 12시 방향에서 시작
+                sweepAngle = 360f * progress,
+                useCenter = false,
+                topLeft = topLeft,
+                size = size,
+                style = Stroke(width = strokeWidthPx, cap = StrokeCap.Butt)
+            )
+        }
+
+        // 내부 컨텐츠를 위한 Box
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(strokeWidth + 4.dp)  // 선 두께 + 추가 패딩
+                .clip(CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+@WearPreviewDevices
+fun CalorieScreenPreview() {
+    DDanDDanTheme {
+        CalorieScreen()
+    }
+}
