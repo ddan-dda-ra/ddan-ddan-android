@@ -1,6 +1,5 @@
 package com.ddanddan.ddanddan.presentation.kangmin
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -24,10 +23,14 @@ fun MainScreen(
         NavHost(
             modifier = modifier.padding(padding),
             navController = navController,
-            startDestination = DDanWearRoute.PERMISSION.route
+            startDestination = DDanWearRoute.CALORIE.route
         ) {
             composable(route = DDanWearRoute.PERMISSION.route) {
                 PermissionRoute()
+            }
+
+            composable(route = DDanWearRoute.CALORIE.route) {
+                CalorieRoute()
             }
         }
 
