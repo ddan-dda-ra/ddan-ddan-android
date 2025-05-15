@@ -23,7 +23,7 @@ fun MainScreen(
         NavHost(
             modifier = modifier.padding(padding),
             navController = navController,
-            startDestination = DDanWearRoute.CALORIE.route
+            startDestination = DDanWearRoute.PERMISSION.route
         ) {
             composable(route = DDanWearRoute.PERMISSION.route) {
                 PermissionRoute()
