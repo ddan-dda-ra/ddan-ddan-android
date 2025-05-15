@@ -1,4 +1,4 @@
-package com.ddanddan.ddanddan.service
+package com.ddanddan.ddanddan.presentation.kangmin
 
 import android.content.ContentValues
 import androidx.health.services.client.PassiveListenerService

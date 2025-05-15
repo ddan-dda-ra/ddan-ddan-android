@@ -6,7 +6,7 @@ import androidx.concurrent.futures.await
 import androidx.health.services.client.HealthServices
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.PassiveListenerConfig
-import com.ddanddan.ddanddan.service.PassiveDataService
+import com.ddanddan.ddanddan.presentation.kangmin.PassiveDataService
 import com.ddanddan.ddanddan.domain.repository.HealthServicesRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber

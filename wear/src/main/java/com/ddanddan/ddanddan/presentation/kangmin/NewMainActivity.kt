@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.ddanddan.ddanddan.service.PassiveDataService
 import com.ddanddan.ui.compose.theme.DDanDDanTheme
 import dagger.hilt.android.AndroidEntryPoint
 

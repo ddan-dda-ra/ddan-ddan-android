@@ -54,7 +54,7 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
-import com.ddanddan.ddanddan.service.PassiveDataService
+import com.ddanddan.ddanddan.presentation.kangmin.PassiveDataService
 import com.ddanddan.ddanddan.util.PreferencesKeys
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map

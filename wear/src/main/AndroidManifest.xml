@@ -61,7 +61,7 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".service.PassiveDataService"
+            android:name=".presentation.kangmin.PassiveDataService"
             android:exported="true"
             android:permission="com.google.android.wearable.healthservices.permission.PASSIVE_DATA_BINDING" />
         <service
