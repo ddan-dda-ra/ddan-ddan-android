@@ -76,6 +76,7 @@ fun PermissionRoute() {
         }
 
         permissionGranted -> {
+            CalorieRoute()
         }
     }
 }
