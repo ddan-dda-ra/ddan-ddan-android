@@ -44,7 +44,7 @@ import com.ddanddan.ui.ext.noRippleClickable
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CalorieRoute(
-    viewModel: PassiveDataViewModel = hiltViewModel()
+    viewModel: CalorieViewModel = hiltViewModel()
 ) {
     var isCalorieTextDisplay by remember { mutableStateOf(true) }
     val todayCalories by viewModel.caloriesValue.collectAsState()
