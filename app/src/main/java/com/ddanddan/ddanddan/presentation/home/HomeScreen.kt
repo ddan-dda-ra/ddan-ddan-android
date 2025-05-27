@@ -56,6 +56,9 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 import com.ddanddan.base.R.drawable
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.showSnackbar
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
 fun HomeRoute(
@@ -120,6 +123,11 @@ fun HomeRoute(
         }
     }
 
+    @OptIn(ExperimentalPermissionsApi::class)
+    val notificationPermissionState =
+        if (Build.VERSION.SDK_INT >= 33) rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+        else null
+
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is HomeSideEffect.NavigateRanking -> {
@@ -144,6 +152,12 @@ fun HomeRoute(
                     duration = SnackbarDuration.Short,
                     bottomPadding = 0
                 )
+            }
+            is HomeSideEffect.AskNotification -> {
+                @OptIn(ExperimentalPermissionsApi::class)
+                if (notificationPermissionState?.status is PermissionStatus.Denied) {
+                    notificationPermissionState.launchPermissionRequest()
+                }
             }
         }
     }
@@ -358,7 +372,6 @@ fun HomeBottomItem(
         )
     }
 }
-
 
 @Composable
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
