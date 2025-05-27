@@ -6,4 +6,6 @@ interface AuthRepository {
     fun getAutoLogin(): Boolean
     fun isFirstAfterInstall(): Boolean
     fun setFirstAfterInstall(isFirst: Boolean)
+    fun isNotificationAsked(): Boolean
+    fun setNotificationAsked(isAsked: Boolean)
 }

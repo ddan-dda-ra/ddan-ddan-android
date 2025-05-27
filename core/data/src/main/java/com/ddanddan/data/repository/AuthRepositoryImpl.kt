@@ -1,5 +1,6 @@
 package com.ddanddan.data.repository
 
+import android.util.Log
 import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.repository.AuthRepository
 import javax.inject.Inject
@@ -26,5 +27,11 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun setFirstAfterInstall(isFirst: Boolean) {
         ddanddanDataStore.isFirstAfterInstall = isFirst
+    }
+
+    override fun isNotificationAsked(): Boolean = ddanddanDataStore.askedNotification
+
+    override fun setNotificationAsked(isAsked: Boolean) {
+        ddanddanDataStore.askedNotification = isAsked
     }
 }
