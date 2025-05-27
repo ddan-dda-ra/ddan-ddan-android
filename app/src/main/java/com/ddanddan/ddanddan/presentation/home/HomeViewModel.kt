@@ -3,6 +3,7 @@ package com.ddanddan.ddanddan.presentation.home
 import androidx.lifecycle.ViewModel
 import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.GetMainPetUseCase
+import com.ddanddan.domain.usecase.GetNotificationAskedUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PostFoodPetUseCase
 import com.ddanddan.domain.usecase.PostMainPetUseCase
@@ -27,12 +28,14 @@ class HomeViewModel @Inject constructor(
     private val postFoodPetUseCase: PostFoodPetUseCase,
     private val postRandomPetUseCase: PostRandomPetUseCase,
     private val postMainPetUseCase: PostMainPetUseCase,
+    private val getNotificationAskedUseCase: GetNotificationAskedUseCase,
     private val userRepository: UserRepository
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
 
     init {
+        getNotificationAsked()
         getHomeInfo()
         observeCalories()
     }
@@ -40,6 +43,11 @@ class HomeViewModel @Inject constructor(
     fun getHomeInfo() {
         getUserInfo()
         getMainPet()
+    }
+
+    private fun getNotificationAsked() = intent {
+        val isAsked = getNotificationAskedUseCase()
+        if (!isAsked) postSideEffect(HomeSideEffect.AskNotification)
     }
 
     private fun getUserInfo() = intent {
