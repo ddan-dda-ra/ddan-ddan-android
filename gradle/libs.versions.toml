@@ -285,7 +285,8 @@ compose = [
     "compose-page-indicator",
     "compose-pager",
     "wear-compose-foundation",
-    "wear-compose-material"
+    "wear-compose-material",
+    "accompanist-permissions"
 ]
 
 kakao = [ "kakaoLogin" ]
