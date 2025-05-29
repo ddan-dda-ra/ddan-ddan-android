@@ -497,7 +497,7 @@ private fun RankTapLayout(
                                     if (available.y < 0 && reachedEndOnce) {
                                         if (rankState.otherRanking.size + 3 < 100) {
                                             onOverScroll(
-                                                "랭킹이 아직 ${rankState.otherRanking.size + 3}등까지 밖에 없어요",
+                                                "랭킹이 아직 ${rankState.otherRanking.last().rank}등까지 밖에 없어요",
                                                 R.drawable.ic_system_fill
                                             )
                                         } else {
