@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.presentation.rank
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -39,17 +40,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -401,6 +403,7 @@ private fun RankTapLayout(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf(RankCriteria.TOTAL_CALORIES, RankCriteria.TOTAL_SUCCEEDED_DAYS)
+    var reachedEndOnce by remember { mutableStateOf(false) }
 
     LaunchedEffect(pagerState.currentPage) {
         onTabChange(tabs[pagerState.currentPage])
@@ -487,18 +490,25 @@ private fun RankTapLayout(
                     Box(
                         modifier = Modifier.nestedScroll(
                             connection = object : NestedScrollConnection {
-                                override fun onPostScroll(
-                                    consumed: Offset,
-                                    available: Offset,
-                                    source: NestedScrollSource
-                                ): Offset {
-                                    if (available.y < 0) {
-                                        if (rankState.otherRanking.size + 3 < 100)
-                                            onOverScroll("랭킹이 아직 ${rankState.otherRanking.size + 3}등까지 밖에 없어요", R.drawable.ic_system_fill)
-                                        else
-                                            onOverScroll("랭킹은 100등까지만 노출해요", R.drawable.ic_system_fill)
+                                override suspend fun onPostFling(
+                                    consumed: Velocity,
+                                    available: Velocity
+                                ): Velocity {
+                                    if (available.y < 0 && reachedEndOnce) {
+                                        if (rankState.otherRanking.size + 3 < 100) {
+                                            onOverScroll(
+                                                "랭킹이 아직 ${rankState.otherRanking.size + 3}등까지 밖에 없어요",
+                                                R.drawable.ic_system_fill
+                                            )
+                                        } else {
+                                            onOverScroll(
+                                                "랭킹은 100등까지만 노출해요",
+                                                R.drawable.ic_system_fill
+                                            )
+                                        }
                                     }
-                                    return super.onPostScroll(consumed, available, source)
+                                    reachedEndOnce = available.y < 0
+                                    return super.onPostFling(consumed, available)
                                 }
                             }
                         )
