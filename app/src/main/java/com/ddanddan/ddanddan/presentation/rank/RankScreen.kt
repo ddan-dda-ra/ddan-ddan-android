@@ -468,7 +468,10 @@ private fun RankTapLayout(
             }
         }
 
-        HorizontalPager(state = pagerState) {
+        HorizontalPager(
+            state = pagerState,
+            userScrollEnabled = false
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
