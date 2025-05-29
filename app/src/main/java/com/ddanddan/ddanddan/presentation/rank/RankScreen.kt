@@ -463,7 +463,12 @@ private fun RankTapLayout(
                             pagerState.scrollToPage(index)
                         }
                     },
-                    modifier = Modifier.height(42.dp)
+                    modifier = Modifier.height(42.dp),
+                    interactionSource = object : MutableInteractionSource {
+                        override val interactions: Flow<Interaction> = emptyFlow()
+                        override suspend fun emit(interaction: Interaction) {}
+                        override fun tryEmit(interaction: Interaction) = true
+                    }
                 )
             }
         }
