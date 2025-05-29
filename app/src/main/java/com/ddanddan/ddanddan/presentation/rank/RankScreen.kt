@@ -460,7 +460,7 @@ private fun RankTapLayout(
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
+                            pagerState.scrollToPage(index)
                         }
                     },
                     modifier = Modifier.height(42.dp)
