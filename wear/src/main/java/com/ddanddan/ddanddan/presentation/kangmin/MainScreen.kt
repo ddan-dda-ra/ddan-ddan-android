@@ -8,7 +8,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ddanddan.ddanddan.presentation.NotSupportedScreen
 import com.ddanddan.ddanddan.presentation.kangmin.navigation.DDanWearRoute
+import com.ddanddan.ddanddan.presentation.kangmin.permission.PermissionRoute
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 
 @Composable
@@ -26,11 +28,22 @@ fun MainScreen(
             startDestination = DDanWearRoute.PERMISSION.route
         ) {
             composable(route = DDanWearRoute.PERMISSION.route) {
-                PermissionRoute()
+                PermissionRoute(
+                    navigateToCalorie = {
+                        navController.navigate(DDanWearRoute.CALORIE.route)
+                    },
+                    navigateToNotSupported = {
+                        navController.navigate(DDanWearRoute.NOT_SUPPORT_CALORIES.route)
+                    }
+                )
             }
 
             composable(route = DDanWearRoute.CALORIE.route) {
                 CalorieRoute()
+            }
+
+            composable(route = DDanWearRoute.NOT_SUPPORT_CALORIES.route) {
+                NotSupportedScreen()
             }
         }
 

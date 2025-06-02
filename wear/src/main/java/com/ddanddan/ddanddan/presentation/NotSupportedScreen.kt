@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,10 @@ import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
 
 @Composable
 fun NotSupportedScreen() {
+    BackHandler {
+
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
