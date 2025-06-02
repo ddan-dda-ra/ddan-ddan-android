@@ -1,4 +1,4 @@
-package com.ddanddan.ddanddan.presentation.kangmin
+package com.ddanddan.ddanddan.presentation.kangmin.permission
 
 import android.Manifest
 import android.content.Context
@@ -9,18 +9,13 @@ import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,23 +30,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.lazy.AutoCenteringParams
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.material.Button
-import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
-import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.presentation.NotSupportedScreen
 import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
-import com.ddanddan.ddanddan.util.WatchToPhoneUtils
-import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.ext.noRippleClickable
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun PermissionRoute() {
+fun PermissionRoute(
+    viewModel: PermissionViewModel = hiltViewModel(),
+    navigateToCalorie: () -> Unit,
+    navigateToNotSupported: () -> Unit
+) {
     val context = LocalContext.current
     val permission = Manifest.permission.ACTIVITY_RECOGNITION
 
@@ -68,6 +65,20 @@ fun PermissionRoute() {
         }
     }
 
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is PermissionSideEffect.NavigateCalories -> {
+                Log.d("kangmi", "navigateCalories")
+                navigateToCalorie()
+            }
+
+            is PermissionSideEffect.NavigateNotSupportCalories -> {
+                Log.d("kangmi", "Not")
+                navigateToNotSupported()
+            }
+        }
+    }
+
     when {
         !permissionGranted -> {
             PermissionRequestScreen(
@@ -76,7 +87,7 @@ fun PermissionRoute() {
         }
 
         permissionGranted -> {
-            CalorieRoute()
+            viewModel.checkCalorieSupportAndRegister()
         }
     }
 }

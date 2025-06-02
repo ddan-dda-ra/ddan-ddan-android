@@ -111,4 +111,8 @@ dependencies {
     implementation(libs.bundles.retrofit)
 
     implementation(libs.timber)
+
+    implementation(libs.orbit.compose)
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.viewmodel)
 }
