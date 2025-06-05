@@ -6,6 +6,7 @@ import com.ddanddan.model.response.ResponseAuthToken
 import javax.inject.Inject
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
@@ -24,10 +25,16 @@ class AuthInterceptor @Inject constructor(
             CODE_TOKEN_EXPIRED -> {
                 try {
                     Timber.tag("만료된 토큰").d("accessToken: ${dataStore.userToken}, refreshToken: ${dataStore.refreshToken}")
-                    val refreshTokenRequest = originalRequest.newBuilder().post("".toRequestBody())
+                    // RefreshToken을 요청 본문에 포함
+                    val refreshTokenJson = """
+                        {
+                            "refreshToken": "${dataStore.refreshToken.removePrefix("Bearer ")}"
+                        }
+                    """.trimIndent()
+
+                    val refreshTokenRequest = originalRequest.newBuilder()
                         .url("${BASE_URL}/v1/auth/reissue")
-                        .addHeader(HEADER_AUTHORIZATION, dataStore.userToken)
-                        .addHeader(HEADER_REFRESH_TOKEN, dataStore.refreshToken)
+                        .post(refreshTokenJson.toRequestBody(MEDIA_TYPE_JSON))
                         .build()
                     val refreshTokenResponse = chain.proceed(refreshTokenRequest)
 
@@ -37,8 +44,8 @@ class AuthInterceptor @Inject constructor(
                         ) as ResponseAuthToken
 
                         with(dataStore) {
-                            userToken = responseToken.accessToken ?: ""
-                            refreshToken = responseToken.refreshToken ?: ""
+                            userToken = "Bearer ${responseToken.accessToken}"
+                            refreshToken = "Bearer ${responseToken.refreshToken}"
                         }
                         Timber.tag("갱신된 토큰").d("accessToken: ${dataStore.userToken}, refreshToken: ${dataStore.refreshToken}")
 
@@ -72,6 +79,6 @@ class AuthInterceptor @Inject constructor(
     companion object {
         private const val CODE_TOKEN_EXPIRED = 401
         private const val HEADER_AUTHORIZATION = "Authorization"
-        private const val HEADER_REFRESH_TOKEN = "Authorization-refresh"
+        private val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
     }
 }
