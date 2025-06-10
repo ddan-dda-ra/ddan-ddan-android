@@ -35,24 +35,34 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import com.ddanddan.ddanddan.R
-import com.ddanddan.ddanddan.presentation.PassiveDataViewModel
 import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
+import com.ddanddan.ddanddan.util.PetTypeEnum
+import com.ddanddan.ddanddan.util.toAnimal
+import com.ddanddan.ddanddan.util.toBackgroundImage
+import com.ddanddan.ddanddan.util.toPetType
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.ext.noRippleClickable
+import timber.log.Timber
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CalorieRoute(
     viewModel: CalorieViewModel = hiltViewModel()
 ) {
-    var isCalorieTextDisplay by remember { mutableStateOf(true) }
+    var isCalorieTextDisplay by remember { mutableStateOf(false) }
     val todayCalories by viewModel.caloriesValue.collectAsState()
-    val goalCalories = 400.toDouble()
+    val goalCalories by viewModel.targetCalories.collectAsState()
+    val petType by viewModel.petType.collectAsState()
+    val petTypeEnum = petType.toPetType()
+    val petLevel by viewModel.petLevel.collectAsState()
 
+    Timber.tag("kangmi").d("todayCalories: $todayCalories, goalCalories: $goalCalories")
     CalorieScreen(
         todayCalories = todayCalories,
-        goalCalories = goalCalories,
+        goalCalories = goalCalories.toDouble(),
+        petType = petTypeEnum,
+        petLevel = petLevel,
         isCalorieTextDisplay = isCalorieTextDisplay,
         onDisplayStateChanged = { isCalorieTextDisplay = !isCalorieTextDisplay }
     )
@@ -63,6 +73,8 @@ fun CalorieScreen(
     modifier: Modifier = Modifier,
     todayCalories: Double = 0.0,
     goalCalories: Double = 400.0,
+    petType: PetTypeEnum = PetTypeEnum.CAT,
+    petLevel: Int = 1,
     isCalorieTextDisplay: Boolean = true,
     onDisplayStateChanged: () -> Unit = {}
 ) {
@@ -97,7 +109,7 @@ fun CalorieScreen(
         }
         else {
             Image(
-                painter = painterResource(id = R.drawable.ic_penguin_level3),
+                painter = painterResource(id = petType.toAnimal(petLevel)),
                 contentDescription = "Pet Image"
             )
         }
@@ -110,7 +122,7 @@ fun CircularProgressWatchFace(
     progress: Double = 0.1, // 0.0 ~ 1.0 범위의 진행도
     progressColor: Color = Color(0xFFF8A5FF), // 핑크색 프로그레스 바
     backgroundColor: Color = Color(0xFF333333), // 배경색 (어두운 회색)
-    strokeWidth: Dp = 16.dp, // 프로그레스 바 두께
+    strokeWidth: Dp = 8.dp, // 프로그레스 바 두께
     onDisplayStateChanged: () -> Unit = {},
     content: @Composable BoxScope.() -> Unit,
 ) {
