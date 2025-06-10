@@ -17,6 +17,7 @@ import com.ddanddan.ui.compose.DDanDDanColorPalette
 fun MainScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    navigateToCalorie: () -> Unit = {},
 ) {
     Scaffold(
         modifier = modifier,
@@ -30,6 +31,7 @@ fun MainScreen(
             composable(route = DDanWearRoute.PERMISSION.route) {
                 PermissionRoute(
                     navigateToCalorie = {
+                        navigateToCalorie()
                         navController.navigate(DDanWearRoute.CALORIE.route)
                     },
                     navigateToNotSupported = {
