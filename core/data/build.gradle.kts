@@ -44,4 +44,7 @@ dependencies {
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.constraintLayout)
     implementation(libs.kakaoLogin)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.datastore.prefenrences.android)
+    implementation(libs.kotlin.coroutines)
 }
