@@ -96,6 +96,7 @@ activityVersion = "1.9.0"
 activity = "1.9.2"
 playServicesWearableVersion = "19.0.0"
 composeUiToolingVersion = "1.4.1"
+datastoreCoreAndroidVersion = "1.1.7"
 
 [libraries]
 # gradle
@@ -230,6 +231,8 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 ## Watch
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearableVersion" }
 androidx-compose-ui-tooling = { group = "androidx.wear.compose", name = "compose-ui-tooling", version.ref = "composeUiToolingVersion" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroidVersion" }
+androidx-datastore-prefenrences-android = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastoreCoreAndroidVersion" }
 
 # 사용될 플러그인
 [plugins]
