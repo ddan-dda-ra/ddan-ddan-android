@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +41,7 @@ import com.ddanddan.ddanddan.presentation.NotSupportedScreen
 import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
 import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectSideEffect
+import timber.log.Timber
 
 @Composable
 fun PermissionRoute(
@@ -68,12 +68,12 @@ fun PermissionRoute(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is PermissionSideEffect.NavigateCalories -> {
-                Log.d("kangmi", "navigateCalories")
+                Timber.tag("kangmi").d( "navigateCalories")
                 navigateToCalorie()
             }
 
             is PermissionSideEffect.NavigateNotSupportCalories -> {
-                Log.d("kangmi", "Not")
+                Timber.tag("kangmi").d("Not")
                 navigateToNotSupported()
             }
         }
