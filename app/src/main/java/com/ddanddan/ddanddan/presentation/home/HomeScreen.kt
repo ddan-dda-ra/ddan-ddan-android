@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.presentation.home
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -54,6 +55,7 @@ import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import com.ddanddan.base.R.drawable
+import com.ddanddan.ddanddan.service.PhoneDataLayerService
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.showSnackbar
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -70,9 +72,12 @@ fun HomeRoute(
     onNavigateNewPet: (petType: String) -> Unit,
     onNavigateError: (Int?) -> Unit = {}
 ) {
+    val context = LocalContext.current
+
+    context.startService(Intent(context, PhoneDataLayerService::class.java))
+
     val homeState by homeViewModel.collectAsState()
 
-    val context = LocalContext.current
     val snackBarHostState = remember { SnackbarHostState() }
 
     val composition by rememberLottieComposition(
