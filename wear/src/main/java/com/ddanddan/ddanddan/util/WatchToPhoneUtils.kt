@@ -1,7 +1,6 @@
 package com.ddanddan.ddanddan.util
 
 import android.content.Context
-import android.util.Log
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -20,11 +19,11 @@ object WatchToPhoneUtils {
         Wearable.getNodeClient(this).connectedNodes
             .addOnSuccessListener { nodes ->
                 if (nodes.isNotEmpty()) {
-                    Log.d("kangmi", "connect")
+                    Timber.tag("kangmi").d("connect")
                     onConnected(nodes) // 연결된 노드 전달
                     Timber.d("Connected to phone: ${nodes.map { it.displayName }}")
                 } else {
-                    Log.d("kangmi", "not connect")
+                    Timber.tag("kangmi").d("not connect")
                     onNotConnected() // 연결 안 됨
                     Timber.d("No connected phone.")
                 }
