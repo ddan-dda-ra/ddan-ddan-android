@@ -3,6 +3,7 @@ package com.ddanddan.ddanddan.presentation.navigation
 // Main Activity 에서 관리하는 Navigation Route
 enum class DDanDDanRoute(val route: String) {
     HOME("home"),
+    GRANT_NOT_PERMISSION("grant_not_permission"),
     PET_COLLECTION("pet_collection"),
     LEVEL_UP("level_up"),
     TOY_REWARD("toy_reward"),
