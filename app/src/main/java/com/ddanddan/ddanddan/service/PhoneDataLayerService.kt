@@ -1,8 +1,12 @@
 package com.ddanddan.ddanddan.service
 
+
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.ServiceInfo
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
 import com.ddanddan.ddanddan.R
 import com.ddanddan.domain.repository.UserRepository
@@ -24,19 +28,25 @@ import javax.inject.Inject
 class PhoneDataLayerService : WearableListenerService() {
     @Inject
     lateinit var userRepository: UserRepository
-    
+
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val tag = "kangmi"
     private val messageClient by lazy { Wearable.getMessageClient(this) }
     private val nodeClient by lazy { Wearable.getNodeClient(this) }
-    
+
     override fun onCreate() {
         super.onCreate()
 
         startForegroundService()
         requestLatestCaloriesFromWatch()
     }
-    
+
+    @androidx.annotation.RequiresApi(VERSION_CODES.UPSIDE_DOWN_CAKE)
+    private fun startForegroundServiceUpsideDownCake(notification: android.app.Notification) {
+        // FOREGROUND_SERVICE_TYPE_HEALTH = 0x00004000 (Android 14+)
+        startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH)
+    }
+
     private fun startForegroundService() {
         val channel = NotificationChannel(
             "data_layer_channel",
@@ -55,8 +65,12 @@ class PhoneDataLayerService : WearableListenerService() {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(true)
             .build()
-            
-        startForeground(1, notification)
+
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForegroundServiceUpsideDownCake(notification)
+        } else {
+            startForeground(1, notification)
+        }
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
