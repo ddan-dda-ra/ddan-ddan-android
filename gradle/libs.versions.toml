@@ -96,6 +96,9 @@ activityVersion = "1.9.0"
 activity = "1.9.2"
 playServicesWearableVersion = "19.0.0"
 
+## Widget
+glanceVersion = "1.1.1"
+
 [libraries]
 # gradle
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradlePlugin" }
@@ -230,6 +233,12 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 ## Watch
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearableVersion" }
 
+## Widget
+androidx-glance-appwidget = { group = "androidx.glance", name="glance-appwidget", version.ref = "glanceVersion" }
+androidx-glance-material = { group = "androidx.glance", name="glance-material", version.ref = "glanceVersion" }
+androidx-glance-material3 = { group = "androidx.glance", name="glance-material3", version.ref = "glanceVersion" }
+
+
 # 사용될 플러그인
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "gradlePlugin" }
@@ -259,7 +268,10 @@ androidx = [
     "androidx-navigationUi",
     "androidx-ui-text-android",
     "billing",
-    "androidx-datastore"
+    "androidx-datastore",
+    "androidx-glance-appwidget",
+    "androidx-glance-material",
+    "androidx-glance-material3"
 ]
 
 compose = [
