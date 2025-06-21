@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.presentation.home
 
 import androidx.lifecycle.ViewModel
+import com.ddanddan.ddanddan.presentation.widget.WidgetManager
 import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetNotificationAskedUseCase
@@ -29,7 +30,8 @@ class HomeViewModel @Inject constructor(
     private val postRandomPetUseCase: PostRandomPetUseCase,
     private val postMainPetUseCase: PostMainPetUseCase,
     private val getNotificationAskedUseCase: GetNotificationAskedUseCase,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val widgetManager: WidgetManager
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
@@ -71,6 +73,7 @@ class HomeViewModel @Inject constructor(
                 reduce {
                     state.copy(pet = it)
                 }
+                widgetManager.updateWidgetPet(it.type.toString(), it.level)
             }.onFailure {
                 if (it is HttpException) {
                     postSideEffect(HomeSideEffect.NetworkError(it.code()))
@@ -218,6 +221,7 @@ class HomeViewModel @Inject constructor(
                 reduce {
                     state.copy(currentCalories = updatedCalories.toDouble())
                 }
+                widgetManager.updateWidgetCalories(updatedCalories.toInt())
             }
     }
 

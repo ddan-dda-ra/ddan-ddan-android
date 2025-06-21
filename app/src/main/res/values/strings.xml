@@ -19,6 +19,8 @@
     <string name="ddan_notification_channel_id">ddan_notification_channel</string>
     <string name="ddan_notification_channel_description">딴딴 알림</string>
 
+    <string name="ddan_widget_description">딴딴 위젯</string>
+
     <string-array name = "basic_tooltip_msg">
         <item>안녕</item>
         <item>배고파요</item>
