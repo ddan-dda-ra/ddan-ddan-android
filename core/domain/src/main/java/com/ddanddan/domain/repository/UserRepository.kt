@@ -16,4 +16,6 @@ interface UserRepository {
     suspend fun saveCalories(calories: Double): Unit
     suspend fun patchPushSetting(isOn: Boolean): Boolean
     suspend fun patchDailyCalories(calorie: Int): Unit
+    suspend fun saveCalories(calories: Double, timestamp: Long)
+    fun getTodayCalories(): Flow<Double>
 }

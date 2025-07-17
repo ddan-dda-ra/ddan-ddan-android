@@ -1,12 +1,11 @@
 package com.ddanddan.ddanddan.data.repository
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import androidx.concurrent.futures.await
 import androidx.health.services.client.HealthServices
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.PassiveListenerConfig
-import com.ddanddan.ddanddan.service.PassiveDataService
+import com.ddanddan.ddanddan.presentation.kangmin.PassiveDataService
 import com.ddanddan.ddanddan.domain.repository.HealthServicesRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
@@ -30,22 +29,37 @@ class HealthServicesRepositoryImpl @Inject constructor(
     )
 
     override suspend fun hasCaloriesCapability(): Boolean {
-        val capabilities = passiveMonitoringClient.getCapabilitiesAsync().await() //디바이스에서 지원 가능한 DataType 확인
-        return DataType.CALORIES_DAILY in capabilities.supportedDataTypesPassiveMonitoring //백그라운드에서 자동 수집 가능한 데이터 타입 여부 확인
+        try {
+            Timber.tag("kangmi").d("Checking device capabilities...")
+            val capabilities = passiveMonitoringClient.getCapabilitiesAsync().await()
+            val isSupported = DataType.CALORIES_DAILY in capabilities.supportedDataTypesPassiveMonitoring
+            Timber.tag("kangmi").d("Device capabilities: CALORIES_DAILY supported: $isSupported")
+            return isSupported
+        } catch (e: Exception) {
+            Timber.tag("kangmi").e(e, "Error checking device capabilities")
+            throw e
+        }
     }
 
     //백그라운드에서 PassiveDataService가 칼로리 데이터를 수신하도록 설정
     override suspend fun registerForCaloriesData() {
-        Timber.i(TAG, "Registering listener")
-        passiveMonitoringClient.setPassiveListenerServiceAsync(
-            PassiveDataService::class.java,
-            passiveListenerConfig
-        ).await()
+        try {
+            Timber.tag("kangmi").i("Registering passive listener service...")
+            Timber.tag("kangmi").d("Listener config: $passiveListenerConfig")
+            passiveMonitoringClient.setPassiveListenerServiceAsync(
+                PassiveDataService::class.java,
+                passiveListenerConfig
+            ).await()
+            Timber.tag("kangmi").i("Successfully registered passive listener service")
+        } catch (e: Exception) {
+            Timber.tag("kangmi").e(e, "Failed to register passive listener service")
+            throw e
+        }
     }
 
     //더 이상 PassiveDataService가 칼로리 데이터를 수신하지 않도록 리스너 해제
     override suspend fun unregisterForCaloriesData() {
-        Timber.i(TAG, "Unregistering listeners")
+        Timber.tag("kangmi").i("Unregistering listeners")
         passiveMonitoringClient.clearPassiveListenerServiceAsync().await()
     }
 }

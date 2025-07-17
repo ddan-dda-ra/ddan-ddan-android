@@ -216,10 +216,10 @@ class HomeViewModel @Inject constructor(
      * 칼로리 변화 관찰
      */
     private fun observeCalories() = intent {
-        userRepository.getCaloriesFlow()
+        userRepository.getTodayCalories()
             .collect { updatedCalories ->
                 reduce {
-                    state.copy(currentCalories = updatedCalories.toDouble())
+                    state.copy(currentCalories = updatedCalories)
                 }
                 widgetManager.updateWidgetCalories(updatedCalories.toInt())
             }

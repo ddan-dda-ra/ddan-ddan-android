@@ -2,11 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- Required for HR sensor -->
-    <uses-permission android:name="android.permission.BODY_SENSORS" />
     <!-- Needed in order to re-register for data on device startup. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -36,6 +38,17 @@
             android:name=".presentation.MainActivity"
             android:exported="true"
             android:taskAffinity="">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".presentation.kangmin.NewMainActivity"
+            android:exported="true"
+            android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,17 +65,25 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".service.PassiveDataService"
+            android:name=".presentation.kangmin.PassiveDataService"
             android:exported="true"
+            android:foregroundServiceType="health"
             android:permission="com.google.android.wearable.healthservices.permission.PASSIVE_DATA_BINDING" />
         <service
             android:name=".service.DataLayerListenerService"
-            android:exported="true">
+            android:exported="true"
+            android:foregroundServiceType="health"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data android:scheme="wear" android:host="*" android:path="/token" />
+                <data android:scheme="wear" android:host="*" android:path="/user_info" />
             </intent-filter>
         </service>
+
 
     </application>
     <queries>

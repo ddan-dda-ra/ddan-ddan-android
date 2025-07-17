@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import com.ddanddan.ddanddan.domain.entity.MainPet
 import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
 import com.ddanddan.ddanddan.util.PetUtils
@@ -172,12 +173,7 @@ private fun toggleDisplayState(
     onStateChanged(newState)
 }
 
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFF000000,
-    widthDp = 300,
-    heightDp = 300
-)
+@WearPreviewDevices
 @Composable
 fun PreviewCalorieProgressBar() {
     DDanDDanTheme {

@@ -3,9 +3,11 @@ package com.ddanddan.ddanddan.di
 import com.ddanddan.ddanddan.data.repository.DdanDdanRepositoryImpl
 import com.ddanddan.ddanddan.data.repository.HealthServicesRepositoryImpl
 import com.ddanddan.ddanddan.data.repository.PassiveDataRepositoryImpl
+import com.ddanddan.ddanddan.data.repository.UserRepositoryImpl
 import com.ddanddan.ddanddan.domain.repository.DdanDdanRepository
 import com.ddanddan.ddanddan.domain.repository.HealthServicesRepository
 import com.ddanddan.ddanddan.domain.repository.PassiveDataRepository
+import com.ddanddan.ddanddan.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,4 +29,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindDdanDdanRepository(ddanddanRepositoryImpl: DdanDdanRepositoryImpl): DdanDdanRepository
+    
+    @Singleton
+    @Binds
+    fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
 }

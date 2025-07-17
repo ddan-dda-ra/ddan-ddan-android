@@ -15,7 +15,7 @@ android {
         applicationId = "com.ddanddan.ddanddan"
         minSdk = 30
         targetSdk = 34
-        versionCode = 8
+        versionCode = 14
         versionName = "1.0"
     }
 
@@ -82,7 +82,7 @@ dependencies {
     implementation(libs.materialDesign)
     implementation(libs.kotlin.serialization.json)
     implementation(libs.play.services.wearable)
-    implementation(libs.androidx.wear.tooling.preview)
+    implementation(libs.androidx.compose.ui.tooling)
     androidTestImplementation(libs.jUnit)
     androidTestImplementation(libs.espresso)
 
@@ -98,6 +98,9 @@ dependencies {
 
     // Permissions
     implementation(libs.accompanist.permissions)
+    
+    // Kotlin Coroutines with Play Services
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     implementation(libs.hilt)
     implementation(libs.hilt.workmanager)
@@ -111,4 +114,8 @@ dependencies {
     implementation(libs.bundles.retrofit)
 
     implementation(libs.timber)
+
+    implementation(libs.orbit.compose)
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.viewmodel)
 }

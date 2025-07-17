@@ -1,6 +1,5 @@
 package com.ddanddan.data.repository
 
-import android.util.Log
 import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.repository.AuthRepository
 import javax.inject.Inject
@@ -17,7 +16,7 @@ class AuthRepositoryImpl @Inject constructor(
         ddanddanDataStore.isLogin = false
     }
 
-    override fun getAutoLogin(): Boolean = ddanddanDataStore.isLogin
+    override fun getAutoLogin(): Boolean = ddanddanDataStore.isLogin && ddanddanDataStore.userToken.isNotBlank()
 
     override fun isFirstAfterInstall(): Boolean {
         val isFirst = ddanddanDataStore.isFirstAfterInstall

@@ -14,7 +14,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -54,7 +53,7 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
-import com.ddanddan.ddanddan.service.PassiveDataService
+import com.ddanddan.ddanddan.presentation.kangmin.PassiveDataService
 import com.ddanddan.ddanddan.util.PreferencesKeys
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
@@ -168,7 +167,6 @@ fun RenderUI(
     accessToken: String?,
     onGoToSettings: () -> Unit
 ) {
-    Log.d("kangmi", accessToken.toString())
     when {
         permissionGranted.not() -> {
             PermissionScreen(onGoToSettings)

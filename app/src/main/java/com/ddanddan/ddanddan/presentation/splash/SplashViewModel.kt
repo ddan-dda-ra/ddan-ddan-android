@@ -34,4 +34,8 @@ class SplashViewModel @Inject constructor(
     fun disconnectedNetwork() = intent {
         postSideEffect(SplashSideEffect.NetworkError)
     }
+
+    fun grantNotPermission() = intent {
+        postSideEffect(SplashSideEffect.NavigateGrantNotPermission)
+    }
 }
