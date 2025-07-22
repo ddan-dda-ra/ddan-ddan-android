@@ -41,7 +41,7 @@ fun SplashScreen(
             painter = painterResource(id = R.mipmap.ic_launcher),
             contentDescription = "App Logo",
             modifier = Modifier
-                .size(32.dp)
+                .size(48.dp)
                 .alpha(alpha)
         )
     }
