@@ -42,6 +42,13 @@ object PetUtils {
                 4 -> R.drawable.ic_hamster_level4
                 else -> R.drawable.ic_hamster_level5
             }
+            PetType.MOLE -> when (mainPet.level) {
+                1 -> R.drawable.ic_mole_level1
+                2 -> R.drawable.ic_mole_level2
+                3 -> R.drawable.ic_mole_level3
+                4 -> R.drawable.ic_mole_level4
+                else -> R.drawable.ic_mole_level5
+            }
         }
     }
 
@@ -54,6 +61,7 @@ object PetUtils {
             PetType.PENGUIN -> Color(0xFF4E95FF)
             PetType.CAT -> Color(0xFFFD85FF)
             PetType.HAMSTER -> Color(0xFF46F8A2)
+            PetType.MOLE -> Color(0xFFD0DAE4)
         }
     }
 }
