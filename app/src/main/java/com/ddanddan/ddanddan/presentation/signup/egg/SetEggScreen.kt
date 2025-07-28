@@ -87,7 +87,8 @@ fun SetEggScreen(
         PetTypeEnum.CAT to R.drawable.ic_egg_pink,
         PetTypeEnum.HAMSTER to R.drawable.ic_egg_green,
         PetTypeEnum.DOG to R.drawable.ic_egg_purple,
-        PetTypeEnum.PENGUIN to R.drawable.ic_egg_blue
+        PetTypeEnum.PENGUIN to R.drawable.ic_egg_blue,
+        PetTypeEnum.MOLE to R.drawable.ic_egg_gray
     )
 
     @Composable
