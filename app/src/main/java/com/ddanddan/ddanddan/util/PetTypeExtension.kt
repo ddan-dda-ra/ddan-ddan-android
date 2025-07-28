@@ -43,7 +43,16 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
                 4 -> R.drawable.ic_hamster_level4
                 5 -> R.drawable.ic_hamster_level5
                 else -> R.drawable.ic_hamster_level1
+            }
+        }
 
+        PetTypeEnum.MOLE -> {
+            when (level) {
+                2 -> R.drawable.ic_mole_level2
+                3 -> R.drawable.ic_mole_level3
+                4 -> R.drawable.ic_mole_level4
+                5 -> R.drawable.ic_mole_level5
+                else -> R.drawable.ic_mole_level1
             }
         }
 
@@ -133,6 +142,26 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
+        PetTypeEnum.MOLE -> {
+            when (isPlayAndEatLottie) {
+                false -> when (level) {
+                    2 -> R.raw.motion_mole_level2_default
+                    3 -> R.raw.motion_mole_level3_default
+                    4 -> R.raw.motion_mole_level4_default
+                    5 -> R.raw.motion_mole_level5_dafault
+                    else -> R.raw.motion_mole_level1_default
+                }
+
+                else -> when (level) {
+                    2 -> R.raw.motion_mole_level2_play_eat
+                    3 -> R.raw.motion_mole_level3_play_eat
+                    4 -> R.raw.motion_mole_level4_play_eat
+                    5 -> R.raw.motion_mole_level5_play_eat
+                    else -> R.raw.motion_mole_level1_play_eat
+                }
+            }
+        }
+
         else -> R.raw.motion_cat_level5_default
     }
 }
@@ -143,6 +172,7 @@ fun PetTypeEnum?.toBackgroundImage(): Int {
         PetTypeEnum.DOG -> R.drawable.ic_bg_dog
         PetTypeEnum.PENGUIN -> R.drawable.ic_bg_penguin
         PetTypeEnum.HAMSTER -> R.drawable.ic_bg_hamster
+        PetTypeEnum.MOLE -> R.drawable.ic_bg_mole
         else -> R.drawable.ic_bg_cat
     }
 }
@@ -153,6 +183,7 @@ fun PetTypeEnum?.toColor(): Color {
         PetTypeEnum.DOG -> Color(0xFF9B6CFF)
         PetTypeEnum.PENGUIN -> Color(0xFF4E95FF)
         PetTypeEnum.HAMSTER -> Color(0xFF46F8A2)
+        PetTypeEnum.MOLE -> Color(0xFFD0DAE4)
         else -> Color(0xFFFD85FF)
     }
 }
