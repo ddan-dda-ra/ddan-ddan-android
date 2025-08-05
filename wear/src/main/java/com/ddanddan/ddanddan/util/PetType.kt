@@ -4,7 +4,8 @@ enum class PetType(val type: String) {
     DOG("DOG"),
     PENGUIN("PENGUIN"),
     CAT("CAT"),
-    HAMSTER("HAMSTER");
+    HAMSTER("HAMSTER"),
+    MOLE("MOLE");
 
     companion object {
         fun fromType(type: String): PetType? {

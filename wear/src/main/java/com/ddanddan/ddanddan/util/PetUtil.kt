@@ -46,6 +46,16 @@ fun PetTypeEnum.toAnimal(level: Int?): Int {
             }
         }
 
+        PetTypeEnum.MOLE -> {
+            when (level) {
+                2 -> R.drawable.ic_mole_level2
+                3 -> R.drawable.ic_mole_level3
+                4 -> R.drawable.ic_mole_level4
+                5 -> R.drawable.ic_mole_level5
+                else -> R.drawable.ic_mole_level1
+            }
+        }
+
         else -> com.ddanddan.ddanddan.R.drawable.ic_question
     }
 }
@@ -56,6 +66,7 @@ fun PetTypeEnum?.toBackgroundImage(): Int {
         PetTypeEnum.DOG -> com.ddanddan.ddanddan.R.drawable.ic_bg_dog
         PetTypeEnum.PENGUIN -> com.ddanddan.ddanddan.R.drawable.ic_bg_penguin
         PetTypeEnum.HAMSTER -> com.ddanddan.ddanddan.R.drawable.ic_bg_hamster
+        PetTypeEnum.MOLE -> com.ddanddan.ddanddan.R.drawable.ic_bg_mole
         else -> com.ddanddan.ddanddan.R.drawable.ic_bg_cat
     }
 }
@@ -66,12 +77,13 @@ fun PetTypeEnum?.toColor(): Color {
         PetTypeEnum.DOG -> Color(0xFF9B6CFF)
         PetTypeEnum.PENGUIN -> Color(0xFF4E95FF)
         PetTypeEnum.HAMSTER -> Color(0xFF46F8A2)
+        PetTypeEnum.MOLE -> Color(0xFFD0DAE4)
         else -> Color(0xFFFD85FF)
     }
 }
 
 enum class PetTypeEnum {
-    CAT, HAMSTER, PENGUIN, DOG
+    CAT, HAMSTER, PENGUIN, DOG, MOLE
 }
 
 fun String.toPetType(): PetTypeEnum {
@@ -80,6 +92,7 @@ fun String.toPetType(): PetTypeEnum {
         "HAMSTER" -> PetTypeEnum.HAMSTER
         "PENGUIN" -> PetTypeEnum.PENGUIN
         "DOG" -> PetTypeEnum.DOG
+        "MOLE" -> PetTypeEnum.MOLE
         else -> PetTypeEnum.CAT
     }
 }
