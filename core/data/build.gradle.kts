@@ -34,7 +34,7 @@ dependencies {
     implementation(libs.androidx.coreKtx)
     implementation(libs.androidx.pagingRuntime)
     implementation(libs.androidx.security)
-    implementation(libs.billing)
+//    implementation(libs.billing)
 
     implementation(libs.gson)
     implementation(libs.okhttp.bom)
