@@ -7,7 +7,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,7 +53,6 @@ import com.ddanddan.ui.enums.TooltipType
 import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import com.ddanddan.base.R.drawable
 import com.ddanddan.ddanddan.service.PhoneDataLayerService
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.showSnackbar
@@ -66,8 +64,6 @@ import com.google.accompanist.permissions.rememberPermissionState
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     needRefresh: Boolean,
-    onRankingClick: () -> Unit,
-    onSettingClick: () -> Unit,
     onNavigateLevelUp: (level: Int, petType: String) -> Unit,
     onNavigateNewPet: (petType: String) -> Unit,
     onNavigateError: (Int?) -> Unit = {}
@@ -135,12 +131,6 @@ fun HomeRoute(
 
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is HomeSideEffect.NavigateRanking -> {
-                onRankingClick()
-            }
-            is HomeSideEffect.NavigateSetting -> {
-                onSettingClick()
-            }
             is HomeSideEffect.NavigateLevelUp -> {
                 onNavigateLevelUp(sideEffect.level, sideEffect.petType.name)
             }
@@ -171,8 +161,6 @@ fun HomeRoute(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
         composition = composition,
-        onRankingClick = homeViewModel::onRankingClick,
-        onSettingClick = homeViewModel::onSettingClick,
         onEatClick = homeViewModel::postFoodPet,
         onPlayClick = homeViewModel::postPlayPet,
         onPetClick = { homeViewModel.showTooltipState(it, TooltipType.BASIC) },
@@ -185,8 +173,6 @@ fun HomeScreen(
     homeState: HomeState = HomeState(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     composition: LottieComposition? = null,
-    onRankingClick: () -> Unit = {},
-    onSettingClick: () -> Unit = {},
     onEatClick: () -> Unit = {},
     onPlayClick: () -> Unit = {},
     onPetClick: (Boolean) -> Unit = {},
@@ -207,11 +193,11 @@ fun HomeScreen(
         }) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.padding(top = 20.dp))
-            HomeTopItem(onRankingClick = onRankingClick, onSettingClick = onSettingClick)
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = 60.dp))
             HomeCalorieItem(
                 purposeCalorie = homeState.user?.purposeCalorie.toString(),
                 currentCalories = homeState.currentCalories.toInt().toString()
@@ -230,27 +216,6 @@ fun HomeScreen(
             HomeProgressbarItem(homeState)
             Spacer(modifier = Modifier.padding(top = 20.dp))
         }
-    }
-}
-
-@Composable
-fun HomeTopItem(onRankingClick: () -> Unit = {}, onSettingClick: () -> Unit = {}) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Image(
-            modifier = Modifier.clickable(onClick = onRankingClick),
-            painter = painterResource(id = drawable.ic_trophy),
-            contentDescription = "랭킹"
-        )
-        Image(
-            modifier = Modifier.clickable(onClick = onSettingClick),
-            painter = painterResource(id = drawable.ic_hamburger),
-            contentDescription = "설정"
-        )
     }
 }
 
