@@ -36,4 +36,10 @@
         <item>조아조아</item>
         <item>눈누난나 ♫</item>
     </string-array>
+
+    <string name="bottom_navi_home">우리집</string>
+    <string name="bottom_navi_ranking">랭킹</string>
+    <string name="bottom_navi_friends">친구</string>
+    <string name="bottom_navi_mypage">마이페이지</string>
+
 </resources>
