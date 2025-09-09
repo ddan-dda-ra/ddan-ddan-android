@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ddanddan.ddanddan.presentation.error.ErrorScreen
+import com.ddanddan.ddanddan.presentation.friends.FriendsRoute
 import com.ddanddan.ddanddan.presentation.home.GrantedNotRoute
 import com.ddanddan.ddanddan.presentation.home.HomeRoute
 import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionRoute
@@ -344,24 +345,29 @@ fun MainScreen(
             RankRoute(navigatePopUp = navController::popBackStack)
         }
 
-        composable(DDanDDanRoute.GRANT_NOT_PERMISSION.route) {
-            GrantedNotRoute(
-                onNavigateHome = {
-                    navController.navigate(DDanDDanRoute.HOME.route) {
-                        popUpTo(navController.graph.id) { inclusive = true }
-                    }
-                },
-                onNavigateOnboarding = {
-                    navController.navigate(DDanDDanRoute.ONBOARDING.route) {
-                        popUpTo(navController.graph.id) { inclusive = true }
-                    }
-                },
-                onNavigateSignIn = {
-                    navController.navigate(DDanDDanRoute.SIGN_IN.route) {
-                        popUpTo(navController.graph.id) { inclusive = true }
-                    }
-                },
-            )
+            composable(DDanDDanRoute.GRANT_NOT_PERMISSION.route) {
+                GrantedNotRoute(
+                    onNavigateHome = {
+                        navController.navigate(DDanDDanRoute.HOME.route) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
+                    },
+                    onNavigateOnboarding = {
+                        navController.navigate(DDanDDanRoute.ONBOARDING.route) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
+                    },
+                    onNavigateSignIn = {
+                        navController.navigate(DDanDDanRoute.SIGN_IN.route) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
+                    },
+                )
+            }
+
+            composable(DDanDDanRoute.FRIENDS.route) {
+                FriendsRoute()
+            }
         }
     }
 }
