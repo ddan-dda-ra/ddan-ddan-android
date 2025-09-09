@@ -185,15 +185,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onRankingClick() = intent {
-//        postSideEffect(HomeSideEffect.NavigatePetCollection(state.pet?.id ?: ""))
-        postSideEffect(HomeSideEffect.NavigateRanking)
-    }
-
-    fun onSettingClick() = intent {
-        postSideEffect(HomeSideEffect.NavigateSetting)
-    }
-
     fun showTooltipState(isShowTooltip: Boolean, tooltipType: TooltipType) = intent {
         reduce {
             state.copy(isShowTooltipState = isShowTooltip, tooltipType = tooltipType)
