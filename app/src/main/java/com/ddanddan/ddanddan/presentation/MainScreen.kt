@@ -105,7 +105,7 @@ fun MainScreen(
                     navigatePopUp = navController::popBackStack,
                     onConfirmClick = {
                         navController.navigate(DDanDDanRoute.HOME.route) {
-                            popUpTo(0) { inclusive = true }
+                            popUpTo(navController.graph.id) { inclusive = true }
                         }
                     }
                 )
