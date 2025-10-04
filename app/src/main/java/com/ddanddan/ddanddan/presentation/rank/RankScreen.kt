@@ -613,7 +613,8 @@ fun SimpleRankerView(
     isMyRecord: Boolean = false
 ) {
     Row(
-        modifier = if (!isBottomSheet) Modifier.padding(top = 20.dp) else Modifier.padding(20.dp),
+        modifier = if (!isBottomSheet) Modifier.padding(top = 20.dp)
+            else Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
