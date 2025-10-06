@@ -85,6 +85,7 @@ fun FriendsRoute(
                     )
                 }
             }
+            is FriendsSideEffect.FailCheers -> {}
         }
     }
 
@@ -156,7 +157,8 @@ fun FriendsScreen(
             userDetail = friendsState.chosenUserDetail,
             onClickCheers = onCheersFriend,
             onClickCancel = onDetailDismiss,
-            isMyself = friendsState.myProfile?.id == friendsState.chosenUserDetail.id
+            isMyself = friendsState.myProfile?.id == friendsState.chosenUserDetail.id,
+            showFireworks = friendsState.showFireworks
         )
     }
 }

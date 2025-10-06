@@ -12,11 +12,13 @@ data class FriendsState(
     val isShowDeleteDialog: Boolean = false,
     val chosenDeleteFriendId: String? = null,
     val isShowProfileDialog: Boolean = false,
-    val chosenUserDetail: UserDetail? = null
+    val chosenUserDetail: UserDetail? = null,
+    val showFireworks: Boolean = false
 )
 
 sealed class FriendsSideEffect {
     object RefreshList : FriendsSideEffect()
     data class CopyInviteLink(val link: String) : FriendsSideEffect()
+    object FailCheers : FriendsSideEffect()
     data class NetworkError(val msg: String): FriendsSideEffect()
 }

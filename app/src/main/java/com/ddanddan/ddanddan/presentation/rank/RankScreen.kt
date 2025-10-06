@@ -129,6 +129,7 @@ fun RankRoute(
                     }
                 }
             }
+            is RankSideEffect.FailCheers -> {}
         }
     }
 
@@ -197,7 +198,8 @@ fun RankScreen(
             userDetail = rankState.chosenUserDetail,
             onClickCheers = onCheersUser,
             onClickCancel = onDetailDismiss,
-            isMyself = rankState.myRank?.userId == rankState.chosenUserDetail.id
+            isMyself = rankState.myRank?.userId == rankState.chosenUserDetail.id,
+            showFireworks = rankState.showFireworks
         )
     }
 }

@@ -99,7 +99,6 @@ class RankViewModel @Inject constructor(
     }
 
     fun getUserDetail(uId: String?) = intent {
-        Log.d("GetUserDetail", "uId: $uId")
         if (uId == null) return@intent
         getUserDetailUseCase(uId)
             .onSuccess {
@@ -117,7 +116,10 @@ class RankViewModel @Inject constructor(
 
     fun dismissDetailDialog() = intent {
         reduce {
-            state.copy(isShowProfileDialog = false)
+            state.copy(
+                isShowProfileDialog = false,
+                showFireworks = false
+            )
         }
     }
 
@@ -125,10 +127,12 @@ class RankViewModel @Inject constructor(
         postCheersUseCase(uId)
             .onSuccess {
                 // 불꽃 애니메이션
-                Log.d("FriendsViewModel", "불꽃 애니메이션~")
+                reduce {
+                    state.copy(showFireworks = true)
+                }
             }
             .onFailure {
-
+                postSideEffect(RankSideEffect.FailCheers)
             }
     }
 }

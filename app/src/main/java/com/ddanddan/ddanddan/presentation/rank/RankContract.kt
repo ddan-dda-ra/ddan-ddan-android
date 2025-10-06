@@ -1,7 +1,6 @@
 package com.ddanddan.ddanddan.presentation.rank
 
 import com.ddanddan.ddanddan.R
-import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionSideEffect
 import com.ddanddan.domain.entity.Rank
 import com.ddanddan.domain.entity.UserDetail
 import javax.annotation.concurrent.Immutable
@@ -18,7 +17,8 @@ data class RankState(
     val isPatchAttempted: Boolean = false,
     val isShowProfileDialog: Boolean = false,
     val chosenUserDetail: UserDetail? = null,
-    val myIdx: Int = -1
+    val myIdx: Int = -1,
+    val showFireworks: Boolean = false
 )
 
 sealed class RankSideEffect {
@@ -27,6 +27,7 @@ sealed class RankSideEffect {
     data class SnackBarMsg(val msg: String, val icon: Int) : RankSideEffect()
     data class GoToMyRanking(val rank: Int) : RankSideEffect()
     object UserDataEmpty: RankSideEffect()
+    object FailCheers : RankSideEffect()
 }
 
 enum class RankCriteria { TOTAL_CALORIES, TOTAL_SUCCEEDED_DAYS }
