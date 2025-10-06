@@ -3,6 +3,7 @@ package com.ddanddan.ddanddan.presentation.rank
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.home.collect.PetCollectionSideEffect
 import com.ddanddan.domain.entity.Rank
+import com.ddanddan.domain.entity.UserDetail
 import javax.annotation.concurrent.Immutable
 
 @Immutable
@@ -14,7 +15,10 @@ data class RankState(
     val silverRank: Rank? = null,
     val bronzeRank: Rank? = null,
     val showToolTip: Boolean = false,
-    val isPatchAttempted: Boolean = false
+    val isPatchAttempted: Boolean = false,
+    val isShowProfileDialog: Boolean = false,
+    val chosenUserDetail: UserDetail? = null,
+    val myIdx: Int = -1
 )
 
 sealed class RankSideEffect {

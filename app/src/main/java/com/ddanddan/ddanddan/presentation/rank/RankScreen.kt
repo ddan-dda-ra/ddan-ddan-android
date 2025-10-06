@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.presentation.friends.ProfileDialog
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.domain.enums.PetTypeEnum
@@ -118,14 +119,13 @@ fun RankRoute(
                 rankViewModel.patchDailyCalories()
             }
             is RankSideEffect.GoToMyRanking -> {
-                val myRank = rankState.myRank?.rank ?: 0
-                if (myRank <= 3) {
+                if (rankState.myIdx in 0..2) {
                     scope.launch {
                         listState.animateScrollToItem(0)
                     }
-                } else {
+                } else if (rankState.myIdx in 3..100) {
                     scope.launch {
-                        listState.animateScrollToItem(myRank - 3)
+                        listState.animateScrollToItem(rankState.myIdx - 3)
                     }
                 }
             }
@@ -141,7 +141,10 @@ fun RankRoute(
         showToolTip = rankViewModel::showToolTip,
         onSnackBarEvent = rankViewModel::showSnackBarEvent,
         goToMyRanking = rankViewModel::goToMyRanking,
-        listState = listState
+        listState = listState,
+        onClickUser = rankViewModel::getUserDetail,
+        onCheersUser = rankViewModel::postCheers,
+        onDetailDismiss = rankViewModel::dismissDetailDialog
     )
 }
 
@@ -156,7 +159,10 @@ fun RankScreen(
     showToolTip: () -> Unit = {},
     onSnackBarEvent: (String, Int) -> Unit = { _, _ -> },
     goToMyRanking: () -> Unit = { },
-    listState: LazyListState = rememberLazyListState()
+    listState: LazyListState = rememberLazyListState(),
+    onClickUser: (String?) -> Unit = {},
+    onCheersUser: (String) -> Unit = {},
+    onDetailDismiss: () -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.rank_topbar_title),
@@ -180,10 +186,19 @@ fun RankScreen(
                 showToolTip = showToolTip,
                 dismissToolTip = dismissToolTip,
                 onOverScroll = onSnackBarEvent,
-                listState = listState
+                listState = listState,
+                onClickUser = onClickUser
             )
             MyRecordBottomSheet(rankState = rankState, onClick = goToMyRanking)
         }
+    }
+    if (rankState.isShowProfileDialog && rankState.chosenUserDetail != null) {
+        ProfileDialog(
+            userDetail = rankState.chosenUserDetail,
+            onClickCheers = onCheersUser,
+            onClickCancel = onDetailDismiss,
+            isMyself = rankState.myRank?.userId == rankState.chosenUserDetail.id
+        )
     }
 }
 
@@ -221,7 +236,8 @@ private fun RankListView(
     rankState: RankState = RankState(),
     showToolTip: () -> Unit = {},
     dismissToolTip: () -> Unit = {},
-    listState: LazyListState = rememberLazyListState()
+    listState: LazyListState = rememberLazyListState(),
+    onClickUser: (String?) -> Unit = {}
 ) {
     val today = LocalDate.now()
     LazyColumn(
@@ -284,7 +300,9 @@ private fun RankListView(
                             .fillMaxWidth()
                     ) {
                         TopRankerView(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .noRippleClickable { onClickUser(rankState.silverRank?.userId) },
                             criteria = rankState.criteria,
                             rank = rankState.silverRank?.rank ?: 2,
                             nickname = rankState.silverRank?.userName,
@@ -295,7 +313,9 @@ private fun RankListView(
                         )
                         DDanMarginHorizontalSpacer(13)
                         TopRankerView(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .noRippleClickable { onClickUser(rankState.goldRank?.userId) },
                             criteria = rankState.criteria,
                             rank = 1,
                             nickname = rankState.goldRank?.userName,
@@ -307,7 +327,9 @@ private fun RankListView(
                         )
                         DDanMarginHorizontalSpacer(13)
                         TopRankerView(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .noRippleClickable { onClickUser(rankState.bronzeRank?.userId) },
                             criteria = rankState.criteria,
                             rank = rankState.bronzeRank?.rank ?: 3,
                             nickname = rankState.bronzeRank?.userName,
@@ -371,6 +393,7 @@ private fun RankListView(
         // 4~100등
         items(rankState.otherRanking.size) { idx ->
             SimpleRankerView(
+                modifier = Modifier.noRippleClickable { onClickUser(rankState.otherRanking[idx].userId) },
                 criteria = rankState.criteria,
                 rank = rankState.otherRanking[idx].rank,
                 nickname = rankState.otherRanking[idx].userName,
@@ -399,7 +422,8 @@ private fun RankTapLayout(
     showToolTip: () -> Unit = { },
     dismissToolTip: () -> Unit = { },
     onOverScroll: (String, Int) -> Unit = { _, _ -> },
-    listState: LazyListState = rememberLazyListState()
+    listState: LazyListState = rememberLazyListState(),
+    onClickUser: (String?) -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf(RankCriteria.TOTAL_CALORIES, RankCriteria.TOTAL_SUCCEEDED_DAYS)
@@ -513,7 +537,7 @@ private fun RankTapLayout(
                             }
                         )
                     ) {
-                        RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip, listState = listState)
+                        RankListView(rankState = rankState, showToolTip = showToolTip, dismissToolTip = dismissToolTip, listState = listState, onClickUser = onClickUser)
                     }
                 }
             }
@@ -603,6 +627,7 @@ fun TopRankerView(
 @Preview
 @Composable
 fun SimpleRankerView(
+    modifier: Modifier = Modifier,
     criteria: RankCriteria = RankCriteria.TOTAL_CALORIES,
     rank: Int = 4,
     nickname: String? = "일이삼사오육칠팔구십",
@@ -613,8 +638,8 @@ fun SimpleRankerView(
     isMyRecord: Boolean = false
 ) {
     Row(
-        modifier = if (!isBottomSheet) Modifier.padding(top = 20.dp)
-            else Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+        modifier = if (!isBottomSheet) modifier.padding(top = 20.dp)
+            else modifier.padding(horizontal = 20.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

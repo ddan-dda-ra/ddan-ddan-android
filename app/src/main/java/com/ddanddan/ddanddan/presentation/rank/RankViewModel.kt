@@ -1,8 +1,11 @@
 package com.ddanddan.ddanddan.presentation.rank
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.ddanddan.domain.usecase.GetRankingUseCase
+import com.ddanddan.domain.usecase.GetUserDetailUseCase
 import com.ddanddan.domain.usecase.PatchDailyCaloriesUseCase
+import com.ddanddan.domain.usecase.PostCheersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -14,7 +17,9 @@ import javax.inject.Inject
 @HiltViewModel
 class RankViewModel @Inject constructor(
     private val getRankingUseCase: GetRankingUseCase,
-    private val patchDailyCaloriesUseCase: PatchDailyCaloriesUseCase
+    private val patchDailyCaloriesUseCase: PatchDailyCaloriesUseCase,
+    private val postCheersUseCase: PostCheersUseCase,
+    private val getUserDetailUseCase: GetUserDetailUseCase
 ) : ViewModel(), ContainerHost<RankState, RankSideEffect> {
 
     override val container =
@@ -37,13 +42,15 @@ class RankViewModel @Inject constructor(
     private fun getRanking() = intent {
         getRankingUseCase(state.criteria.toString())
             .onSuccess { (myRank, others) ->
+                val myIdx = others.indexOfFirst { it.userId == myRank.userId }
                 reduce {
                     state.copy(
                         myRank = myRank,
                         goldRank = others.getOrNull(0),
                         silverRank = others.getOrNull(1),
                         bronzeRank = others.getOrNull(2),
-                        otherRanking = others.drop(3)
+                        otherRanking = others.drop(3),
+                        myIdx = myIdx
                     )
                 }
             }
@@ -89,5 +96,39 @@ class RankViewModel @Inject constructor(
 
     fun showSnackBarEvent(msg: String, icon: Int) = intent {
         postSideEffect(RankSideEffect.SnackBarMsg(msg, icon))
+    }
+
+    fun getUserDetail(uId: String?) = intent {
+        Log.d("GetUserDetail", "uId: $uId")
+        if (uId == null) return@intent
+        getUserDetailUseCase(uId)
+            .onSuccess {
+                reduce {
+                    state.copy(
+                        chosenUserDetail = it,
+                        isShowProfileDialog = true
+                    )
+                }
+            }
+            .onFailure {
+                postSideEffect(RankSideEffect.NetworkError("정보를 가져오는데 실패했습니다"))
+            }
+    }
+
+    fun dismissDetailDialog() = intent {
+        reduce {
+            state.copy(isShowProfileDialog = false)
+        }
+    }
+
+    fun postCheers(uId: String) = intent {
+        postCheersUseCase(uId)
+            .onSuccess {
+                // 불꽃 애니메이션
+                Log.d("FriendsViewModel", "불꽃 애니메이션~")
+            }
+            .onFailure {
+
+            }
     }
 }
