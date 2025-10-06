@@ -66,6 +66,7 @@ fun FriendsRoute(
     LaunchedEffect(Unit) {
         friendsViewModel.getFriendsList()
         friendsViewModel.getInviteCode()
+        friendsViewModel.getMyProfile()
     }
 
     friendsViewModel.collectSideEffect { sideEffect ->
@@ -93,7 +94,10 @@ fun FriendsRoute(
         onCopyInviteLink = friendsViewModel::copyInviteCode,
         onDialogDismiss = friendsViewModel::dismissDialog,
         onDialogConfirm = friendsViewModel::deleteFriend,
-        onDeleteClick = friendsViewModel::chooseDeleteFriend
+        onDeleteClick = friendsViewModel::chooseDeleteFriend,
+        onClickFriend = friendsViewModel::getUserDetail,
+        onCheersFriend = friendsViewModel::postCheers,
+        onDetailDismiss = friendsViewModel::dismissDetailDialog
     )
 }
 
@@ -105,7 +109,10 @@ fun FriendsScreen(
     onCopyInviteLink: () -> Unit = { },
     onDialogDismiss: () -> Unit = {},
     onDialogConfirm: () -> Unit = {},
-    onDeleteClick: (String) -> Unit = {}
+    onDeleteClick: (String) -> Unit = {},
+    onClickFriend: (String) -> Unit = {},
+    onCheersFriend: (String) -> Unit = {},
+    onDetailDismiss: () -> Unit = {}
 ) {
     Scaffold(
         snackbarHost = {
@@ -123,10 +130,15 @@ fun FriendsScreen(
             )
             DDanMarginVerticalSpacer(9)
             FriendsListView(
+                modifier = Modifier.weight(1f),
                 friendsState = friendsState,
-                onDelete = onDeleteClick
+                onDelete = onDeleteClick,
+                onClickFriend = onClickFriend
             )
-            MyselfBottomSheet(friendsState = friendsState)
+            MyselfBottomSheet(
+                friendsState = friendsState,
+                onClick = onClickFriend
+            )
         }
     }
     if (friendsState.isShowDeleteDialog) {
@@ -139,26 +151,37 @@ fun FriendsScreen(
             onClickConfirm = onDialogConfirm
         )
     }
+    if (friendsState.isShowProfileDialog && friendsState.chosenUserDetail != null) {
+        ProfileDialog(
+            userDetail = friendsState.chosenUserDetail,
+            onClickCheers = onCheersFriend,
+            onClickCancel = onDetailDismiss,
+            isMyself = friendsState.myProfile?.id == friendsState.chosenUserDetail.id
+        )
+    }
 }
 
 @Composable
 private fun FriendsListView(
+    modifier: Modifier = Modifier,
     friendsState: FriendsState = FriendsState(),
     listState: LazyListState = rememberLazyListState(),
-    onDelete: (String) -> Unit = { }
+    onDelete: (String) -> Unit = { },
+    onClickFriend: (String) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp),
         state = listState
     ) {
         items(friendsState.friends.size) { idx ->
             FriendRow(
+                modifier = Modifier.noRippleClickable { onClickFriend(friendsState.friends[idx].id) },
                 nickname = friendsState.friends[idx].name,
                 mainPetType = friendsState.friends[idx].mainPetType,
                 petLevel = friendsState.friends[idx].petLevel,
-                onDelete = { onDelete(friendsState.friends[idx].id) }
+                onDelete = { onDelete(friendsState.friends[idx].id) },
             )
         }
     }
@@ -167,17 +190,17 @@ private fun FriendsListView(
 @Composable
 private fun MyselfBottomSheet(
     friendsState: FriendsState = FriendsState(),
-    onClick: () -> Unit = { }
+    onClick: (String) -> Unit = { }
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
-            .noRippleClickable { onClick() }
     ) {
         if (friendsState.myProfile != null) {
             FriendRow(
+                modifier = Modifier.noRippleClickable { onClick(friendsState.myProfile?.id ?: "") },
                 nickname = friendsState.myProfile.name,
                 mainPetType = friendsState.myProfile.mainPetType,
                 petLevel = friendsState.myProfile.petLevel,
@@ -226,6 +249,7 @@ fun FriendsTopBar(
 @Preview
 @Composable
 fun FriendRow(
+    modifier: Modifier = Modifier,
     nickname: String? = "이름입니뎅",
     mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
     petLevel: Int? = 1,
@@ -233,8 +257,8 @@ fun FriendRow(
     isBottomSheet: Boolean = false
 ) {
     Row(
-        modifier = if (isBottomSheet) Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
-                else Modifier.padding(top = 20.dp),
+        modifier = if (isBottomSheet) modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+                else modifier.padding(top = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -283,6 +307,7 @@ fun FriendRow(
                     .wrapContentSize()
                     .clip(RoundedCornerShape(4.dp))
                     .background(DDanDDanColorPalette.current.color_button_default01)
+                    .noRippleClickable { onDelete() }
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_delete),
