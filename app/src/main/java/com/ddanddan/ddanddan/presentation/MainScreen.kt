@@ -15,6 +15,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ddanddan.ddanddan.presentation.error.ErrorScreen
+import com.ddanddan.ddanddan.presentation.friends.AddedFriendScreen
 import com.ddanddan.ddanddan.presentation.friends.FriendsRoute
 import com.ddanddan.ddanddan.presentation.home.GrantedNotRoute
 import com.ddanddan.ddanddan.presentation.home.HomeRoute
@@ -404,6 +405,16 @@ fun MainScreen(
 
             composable(DDanDDanRoute.FRIENDS.route) {
                 FriendsRoute()
+            }
+
+            composable(DDanDDanRoute.ADDED_FRIEND.route) {
+                AddedFriendScreen(
+                    onNavigateFriends = {
+                        navController.navigate(DDanDDanRoute.FRIENDS.route) {
+                            popUpTo(navController.graph.id) { inclusive = true}
+                        }
+                    }
+                )
             }
         }
     }
