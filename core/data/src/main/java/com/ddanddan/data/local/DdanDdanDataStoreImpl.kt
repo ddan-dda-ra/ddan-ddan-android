@@ -42,6 +42,10 @@ class DdanDdanDataStoreImpl @Inject constructor(
         get() = userPref.getBoolean(PREF_ON_NOTIFICATION, true)
         set(value) = userPref.edit { putBoolean(PREF_ON_NOTIFICATION, value)}
 
+    override var firstEggCounterBadge: Boolean
+        get() = userPref.getBoolean(PREF_FIRST_EGG_COUNTER_BADGE, false)
+        set(value) = userPref.edit { putBoolean(PREF_FIRST_EGG_COUNTER_BADGE, value) }
+
     private val _caloriesFlow = MutableStateFlow(userPref.getFloat(PREF_CALORIES, 0.0f))
     override val caloriesFlow: Flow<Float> get() = _caloriesFlow
 
@@ -58,6 +62,7 @@ class DdanDdanDataStoreImpl @Inject constructor(
         private const val PREF_USER_TOKEN = "USER_TOKEN"
         private const val PREF_REFRESH_TOKEN = "REFRESH_TOKEN"
         private const val PREF_IS_LOGIN = "IS_LOGIN"
+        private const val PREF_FIRST_EGG_COUNTER_BADGE = "FIRST_EGG_COUNTER_BADGE"
         private const val PREF_USER_INFO = "USER_INFO"
         private const val PREF_IS_FIRST_AFTER_INSTALL = "IS_FIRST_AFTER_INSTALL"
         private const val PREF_DEVICE_TOKEN = "DEVICE_TOKEN"
