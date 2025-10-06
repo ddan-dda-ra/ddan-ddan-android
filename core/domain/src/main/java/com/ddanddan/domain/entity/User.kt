@@ -6,6 +6,7 @@ data class User(
     val purposeCalorie: Int,
     val foodQuantity: Int,
     val toyQuantity: Int,
+    val tickets: Int,
     val setting: UserSetting?
 )
 
