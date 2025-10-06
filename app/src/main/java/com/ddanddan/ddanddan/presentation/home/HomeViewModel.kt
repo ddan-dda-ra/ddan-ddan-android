@@ -1,7 +1,9 @@
 package com.ddanddan.ddanddan.presentation.home
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.widget.WidgetManager
+import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetNotificationAskedUseCase
@@ -23,6 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getMainPetUseCase: GetMainPetUseCase,
     private val postPlayPetUseCase: PostPlayPetUseCase,
@@ -31,20 +34,32 @@ class HomeViewModel @Inject constructor(
     private val postMainPetUseCase: PostMainPetUseCase,
     private val getNotificationAskedUseCase: GetNotificationAskedUseCase,
     private val userRepository: UserRepository,
+    private val ddanddanDataStore: ddanddanDataStore,
     private val widgetManager: WidgetManager
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
 
+    private val isNewPet = savedStateHandle["isNewPet"] ?: false
+
     init {
         getNotificationAsked()
         getHomeInfo()
         observeCalories()
+
+        animationEggCounterBadge()
     }
 
     fun getHomeInfo() {
         getUserInfo()
         getMainPet()
+    }
+
+    private fun animationEggCounterBadge() = intent {
+        if (isNewPet && !ddanddanDataStore.firstEggCounterBadge) {
+            reduce { state.copy(firstEggCountBadge = true) }
+            ddanddanDataStore.firstEggCounterBadge = true
+        }
     }
 
     private fun getNotificationAsked() = intent {
@@ -82,28 +97,26 @@ class HomeViewModel @Inject constructor(
                 }
             }
     }
-
-    private fun postRandomPet() = intent {
-        postRandomPetUseCase()
-            .onSuccess {
-                reduce {
-                    state.copy(pet = it)
-                }
-                postMainPet(it.id)
-                postSideEffect(HomeSideEffect.NavigateNewPet(it.type))
-            }.onFailure {
-                postSideEffect(HomeSideEffect.SnackBarMsg("새로운 펫을 불러오는데 오류가 발생했습니다."))
-            }
-    }
+//
+//    private fun postRandomPet() = intent {
+//        postRandomPetUseCase()
+//            .onSuccess {
+//                reduce {
+//                    state.copy(pet = it)
+//                }
+//                postMainPet(it.id)
+//                postSideEffect(HomeSideEffect.NavigateNewPet(it.type))
+//            }.onFailure {
+//                postSideEffect(HomeSideEffect.SnackBarMsg("새로운 펫을 불러오는데 오류가 발생했습니다."))
+//            }
+//    }
 
     fun postPlayPet() = intent {
         state.pet?.let { pet ->
             if ((state.user?.toyQuantity ?: 0) > 0) {
                 postPlayPetUseCase(pet.id)
                     .onSuccess {
-                        if (it.pet.level == MAX_LEVEL && it.pet.expPercent.toInt() == MAX_PERCENTS) {
-                            postRandomPet()
-                        } else if (it.pet.level > (state.pet?.level ?: 0)) {
+                        if (it.pet.level > (state.pet?.level ?: 0)) {
                             postSideEffect(HomeSideEffect.NavigateLevelUp(it.pet.level, it.pet.type))
                         }
                         reduce {
@@ -134,9 +147,7 @@ class HomeViewModel @Inject constructor(
             if ((state.user?.foodQuantity ?: 0) > 0) {
                 postFoodPetUseCase(pet.id)
                     .onSuccess {
-                        if (it.pet.level == MAX_LEVEL && it.pet.expPercent.toInt() == MAX_PERCENTS) {
-                            postRandomPet()
-                        } else if (it.pet.level > (state.pet?.level ?: 0)) {
+                        if (it.pet.level > (state.pet?.level ?: 0)) {
                             postSideEffect(HomeSideEffect.NavigateLevelUp(it.pet.level, it.pet.type))
                         }
                         reduce {
@@ -185,6 +196,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun eggCountBadgeClick() = intent {
+        if ((state.user?.tickets ?: 0) == 0) {
+            reduce { state.copy(isShowEggZeroTooltip = !state.isShowEggZeroTooltip) }
+        }
+    }
+
     fun showTooltipState(isShowTooltip: Boolean, tooltipType: TooltipType) = intent {
         reduce {
             state.copy(isShowTooltipState = isShowTooltip, tooltipType = tooltipType)
@@ -200,6 +217,12 @@ class HomeViewModel @Inject constructor(
     fun setCurrentTooltipMsg(msg: String) = intent {
         reduce {
             state.copy(currentTooltipMsg = msg)
+        }
+    }
+
+    fun dismissCoachMark() = intent {
+        reduce {
+            state.copy(firstEggCountBadge = false)
         }
     }
 
