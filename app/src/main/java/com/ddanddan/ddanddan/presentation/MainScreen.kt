@@ -83,7 +83,12 @@ fun MainScreen(
             startDestination = DDanDDanRoute.SPLASH.route,
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable(DDanDDanRoute.HOME.route) { navBackStackEntry ->
+            composable(
+                route = DDanDDanRoute.HOME.route,
+                arguments = listOf(navArgument("isNewPet") {
+                    type = NavType.BoolType; defaultValue = false
+                })
+            ) { navBackStackEntry ->
                 val needRefresh by navBackStackEntry.savedStateHandle
                     .getStateFlow("needRefresh", false)
                     .collectAsState()
@@ -92,9 +97,6 @@ fun MainScreen(
                     needRefresh = needRefresh,
                     onNavigateLevelUp = { level, petType ->
                         navController.navigate(DDanDDanRoute.LEVEL_UP.route + "?level=${level}&petType=${petType}")
-                    },
-                    onNavigateNewPet = { petType ->
-                        navController.navigate(DDanDDanRoute.NET_PET.route + "?petType=${petType}")
                     },
                     onNavigateError = { errorCode ->
                         navController.navigate(DDanDDanRoute.ERROR.route + "?errorCode=${errorCode}")
@@ -237,15 +239,19 @@ fun MainScreen(
                 LevelUpRoute(
                     level = it.arguments?.getInt("level") ?: 1,
                     petType = petType,
-                    onButtonClick = navController::popBackStack
+                    onButtonClick = navController::popBackStack,
+                    navigateToNetPet = {
+                        navController.navigate(DDanDDanRoute.NET_PET.route)
+                    }
                 )
             }
-            composable(DDanDDanRoute.NET_PET.route + "?petType={petType}") {
-                val petTypeString = it.arguments?.getString("petType") ?: PetTypeEnum.CAT.name
-                val petType = PetTypeEnum.valueOf(petTypeString)
+            composable(DDanDDanRoute.NET_PET.route) {
                 NewPetRoute(
-                    petType = petType,
-                    onButtonClick = navController::popBackStack
+                    onButtonClick = {
+                        navController.navigate(DDanDDanRoute.HOME.route + "?isNewPet=true") {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
+                    }
                 )
             }
             composable(
