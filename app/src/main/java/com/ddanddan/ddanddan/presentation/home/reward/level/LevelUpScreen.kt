@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -27,22 +28,32 @@ import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
+import com.ddanddan.ui.compose.theme.DDanDDanTheme
 
 @Composable
 fun LevelUpRoute(
     level: Int,
     petType: PetTypeEnum,
-    onButtonClick: () -> Unit
+    onButtonClick: () -> Unit,
+    navigateToNetPet: () -> Unit
 ) {
+    val isPetLevelUpCompleted = level == 5
     LevelUpScreen(
         level = level,
         petType = petType,
-        onButtonClick = onButtonClick
+        onButtonClick = {
+            if (!isPetLevelUpCompleted) {
+                onButtonClick()
+            } else {
+                navigateToNetPet()
+            }
+        }
     )
 }
 
 @Composable
 fun LevelUpScreen(
+    isPetLevelUpCompleted: Boolean = false,
     level: Int = 1,
     petType: PetTypeEnum = PetTypeEnum.CAT,
     onButtonClick: () -> Unit = {}
@@ -50,7 +61,7 @@ fun LevelUpScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            BottomButton("성장하기", onButtonClick = onButtonClick)
+            BottomButton(if (isPetLevelUpCompleted) "다음" else "성장하기", onButtonClick = onButtonClick)
         },
         backgroundColor = DDanDDanColorPalette.current.color_background
     ) { paddingValues ->
@@ -87,15 +98,39 @@ fun LevelUpScreen(
                 )
             }
             Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "lv.${level}로\n업그레이드 되었어요!",
-                fontFamily = NeoDgm,
-                fontWeight = FontWeight(400),
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                color = DDanDDanColorPalette.current.color_text_headline_primary
-            )
+            if (isPetLevelUpCompleted) {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "펫 성장 완료!",
+                        fontFamily = NeoDgm,
+                        fontWeight = FontWeight(400),
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center,
+                        color = DDanDDanColorPalette.current.color_text_headline_primary
+                    )
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        text = "성장을 완료한 펫과 꾸준히 운동해\n경험치를 올려보세요!",
+                        style = DDanDDanTypo.current.Body1,
+                        textAlign = TextAlign.Center,
+                        color = DDanDDanColorPalette.current.color_text_body_quaternary
+                    )
+                }
+            } else {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "lv.${level}로\n업그레이드 되었어요!",
+                    fontFamily = NeoDgm,
+                    fontWeight = FontWeight(400),
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    color = DDanDDanColorPalette.current.color_text_headline_primary
+                )
+            }
         }
     }
 }
@@ -114,5 +149,13 @@ fun BottomButton(btnText: String, onButtonClick: () -> Unit = {}) {
         )
     ) {
         Text(text = btnText, style = DDanDDanTypo.current.HeadLine6)
+    }
+}
+
+@Preview
+@Composable
+fun LevelUpScreenPreview() {
+    DDanDDanTheme {
+        LevelUpScreen()
     }
 }
