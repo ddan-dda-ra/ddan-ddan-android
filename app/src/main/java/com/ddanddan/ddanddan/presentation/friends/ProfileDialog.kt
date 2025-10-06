@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.presentation.friends.fireworks.FireworkEffect
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toRectBackgroundImage
 import com.ddanddan.domain.entity.UserDetail
@@ -60,7 +61,8 @@ fun ProfileDialog(
     onClickCancel: () -> Unit = {},
     isMyself: Boolean = false,
     isFromInvitation: Boolean = false,
-    onAddFriend: (String) -> Unit = {}
+    onAddFriend: (String) -> Unit = {},
+    showFireworks: Boolean = false
     ) {
     Dialog(
         onDismissRequest = { onClickCancel() }
@@ -93,7 +95,7 @@ fun ProfileDialog(
                         ConstraintLayout(
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            val (label, close, pet) = createRefs()
+                            val (label, close, pet, fireworks) = createRefs()
 
                             Image(
                                 modifier = Modifier.constrainAs(close) {
@@ -105,7 +107,7 @@ fun ProfileDialog(
                                 contentDescription = null
                             )
 
-                            if (userDetail.isFriend) {
+                            if (userDetail.isFriend || isMyself) {
                                 Box(
                                     modifier = Modifier.constrainAs(label) {
                                         top.linkTo(parent.top, margin = (16.5).dp)
@@ -134,6 +136,10 @@ fun ProfileDialog(
                                 painter = painterResource(id = userDetail.mainPet.type.toAnimal(userDetail.mainPet.level)),
                                 contentDescription = null
                             )
+
+                            if (showFireworks) {
+                                FireworkEffect()
+                            }
                         }
                     }
                     Column(
