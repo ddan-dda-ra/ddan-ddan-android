@@ -3,6 +3,7 @@ package com.ddanddan.domain.repository
 import com.ddanddan.domain.entity.AuthInfo
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.User
+import com.ddanddan.domain.entity.UserDetail
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
@@ -18,4 +19,5 @@ interface UserRepository {
     suspend fun patchDailyCalories(calorie: Int): Unit
     suspend fun saveCalories(calories: Double, timestamp: Long)
     fun getTodayCalories(): Flow<Double>
+    suspend fun getUserDetail(uId: String): UserDetail
 }

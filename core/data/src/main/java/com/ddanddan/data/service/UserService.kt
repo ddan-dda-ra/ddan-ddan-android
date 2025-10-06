@@ -10,6 +10,7 @@ import com.ddanddan.model.response.ResponseDailyCalories
 import com.ddanddan.model.response.ResponseLogin
 import com.ddanddan.model.response.ResponseMainPet
 import com.ddanddan.model.response.ResponseUser
+import com.ddanddan.model.response.ResponseUserDetail
 import com.ddanddan.model.response.ResponseUserSetting
 import retrofit2.Response
 import retrofit2.http.GET
@@ -18,6 +19,7 @@ import retrofit2.http.HTTP
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface UserService {
     @GET("/v1/users/me")
@@ -55,4 +57,9 @@ interface UserService {
     suspend fun patchDailyCalories(
         @Body requestBody: RequestDailyCalories
     ): ResponseDailyCalories
+
+    @GET("/v1/users/{userId}")
+    suspend fun getUserDetail(
+        @Path("userId") userId: String
+    ): ResponseUserDetail
 }
