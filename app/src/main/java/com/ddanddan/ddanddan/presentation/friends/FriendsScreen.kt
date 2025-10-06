@@ -19,15 +19,24 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toColor
@@ -37,20 +46,71 @@ import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.Pretendard
 import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
+import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.compose.component.DDanTwoButtonDialog
+import com.ddanddan.ui.compose.component.showSnackbar
 import com.ddanddan.ui.ext.noRippleClickable
+import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun FriendsRoute() {
-    FriendsScreen()
+fun FriendsRoute(
+    friendsViewModel: FriendsViewModel = hiltViewModel()
+) {
+    val friendsState by friendsViewModel.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val clipboardManager = LocalClipboardManager.current
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        friendsViewModel.getFriendsList()
+        friendsViewModel.getInviteCode()
+    }
+
+    friendsViewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is FriendsSideEffect.NetworkError -> {}
+            is FriendsSideEffect.RefreshList -> friendsViewModel.getFriendsList()
+            is FriendsSideEffect.CopyInviteLink -> {
+                clipboardManager.setText(AnnotatedString(friendsState.myInviteLink ?: ""))
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(
+                        message = "친구 추가 링크를 복사했어요.",
+                        iconResId = R.drawable.icon_radio_check_on,
+                        duration = SnackbarDuration.Short,
+                        bottomPadding = 88
+                    )
+                }
+            }
+        }
+    }
+
+    FriendsScreen(
+        friendsState = friendsState,
+        snackBarHostState = snackBarHostState,
+        onCopyInviteLink = friendsViewModel::copyInviteCode,
+        onDialogDismiss = friendsViewModel::dismissDialog,
+        onDialogConfirm = friendsViewModel::deleteFriend,
+        onDeleteClick = friendsViewModel::chooseDeleteFriend
+    )
 }
 
 @Preview
 @Composable
 fun FriendsScreen(
-    friendsState: FriendsState = FriendsState()
+    friendsState: FriendsState = FriendsState(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    onCopyInviteLink: () -> Unit = { },
+    onDialogDismiss: () -> Unit = {},
+    onDialogConfirm: () -> Unit = {},
+    onDeleteClick: (String) -> Unit = {}
 ) {
     Scaffold(
-
+        snackbarHost = {
+            DDanSnackBar(snackBarHostState = snackBarHostState)
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -58,13 +118,26 @@ fun FriendsScreen(
                 .padding(paddingValues)
                 .background(DDanDDanColorPalette.current.color_background)
         ) {
-            FriendsTopBar( )
+            FriendsTopBar(
+                copyFriendsLink = { onCopyInviteLink() }
+            )
             DDanMarginVerticalSpacer(9)
             FriendsListView(
                 friendsState = friendsState,
+                onDelete = onDeleteClick
             )
             MyselfBottomSheet(friendsState = friendsState)
         }
+    }
+    if (friendsState.isShowDeleteDialog) {
+        DDanTwoButtonDialog(
+            title = "정말 삭제하시겠어요?",
+            content = "친구가 삭제돼요",
+            cancelText = "취소",
+            confirmText = "삭제하기",
+            onClickCancel = onDialogDismiss,
+            onClickConfirm = onDialogConfirm
+        )
     }
 }
 
