@@ -177,6 +177,17 @@ fun PetTypeEnum?.toBackgroundImage(): Int {
     }
 }
 
+fun PetTypeEnum?.toRectBackgroundImage(): Int {
+    return when (this) {
+        PetTypeEnum.CAT -> R.drawable.ic_bg_cat_rect
+        PetTypeEnum.DOG -> R.drawable.ic_bg_dog_rect
+        PetTypeEnum.PENGUIN -> R.drawable.ic_bg_penguin_rect
+        PetTypeEnum.HAMSTER -> R.drawable.ic_bg_hamster_rect
+        PetTypeEnum.MOLE -> R.drawable.ic_bg_mole_rect
+        else -> R.drawable.ic_bg_cat_rect
+    }
+}
+
 fun PetTypeEnum?.toColor(): Color {
     return when (this) {
         PetTypeEnum.CAT -> Color(0xFFFD85FF)
