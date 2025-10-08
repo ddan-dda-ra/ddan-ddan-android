@@ -138,7 +138,14 @@ fun ProfileDialog(
                             )
 
                             if (showFireworks) {
-                                FireworkEffect()
+                                FireworkEffect(
+                                    modifier = Modifier.constrainAs(fireworks) {
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                    }
+                                )
                             }
                         }
                     }

@@ -25,6 +25,7 @@ import kotlin.random.Random
 
 @Composable
 fun FireworkEffect(
+    modifier: Modifier = Modifier,
     onFinish: () -> Unit = {}
 ) {
     var particles by remember { mutableStateOf<List<Particle>>(emptyList()) }
@@ -59,7 +60,7 @@ fun FireworkEffect(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
         // 애니메이션 중인 파티클들
