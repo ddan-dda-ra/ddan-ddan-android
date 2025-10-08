@@ -62,7 +62,11 @@ class FriendsViewModel @Inject constructor(
     }
 
     fun deleteFriend() = intent {
-        deleteFriendUseCase(state.chosenDeleteFriendId ?: "")
+        val friendId = state.chosenDeleteFriendId ?: run {
+            postSideEffect(FriendsSideEffect.NetworkError("삭제할 친구를 선택해주세요"))
+            return@intent
+        }
+        deleteFriendUseCase(friendId)
             .onSuccess {
                 postSideEffect(FriendsSideEffect.RefreshList)
             }
@@ -130,27 +134,16 @@ class FriendsViewModel @Inject constructor(
 
     fun getMyProfile() = intent {
         getUserInfoUseCase()
-            .onSuccess {
-                reduce {
-                    state.copy(
-                        myProfile = Friend(
-                            it.id,
-                            it.name ?: "",
-                            PetTypeEnum.DOG,
-                            1
-                        )
-                    )
-                }
-
+            .onSuccess { userInfo ->
                 getMainPetUseCase()
-                    .onSuccess {
+                    .onSuccess { mainPet ->
                         reduce {
                             state.copy(
                                 myProfile = Friend(
-                                    state.myProfile?.id ?: "",
-                                    state.myProfile?.name ?: "",
-                                    it.type,
-                                    it.level
+                                    userInfo.id,
+                                    userInfo.name ?: "",
+                                    mainPet.type,
+                                    mainPet.level
                                 )
                             )
                         }
