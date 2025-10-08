@@ -65,7 +65,6 @@ fun FriendsRoute(
 
     LaunchedEffect(Unit) {
         friendsViewModel.getFriendsList()
-        friendsViewModel.getInviteCode()
         friendsViewModel.getMyProfile()
     }
 
@@ -74,15 +73,26 @@ fun FriendsRoute(
             is FriendsSideEffect.NetworkError -> {}
             is FriendsSideEffect.RefreshList -> friendsViewModel.getFriendsList()
             is FriendsSideEffect.CopyInviteLink -> {
-                clipboardManager.setText(AnnotatedString(friendsState.myInviteLink ?: ""))
-                scope.launch {
-                    snackBarHostState.currentSnackbarData?.dismiss()
-                    snackBarHostState.showSnackbar(
-                        message = "친구 추가 링크를 복사했어요.",
-                        iconResId = R.drawable.icon_radio_check_on,
-                        duration = SnackbarDuration.Short,
-                        bottomPadding = 88
-                    )
+                friendsState.myInviteLink?.let { link ->
+                    clipboardManager.setText(AnnotatedString(link))
+                    scope.launch {
+                        snackBarHostState.currentSnackbarData?.dismiss()
+                        snackBarHostState.showSnackbar(
+                            message = "친구 추가 링크를 복사했어요.",
+                            iconResId = R.drawable.icon_radio_check_on,
+                            duration = SnackbarDuration.Short,
+                            bottomPadding = 88
+                        )
+                    }
+                } ?: run {
+                    scope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = "링크를 불러오지 못했어요. 다시 시도해주세요.",
+                            iconResId = R.drawable.ic_system_fill,
+                            duration = SnackbarDuration.Short,
+                            bottomPadding = 88
+                        )
+                    }
                 }
             }
             is FriendsSideEffect.FailCheers -> {}
@@ -202,7 +212,7 @@ private fun MyselfBottomSheet(
     ) {
         if (friendsState.myProfile != null) {
             FriendRow(
-                modifier = Modifier.noRippleClickable { onClick(friendsState.myProfile?.id ?: "") },
+                modifier = Modifier.noRippleClickable { onClick(friendsState.myProfile.id) },
                 nickname = friendsState.myProfile.name,
                 mainPetType = friendsState.myProfile.mainPetType,
                 petLevel = friendsState.myProfile.petLevel,

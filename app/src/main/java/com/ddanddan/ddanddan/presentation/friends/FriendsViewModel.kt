@@ -1,6 +1,5 @@
 package com.ddanddan.ddanddan.presentation.friends
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.ddanddan.domain.entity.Friend
 import com.ddanddan.domain.enums.PetTypeEnum
@@ -72,23 +71,24 @@ class FriendsViewModel @Inject constructor(
             }
     }
 
-    suspend fun getInviteCode() = intent {
-        getInviteCodeUseCase()
-            .onSuccess {
-                reduce {
-                    state.copy(myInviteLink = it)
-                }
-            }
-            .onFailure {
-                postSideEffect(FriendsSideEffect.NetworkError("정보를 가져오는데 실패했습니다"))
-            }
-    }
-
     fun copyInviteCode() = intent {
-        if (state.myInviteLink == null) {
-            getInviteCode()
+        var inviteLink = state.myInviteLink
+        if (inviteLink == null) {
+            getInviteCodeUseCase()
+                .onSuccess {
+                    inviteLink = it
+                    reduce {
+                        state.copy(myInviteLink = it)
+                    }
+                }
+                .onFailure {
+                    postSideEffect(FriendsSideEffect.NetworkError("정보를 가져오는데 실패했습니다"))
+                    return@intent
+                }
         }
-        postSideEffect(FriendsSideEffect.CopyInviteLink(state.myInviteLink ?: ""))
+        inviteLink?.let {
+            postSideEffect(FriendsSideEffect.CopyInviteLink(it))
+        }
     }
 
     fun getUserDetail(uId: String) = intent {
