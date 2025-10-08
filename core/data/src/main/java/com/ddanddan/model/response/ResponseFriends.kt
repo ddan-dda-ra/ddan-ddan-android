@@ -1,6 +1,5 @@
 package com.ddanddan.model.response
 
-import com.ddanddan.domain.entity.Friend
 import kotlinx.serialization.Serializable
 
 @Serializable
