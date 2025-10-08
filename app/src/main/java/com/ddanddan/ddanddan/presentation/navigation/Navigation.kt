@@ -25,5 +25,6 @@ enum class DDanDDanRoute(val route: String) {
     SIGN_UP_TARGET("sign_up_target"),
     RANKING("ranking"),
     ERROR("error"),
-    FRIENDS("friends")
+    FRIENDS("friends"),
+    ADDED_FRIEND("added_friend")
 }

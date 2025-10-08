@@ -10,6 +10,7 @@ import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.User
 import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.entity.AuthInfo
+import com.ddanddan.domain.entity.UserDetail
 import com.ddanddan.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -89,6 +90,10 @@ class UserRepositoryImpl @Inject constructor(
                 0.0
             }
         }
+    }
+
+    override suspend fun getUserDetail(uId: String): UserDetail {
+        return userDataSource.getUserDetail(uId).toUserDetail()
     }
 
     companion object {

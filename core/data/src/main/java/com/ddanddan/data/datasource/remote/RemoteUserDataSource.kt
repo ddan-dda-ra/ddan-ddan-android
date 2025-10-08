@@ -9,6 +9,7 @@ import com.ddanddan.model.request.RequestSignOut
 import com.ddanddan.model.request.RequestUser
 import com.ddanddan.model.response.ResponseMainPet
 import com.ddanddan.model.response.ResponseUser
+import com.ddanddan.model.response.ResponseUserDetail
 import javax.inject.Inject
 
 class RemoteUserDataSource @Inject constructor(
@@ -26,4 +27,5 @@ class RemoteUserDataSource @Inject constructor(
     suspend fun patchPushSetting(isOn: Boolean) = userService.patchPushSetting(RequestUserSetting(isOn))
     suspend fun postLogin(token: String, deviceToken: String?) = userService.postLogin(RequestLogin(token, "KAKAO", deviceToken))
     suspend fun patchDailyCalories(calorie: Int) = userService.patchDailyCalories(RequestDailyCalories(calorie))
+    suspend fun getUserDetail(uId: String): ResponseUserDetail = userService.getUserDetail(userId = uId)
 }

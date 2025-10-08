@@ -132,6 +132,12 @@ data class Type(
         fontSize = 16.sp,
         lineHeight = 22.sp
     ),
+    val NeoDgm22: TextStyle = TextStyle(
+        fontFamily = NeoDgm,
+        fontWeight = FontWeight(400),
+        fontSize = 22.sp,
+        lineHeight = 24.sp
+    ),
     val NeoDgm24: TextStyle = TextStyle(
         fontFamily = NeoDgm,
         fontWeight = FontWeight(400),
