@@ -39,7 +39,7 @@ fun FireworkEffect(
 
         while (System.currentTimeMillis() - launchStartTime < launchDuration) {
             val currentTime = System.currentTimeMillis()
-            val newParticles = List(2) { // 한 번에 3개씩 생성
+            val newParticles = List(2) { // 한 번에 생성할 파티클
                 val angleInDegrees = Random.nextFloat() * 60f - 30f // -60 ~ +60도
                 val angleInRadians = Math.toRadians(angleInDegrees.toDouble()).toFloat()
 
