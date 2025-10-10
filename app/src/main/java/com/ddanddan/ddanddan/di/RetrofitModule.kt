@@ -6,6 +6,7 @@ import com.ddanddan.ddanddan.FlipperUtil
 import com.ddanddan.ddanddan.di.qualifier.Auth
 import com.ddanddan.ddanddan.di.qualifier.Logger
 import com.ddanddan.ddanddan.di.qualifier.Mobile
+import com.google.gson.Gson
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -18,13 +19,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
-    private const val APPLICATION_JSON = "application/json"
-
     @Provides
     @Singleton
     @Logger
@@ -56,19 +56,14 @@ object RetrofitModule {
         .addInterceptor(authInterceptor)
         .build()
 
-    @Provides
-    @Singleton
-    fun provideJsonConverter(json: Json): Converter.Factory =
-        json.asConverterFactory(APPLICATION_JSON.toMediaType())
 
     @Provides
     @Singleton
     fun provideddanddanRetrofit(
         @Mobile client: OkHttpClient,
-        factory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(client)
-        .addConverterFactory(factory)
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
 }
