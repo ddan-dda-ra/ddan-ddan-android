@@ -6,20 +6,31 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -27,10 +38,14 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -45,25 +60,30 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.R
-import com.ddanddan.ddanddan.presentation.component.EggCounterBadge
 import com.ddanddan.ddanddan.presentation.component.CoachMark
+import com.ddanddan.ddanddan.presentation.component.EggCounterBadge
+import com.ddanddan.ddanddan.presentation.component.EggGachaCard
+import com.ddanddan.ddanddan.service.PhoneDataLayerService
 import com.ddanddan.ddanddan.util.toBackgroundImage
+import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.ddanddan.util.toLottie
+import com.ddanddan.domain.entity.Pet
 import com.ddanddan.ui.compose.DDanDDanColorPalette
+import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.component.DDanActionButton
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
-import com.ddanddan.ui.enums.TooltipType
-import com.ddanddan.ui.ext.noRippleClickable
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
-import com.ddanddan.ddanddan.service.PhoneDataLayerService
+import com.ddanddan.ui.compose.component.DDanLoadingDialog
 import com.ddanddan.ui.compose.component.DDanSnackBar
 import com.ddanddan.ui.compose.component.showSnackbar
 import com.ddanddan.ui.compose.theme.DDanDDanTheme
+import com.ddanddan.ui.enums.TooltipType
+import com.ddanddan.ui.ext.noRippleClickable
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun HomeRoute(
@@ -170,6 +190,10 @@ fun HomeRoute(
         }
     }
 
+    if (homeState.isLoading) {
+        DDanLoadingDialog()
+    }
+
     HomeScreen(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
@@ -179,7 +203,9 @@ fun HomeRoute(
         onPetClick = { homeViewModel.showTooltipState(it, TooltipType.BASIC) },
         onTooltipVisibilityChanged = homeViewModel::setTooltipState,
         onCoachMarkDismiss = homeViewModel::dismissCoachMark,
-        onEggCounterBadgeClick = homeViewModel::eggCountBadgeClick
+        onEggCounterBadgeClick = homeViewModel::eggCountBadgeClick,
+        onEggAnimationComplete = homeViewModel::onEggAnimationComplete,
+        onGrowClick = homeViewModel::postRandomPet
     )
 }
 
@@ -193,7 +219,9 @@ fun HomeScreen(
     onPetClick: (Boolean) -> Unit = {},
     onTooltipVisibilityChanged: (Boolean) -> Unit = {},
     onCoachMarkDismiss: () -> Unit = {},
-    onEggCounterBadgeClick: () -> Unit = {}
+    onEggCounterBadgeClick: () -> Unit = {},
+    onEggAnimationComplete: () -> Unit = {},
+    onGrowClick: () -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -243,7 +271,7 @@ fun HomeScreen(
                 ) {
                     Spacer(modifier = Modifier.padding(top = 32.dp))
                     HomeCalorieItem(
-                        purposeCalorie = homeState.user?.purposeCalorie.toString(),
+                        purposeCalorie = homeState.user?.purposeCalorie ?: 0,
                         currentCalories = homeState.currentCalories.toInt().toString()
                     )
                     Spacer(modifier = Modifier.padding(top = 14.dp))
@@ -272,12 +300,23 @@ fun HomeScreen(
                 eggCount = 1
             )
         }
+        
+        // 알 뽑기 애니메이션 전체 화면
+        if (homeState.isShowingEggAnimation) {
+            EggGachaAnimation(
+                modifier = Modifier.align(Alignment.TopCenter).padding(top = 203.dp),
+                petColor = homeState.pet?.type?.toColor() ?: Color(0xFFFD85FF),
+                newPet = homeState.newPet,
+                onAnimationComplete = onEggAnimationComplete,
+                onGrowClick = onGrowClick
+            )
+        }
     }
 }
 
 @Composable
 fun HomeCalorieItem(
-    purposeCalorie: String = "500",
+    purposeCalorie: Int = 500,
     currentCalories: String
 ) {
     Row(
@@ -304,7 +343,7 @@ fun HomeCalorieItem(
         Spacer(modifier = Modifier.padding(start = 4.dp))
         Text(
             modifier = Modifier.alignByBaseline(),
-            text = purposeCalorie,
+            text = purposeCalorie.toString(),
             fontFamily = NeoDgm,
             fontSize = 22.sp,
             color = DDanDDanColorPalette.current.color_text_headline_primary
@@ -334,6 +373,7 @@ private fun PetContent(
     ) {
         Image(
             painter = painterResource(homeState.pet?.type.toBackgroundImage()),
+            contentScale = ContentScale.FillHeight,
             contentDescription = "동물 이미지",
             modifier = Modifier
                 .fillMaxSize()
@@ -349,17 +389,20 @@ private fun PetContent(
             onVisibilityChanged = onTooltipVisibilityChanged
         )
 
-        LottieAnimation(
-            composition = composition,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .offset(y = (-48).dp)
-                .size(100.dp)
-                .noRippleClickable {
-                    onPetClick(true)
-                },
-            iterations = LottieConstants.IterateForever
-        )
+        Column {
+            Spacer(modifier = Modifier.weight(1f))
+            LottieAnimation(
+                composition = composition,
+                modifier = Modifier
+                    .size(100.dp)
+                    .noRippleClickable {
+                        onPetClick(true)
+                    },
+                iterations = LottieConstants.IterateForever
+            )
+
+            Spacer(modifier = Modifier.weight(0.262f))
+        }
     }
 }
 
@@ -400,5 +443,214 @@ fun HomeBottomItem(
 fun HomeScreenPreview() {
     DDanDDanTheme {
         HomeScreen()
+    }
+}
+
+@Composable
+fun EggGachaAnimation(
+    modifier: Modifier,
+    petColor: Color,
+    newPet: Pet?,
+    onAnimationComplete: () -> Unit,
+    onGrowClick: () -> Unit
+) {
+    var isAnimating by remember { mutableStateOf(true) }
+    var showResultUI by remember { mutableStateOf(false) }
+    var showBlurBackground by remember { mutableStateOf(false) }
+
+    // Y축 회전 애니메이션 (회전문처럼)
+    val infiniteTransition = rememberInfiniteTransition(label = "rotation")
+    val rotationY by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotationY"
+    )
+
+    // 스케일 애니메이션 상태
+    var targetScale by remember { mutableStateOf(0.3f) }
+
+    // 스케일 애니메이션 (작은 크기에서 원래 크기로)
+    val scale by animateFloatAsState(
+        targetValue = targetScale,
+        animationSpec = tween(
+            durationMillis = 1000,
+            easing = FastOutSlowInEasing
+        ),
+        label = "scale",
+        finishedListener = {
+            // 스케일 애니메이션이 끝나면 회전도 멈춤
+            if (it == 1f) {
+                isAnimating = false
+                showBlurBackground = true
+                showResultUI = true
+            }
+        }
+    )
+
+    // 애니메이션 시작
+    LaunchedEffect(Unit) {
+        targetScale = 1f  // 크기를 1로 키우기 시작
+    }
+
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Black.copy(alpha = 0.7f)),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        if (showBlurBackground) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 178.dp)
+                    .size(210.dp)
+                    .background(
+                        brush = androidx.compose.ui.graphics.Brush.radialGradient(
+                            colors = listOf(
+                                petColor.copy(alpha = 0.8f),
+                                petColor.copy(alpha = 0.5f),
+                                petColor.copy(alpha = 0.3f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+            )
+        }
+        
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            EggGachaCard(
+                modifier = modifier
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        this.rotationY = if (isAnimating) rotationY else 0f
+                        cameraDistance = 12f * density
+                    },
+                pet = newPet
+            )
+
+            // 애니메이션이 끝난 후 나타나는 UI
+            if (showResultUI) {
+                EggGachaResultUI(
+                    pet = newPet,
+                    onCloseClick = onAnimationComplete,
+                    onGrowClick = onGrowClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun EggGachaResultUI(
+    onCloseClick: () -> Unit,
+    onGrowClick: () -> Unit,
+    pet: Pet?
+) {
+    // 텍스트 슬라이드 업 애니메이션
+    var startTextAnimation by remember { mutableStateOf(false) }
+    val textOffsetY by animateFloatAsState(
+        targetValue = if (startTextAnimation) 0f else 100f,
+        animationSpec = tween(
+            durationMillis = 500,
+            easing = FastOutSlowInEasing
+        ),
+        label = "textSlideUp"
+    )
+    val textAlpha by animateFloatAsState(
+        targetValue = if (startTextAnimation) 1f else 0f,
+        animationSpec = tween(durationMillis = 500),
+        label = "textAlpha"
+    )
+    
+    // 버튼 페이드인 애니메이션
+    var startButtonAnimation by remember { mutableStateOf(false) }
+    val buttonAlpha by animateFloatAsState(
+        targetValue = if (startButtonAnimation) 1f else 0f,
+        animationSpec = tween(durationMillis = 400),
+        label = "buttonAlpha"
+    )
+    
+    LaunchedEffect(Unit) {
+        startTextAnimation = true
+        startButtonAnimation = true
+    }
+    
+    Column(
+        modifier = Modifier
+            .padding(top = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        // 텍스트들 (아래에서 위로)
+        Column(
+            modifier = Modifier
+                .graphicsLayer {
+                    translationY = textOffsetY
+                    alpha = textAlpha
+                },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = if (pet == null) "어떤 펫이 나올까요?" else "반가워",
+                fontFamily = NeoDgm,
+                fontSize = 24.sp,
+                color = DDanDDanColorPalette.current.color_text_headline_primary
+            )
+            Spacer(modifier = Modifier.padding(top = 8.dp))
+            Text(
+                text = if (pet == null) "아래 버튼을 눌러 알을 골라주세요" else "새로운 펫을 뽑았어요!",
+                style = DDanDDanTypo.current.Body1,
+                color = DDanDDanColorPalette.current.color_text_body_quaternary
+            )
+        }
+        
+        Spacer(modifier = Modifier.padding(top = 32.dp))
+        
+        // 버튼들 (페이드인)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 46.dp)
+                .graphicsLayer {
+                    alpha = buttonAlpha
+                },
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = { onCloseClick() },
+                modifier = Modifier
+                    .weight(1f),
+                contentPadding = PaddingValues(vertical = 17.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = DDanDDanColorPalette.current.color_button_alternative,
+                    contentColor = DDanDDanColorPalette.current.color_text_button_alternative
+                ),
+                elevation = ButtonDefaults.elevation(0.dp),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Text(text = "닫기", style = DDanDDanTypo.current.HeadLine6)
+            }
+
+            Button(
+                onClick = { onGrowClick() },
+                modifier = Modifier
+                    .weight(1f),
+                contentPadding = PaddingValues(vertical = 17.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = DDanDDanColorPalette.current.color_button_default02,
+                    contentColor = DDanDDanColorPalette.current.color_text_button_primary_default
+                ),
+                elevation = ButtonDefaults.elevation(0.dp),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Text(text = "키우기", style = DDanDDanTypo.current.HeadLine6)
+            }
+        }
     }
 }
