@@ -56,7 +56,7 @@ fun HomeProgressbarItem(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "LV.${homeState.pet?.level}",
+                    text = "LV.${homeState.pet?.level ?: 0}",
                     color = DDanDDanColorPalette.current.color_text_headline_primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400),
@@ -65,7 +65,7 @@ fun HomeProgressbarItem(
             }
 
             Text(
-                text = "${homeState.pet?.expPercent?.toInt()}%",
+                text = "${homeState.pet?.expPercent?.toInt() ?: 0}%",
                 color = DDanDDanColorPalette.current.color_text_headline_primary,
                 fontSize = 16.sp,
                 fontWeight = FontWeight(400),
