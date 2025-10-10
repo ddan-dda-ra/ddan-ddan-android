@@ -13,6 +13,7 @@ interface ddanddanDataStore {
     var askedNotification: Boolean
     var onNotification: Boolean
 
+    var firstEggCounterBadge: Boolean
     // 칼로리 값의 변화를 옵저빙할 수 있는 Flow
     val caloriesFlow: Flow<Float>
     var calories: Float

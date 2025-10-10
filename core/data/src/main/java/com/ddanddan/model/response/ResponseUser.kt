@@ -17,7 +17,8 @@ data class ResponseUser(
     val purposeCalorie: Int,
     val foodQuantity: Int,
     val toyQuantity: Int,
+    val tickets: Int,
     val setting: ResponseUserSetting?
 ) {
-    fun toUser() = User(id, name, purposeCalorie, foodQuantity, toyQuantity, setting?.toUserSetting())
+    fun toUser() = User(id, name, purposeCalorie, foodQuantity, toyQuantity, tickets, setting?.toUserSetting())
 }
