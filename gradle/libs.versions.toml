@@ -1,7 +1,7 @@
 [versions]
 buildToolsVersion = "30.0.3"
 ## Kotlin
-kotlinVersion = "1.8.20"
+kotlinVersion = "1.8.21"
 kotlinSerializationJsonVersion = "1.5.1"
 serializationVersion = "1.8.10"
 coroutinesAndroidVersion = "1.7.1"
@@ -19,6 +19,7 @@ mdcVersion="1.1.16"
 composeAppcompatVersion="0.28.0"
 composeLifecycleVersion="2.3.1"
 uiPreviewCompose ="1.7.2"
+composeCompilerVersion = "1.5.0"
 pager-google="0.20.1"
 
 ## AndroidX
@@ -62,7 +63,7 @@ circularProgressBar = "3.1.0"
 kakaoVersion = "2.20.6"
 circleIndicatorVersion = "2.1.6"
 shimmerVersion = "0.5.0"
-navigationVersion = "2.6.0"
+navigationVersion = "2.7.0"
 amplitudeVersion = "2.23.2"
 
 inAppUpdateVersion = "2.1.0"
@@ -100,6 +101,9 @@ datastoreCoreAndroidVersion = "1.1.7"
 
 ## Widget
 glanceVersion = "1.1.1"
+
+## chottulink
+chottulinkVersion = "1.0.8"
 
 [libraries]
 # gradle
@@ -241,6 +245,9 @@ androidx-datastore-prefenrences-android = { group = "androidx.datastore", name =
 androidx-glance-appwidget = { group = "androidx.glance", name="glance-appwidget", version.ref = "glanceVersion" }
 androidx-glance-material = { group = "androidx.glance", name="glance-material", version.ref = "glanceVersion" }
 androidx-glance-material3 = { group = "androidx.glance", name="glance-material3", version.ref = "glanceVersion" }
+
+## Chottulink
+chottulink = { group = "com.chottulink", name = "android-sdk", version.ref = "chottulinkVersion" }
 
 
 # 사용될 플러그인

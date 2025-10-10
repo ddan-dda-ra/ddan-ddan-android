@@ -88,11 +88,13 @@ class AndroidApplicationPlugin : Plugin<Project> {
                         dimension = "environment"
 
                         buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("dev.base.url"))
+                        buildConfigField("String", "CHOTTULINK_KEY", gradleLocalProperties(rootDir).getProperty("chottulink.key"))
                     }
                     create("prod") {
                         dimension = "environment"
 
                         buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("base.url"))
+                        buildConfigField("String", "CHOTTULINK_KEY", gradleLocalProperties(rootDir).getProperty("chottulink.key"))
                     }
                 }
 
@@ -102,13 +104,14 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 }
 
                 composeOptions {
-                    kotlinCompilerExtensionVersion = "1.4.6"
+                    kotlinCompilerExtensionVersion = "1.5.0"
                 }
 
 
             }
 
             val libs = extensions.getVersionCatalog()
+
             dependencies {
                 // androidx
                 implementation(libs.getBundle("androidx"))
@@ -159,6 +162,9 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 implementation(libs.getLibrary("play-services-location"))
 
                 implementation(libs.getLibrary("play-services-wearable"))
+
+                // chottulink
+                implementation(libs.getLibrary("chottulink"))
             }
         }
 }
