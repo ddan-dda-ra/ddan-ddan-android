@@ -39,6 +39,7 @@ fun LevelUpRoute(
 ) {
     val isPetLevelUpCompleted = level == 5
     LevelUpScreen(
+        isPetLevelUpCompleted = isPetLevelUpCompleted,
         level = level,
         petType = petType,
         onButtonClick = {

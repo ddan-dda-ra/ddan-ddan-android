@@ -1,5 +1,7 @@
 package com.ddanddan.ddanddan.presentation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -62,7 +64,7 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            if (currentRoute in bottomBarScreens) {
+            if (currentRoute?.substringBefore("?") in bottomBarScreens) {
                 DDanDDanBottomBar(
                     currentRoute = currentRoute,
                     onItemClick = { route ->
@@ -79,12 +81,16 @@ fun MainScreen(
         }
     ) { paddingValues ->
         NavHost(
+            modifier = Modifier.padding(paddingValues),
             navController = navController,
             startDestination = DDanDDanRoute.SPLASH.route,
-            modifier = Modifier.padding(paddingValues)
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
         ) {
             composable(
-                route = DDanDDanRoute.HOME.route,
+                route = DDanDDanRoute.HOME.route +"?isNewPet={isNewPet}",
                 arguments = listOf(navArgument("isNewPet") {
                     type = NavType.BoolType; defaultValue = false
                 })

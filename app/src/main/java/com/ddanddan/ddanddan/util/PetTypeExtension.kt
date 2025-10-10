@@ -162,7 +162,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        else -> R.raw.motion_cat_level5_default
+        else -> R.raw.motion_cat_level1_default
     }
 }
 
@@ -173,7 +173,7 @@ fun PetTypeEnum?.toBackgroundImage(): Int {
         PetTypeEnum.PENGUIN -> R.drawable.ic_bg_penguin
         PetTypeEnum.HAMSTER -> R.drawable.ic_bg_hamster
         PetTypeEnum.MOLE -> R.drawable.ic_bg_mole
-        else -> R.drawable.ic_bg_cat
+        else -> R.drawable.ic_bg_transparent
     }
 }
 

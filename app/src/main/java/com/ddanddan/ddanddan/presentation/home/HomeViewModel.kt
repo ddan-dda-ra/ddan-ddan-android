@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.widget.WidgetManager
@@ -96,6 +97,7 @@ class HomeViewModel @Inject constructor(
                     postSideEffect(HomeSideEffect.NetworkError(null))
                 }
             }
+        reduce { state.copy(isLoading = false) }
     }
 //
 //    private fun postRandomPet() = intent {
@@ -143,6 +145,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun postFoodPet() = intent {
+//        reduce { state.copy(firstEggCountBadge = true) }
         state.pet?.let { pet ->
             if ((state.user?.foodQuantity ?: 0) > 0) {
                 postFoodPetUseCase(pet.id)
@@ -180,7 +183,7 @@ class HomeViewModel @Inject constructor(
         postMainPetUseCase(mainPetId)
             .onSuccess {
                 reduce {
-                    state.copy(pet = it)
+                    state.copy(pet = it, newPet = null, isShowingEggAnimation = false)
                 }
             }.onFailure {
                 if (it is HttpException) {
@@ -197,8 +200,38 @@ class HomeViewModel @Inject constructor(
     }
 
     fun eggCountBadgeClick() = intent {
-        if ((state.user?.tickets ?: 0) == 0) {
+        val tickets = state.user?.tickets ?: 0
+        if (tickets == 0) {
             reduce { state.copy(isShowEggZeroTooltip = !state.isShowEggZeroTooltip) }
+        } else {
+            // 알 뽑기 애니메이션 시작
+            startEggAnimation()
+        }
+    }
+
+    private fun startEggAnimation() = intent {
+        reduce { state.copy(isShowingEggAnimation = true) }
+    }
+
+    fun onEggAnimationComplete() = intent {
+        reduce { state.copy(isShowingEggAnimation = false, newPet = null) }
+    }
+
+    fun postRandomPet() = intent {
+        if (state.newPet == null) {
+            postRandomPetUseCase()
+                .onSuccess { newPet ->
+                    reduce {
+                        state.copy(newPet = newPet)
+                    }
+                    getUserInfo()
+                }.onFailure {
+                    postSideEffect(HomeSideEffect.SnackBarMsg("새로운 펫을 불러오는데 오류가 발생했습니다."))
+                }
+        } else {
+            state.newPet?.let {
+                postMainPet(it.id)
+            }
         }
     }
 
@@ -221,9 +254,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun dismissCoachMark() = intent {
-        reduce {
-            state.copy(firstEggCountBadge = false)
-        }
+        reduce { state.copy(firstEggCountBadge = false) }
+        delay(500)
+        reduce { state.copy(isShowingEggAnimation = true) }
     }
 
     /**
