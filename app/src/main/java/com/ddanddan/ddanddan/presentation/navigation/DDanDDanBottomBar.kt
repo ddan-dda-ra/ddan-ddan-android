@@ -58,7 +58,7 @@ fun DDanDDanBottomBar(
             contentColor = DDanDDanColorPalette.current.color_icon_level04
         ) {
             items.forEach { item ->
-                val isSelected = currentRoute == item.route
+                val isSelected = currentRoute?.substringBefore("?") == item.route
 
                 NavigationBarItem(
                     selected = isSelected,

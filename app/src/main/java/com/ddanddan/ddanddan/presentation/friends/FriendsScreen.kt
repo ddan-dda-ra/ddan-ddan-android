@@ -56,7 +56,8 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun FriendsRoute(
-    friendsViewModel: FriendsViewModel = hiltViewModel()
+    friendsViewModel: FriendsViewModel = hiltViewModel(),
+    navigateAddedFriend: (PetTypeEnum, Int) -> Unit
 ) {
     val friendsState by friendsViewModel.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -70,11 +71,20 @@ fun FriendsRoute(
 
     friendsViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is FriendsSideEffect.NetworkError -> {}
+            is FriendsSideEffect.NetworkError -> {
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(
+                        message = sideEffect.msg,
+                        iconResId = R.drawable.icon_radio_check_on,
+                        duration = SnackbarDuration.Short,
+                        bottomPadding = 88
+                    )
+                }
+            }
             is FriendsSideEffect.RefreshList -> friendsViewModel.getFriendsList()
             is FriendsSideEffect.CopyInviteLink -> {
-                friendsState.myInviteLink?.let { link ->
-                    clipboardManager.setText(AnnotatedString(link))
+                    clipboardManager.setText(AnnotatedString(sideEffect.link))
                     scope.launch {
                         snackBarHostState.currentSnackbarData?.dismiss()
                         snackBarHostState.showSnackbar(
@@ -84,16 +94,9 @@ fun FriendsRoute(
                             bottomPadding = 88
                         )
                     }
-                } ?: run {
-                    scope.launch {
-                        snackBarHostState.showSnackbar(
-                            message = "링크를 불러오지 못했어요. 다시 시도해주세요.",
-                            iconResId = R.drawable.ic_system_fill,
-                            duration = SnackbarDuration.Short,
-                            bottomPadding = 88
-                        )
-                    }
-                }
+            }
+            is FriendsSideEffect.NavigateAddedFriend -> {
+                navigateAddedFriend(sideEffect.type, sideEffect.level)
             }
             is FriendsSideEffect.FailCheers -> {}
         }
