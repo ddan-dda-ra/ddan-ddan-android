@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -46,11 +47,13 @@ import com.ddanddan.ddanddan.presentation.signup.target.SetTargetRoute
 import com.ddanddan.ddanddan.presentation.signup.terms.onTermsScreen
 import com.ddanddan.ddanddan.presentation.splash.SplashRoute
 import com.ddanddan.domain.enums.PetTypeEnum
+import com.ddanddan.domain.enums.toPetTypeEnum
 import com.ddanddan.ui.ext.sharedViewModel
 
 @Composable
 fun MainScreen(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    inviteCode: String? = null
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -61,6 +64,15 @@ fun MainScreen(
         DDanDDanRoute.FRIENDS.route,
         DDanDDanRoute.SETTING.route
     )
+
+    LaunchedEffect(inviteCode) {
+        inviteCode?.let {
+            navController.navigate("${DDanDDanRoute.FRIENDS.route}?inviteCode=$it") {
+                popUpTo(0) // 스택 초기화
+                launchSingleTop = true
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -415,12 +427,29 @@ fun MainScreen(
                 )
             }
 
-            composable(DDanDDanRoute.FRIENDS.route) {
-                FriendsRoute()
+            composable(DDanDDanRoute.FRIENDS.route + "?inviteCode={inviteCode}") {
+                FriendsRoute(
+                    navigateAddedFriend = { type, level ->
+                        navController.navigate(DDanDDanRoute.ADDED_FRIEND.route + "?type=${type}&level=${level}")
+                    }
+                )
             }
 
-            composable(DDanDDanRoute.ADDED_FRIEND.route) {
+            composable(DDanDDanRoute.ADDED_FRIEND.route + "?type={type}&level={level}",
+                arguments = listOf(
+                    navArgument("type") {
+                        type = NavType.StringType
+                    },
+                    navArgument("level") {
+                        type = NavType.IntType
+                    }
+                )
+            ) {
+                val type = navBackStackEntry?.arguments?.getString("type")?.toPetTypeEnum() ?: PetTypeEnum.CAT
+                val level = navBackStackEntry?.arguments?.getInt("level") ?: 1
                 AddedFriendScreen(
+                    friendPetType = type,
+                    friendPetLevel = level,
                     onNavigateFriends = {
                         navController.navigate(DDanDDanRoute.FRIENDS.route) {
                             popUpTo(navController.graph.id) { inclusive = true}
