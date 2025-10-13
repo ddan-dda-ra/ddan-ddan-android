@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.chottulink.lib.ChottuLink
 import com.ddanddan.ddanddan.BuildConfig.DEBUG
 import com.ddanddan.ddanddan.BuildConfig.KAKAO_APP_KEY
 import com.ddanddan.ddanddan.presentation.MainActivity
@@ -31,6 +32,7 @@ class MyApp : Application(), LifecycleObserver {
             FlipperUtil.init(this)
         }
         KakaoSdk.init(applicationContext, KAKAO_APP_KEY)
+        ChottuLink.init(this, BuildConfig.CHOTTULINK_KEY)
         appContext = applicationContext
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
