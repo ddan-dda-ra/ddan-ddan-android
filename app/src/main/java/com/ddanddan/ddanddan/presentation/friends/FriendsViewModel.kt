@@ -1,8 +1,11 @@
 package com.ddanddan.ddanddan.presentation.friends
 
+import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.chottulink.lib.ChottuLink
+import com.chottulink.lib.DynamicLink
 import com.ddanddan.domain.entity.Friend
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.usecase.DeleteFriendUseCase
 import com.ddanddan.domain.usecase.GetFriendsListUseCase
 import com.ddanddan.domain.usecase.GetInviteCodeUseCase
@@ -18,9 +21,12 @@ import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val getFriendsListUseCase: GetFriendsListUseCase,
     private val getInviteCodeUseCase: GetInviteCodeUseCase,
     private val postInviteFriendUseCase: PostInviteFriendUseCase,
@@ -33,6 +39,14 @@ class FriendsViewModel @Inject constructor(
 
     override val container =
         container<FriendsState, FriendsSideEffect>(FriendsState())
+
+    private val inviteCode: String? = savedStateHandle["inviteCode"]
+
+    init {
+        inviteCode?.let {
+            postInviteFriend(it)
+        }
+    }
 
     fun getFriendsList() = intent {
         getFriendsListUseCase()
@@ -76,22 +90,38 @@ class FriendsViewModel @Inject constructor(
     }
 
     fun copyInviteCode() = intent {
-        var inviteLink = state.myInviteLink
-        if (inviteLink == null) {
             getInviteCodeUseCase()
                 .onSuccess {
-                    inviteLink = it
-                    reduce {
-                        state.copy(myInviteLink = it)
+                    val shortUrl = createInviteLink(it)
+                    shortUrl?.let {
+                        postSideEffect(FriendsSideEffect.CopyInviteLink(it))
+                    } ?: run {
+                        postSideEffect(FriendsSideEffect.NetworkError("링크를 불러오지 못했어요. 다시 시도해주세요."))
                     }
                 }
                 .onFailure {
                     postSideEffect(FriendsSideEffect.NetworkError("정보를 가져오는데 실패했습니다"))
                     return@intent
                 }
-        }
-        inviteLink?.let {
-            postSideEffect(FriendsSideEffect.CopyInviteLink(it))
+    }
+
+    private suspend fun createInviteLink(code: String): String? {
+        return suspendCoroutine<String?> { continuation ->
+            ChottuLink.createDynamicLink()
+                .setLink((("http://ddanddan.chottu.link?code=$code").toUri()))
+                .setDomain("ddanddan.chottu.link")
+                .setLinkName("friend-invite")
+                .androidBehavior(DynamicLink.BEHAVIOR_APP)
+                .build()
+                .addOnSuccessListener {
+                    if (it != null && it.uri != null) {
+                        continuation.resume(it.uri.toString())
+                    } else {
+                        continuation.resume(null)
+                    }
+                }.addOnFailureListener {
+                    continuation.resume(null)
+                }
         }
     }
 
@@ -157,4 +187,12 @@ class FriendsViewModel @Inject constructor(
             }
     }
 
+    private fun postInviteFriend(code: String) = intent {
+        postInviteFriendUseCase(code)
+            .onSuccess {
+                postSideEffect(FriendsSideEffect.NavigateAddedFriend(it.mainPetType, it.petLevel))
+            }.onFailure {
+                postSideEffect(FriendsSideEffect.NetworkError("친구 추가에 실패했습니다"))
+            }
+    }
 }
