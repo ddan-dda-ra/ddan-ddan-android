@@ -84,7 +84,11 @@ fun FriendsRoute(
             }
             is FriendsSideEffect.RefreshList -> friendsViewModel.getFriendsList()
             is FriendsSideEffect.CopyInviteLink -> {
-                    clipboardManager.setText(AnnotatedString(sideEffect.link))
+                    clipboardManager.setText(AnnotatedString("'딴딴'에서 운동하면서 펫 키워요!\n" +
+                            "혼자보다 같이 하면 더 꾸준해지고, 펫도 더 건강해져요 \uD83D\uDC3E\n" +
+                            "우리 같이 운동하고 서로 응원해요 \uD83D\uDCAA \n\n" +
+                            sideEffect.link
+                    ))
                     scope.launch {
                         snackBarHostState.currentSnackbarData?.dismiss()
                         snackBarHostState.showSnackbar(
