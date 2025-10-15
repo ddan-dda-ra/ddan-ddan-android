@@ -75,10 +75,7 @@ fun FriendsRoute(
                 scope.launch {
                     snackBarHostState.currentSnackbarData?.dismiss()
                     snackBarHostState.showSnackbar(
-                        message = sideEffect.msg,
-                        iconResId = R.drawable.icon_radio_check_on,
-                        duration = SnackbarDuration.Short,
-                        bottomPadding = 88
+                        message = sideEffect.msg
                     )
                 }
             }

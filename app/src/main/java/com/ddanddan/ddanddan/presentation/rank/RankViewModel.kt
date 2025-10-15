@@ -1,7 +1,7 @@
 package com.ddanddan.ddanddan.presentation.rank
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.ddanddan.ddanddan.util.toBaseErrorResponse
 import com.ddanddan.domain.usecase.GetRankingUseCase
 import com.ddanddan.domain.usecase.GetUserDetailUseCase
 import com.ddanddan.domain.usecase.PatchDailyCaloriesUseCase
@@ -12,6 +12,7 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -132,7 +133,12 @@ class RankViewModel @Inject constructor(
                 }
             }
             .onFailure {
-                postSideEffect(RankSideEffect.FailCheers)
+                if (it is HttpException) {
+                    it.toBaseErrorResponse()?.let { error ->
+                        postSideEffect(RankSideEffect.NetworkError(error.message))
+
+                    }
+                }
             }
     }
 }

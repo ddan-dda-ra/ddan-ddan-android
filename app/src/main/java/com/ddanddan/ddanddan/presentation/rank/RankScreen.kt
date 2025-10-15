@@ -1,6 +1,5 @@
 package com.ddanddan.ddanddan.presentation.rank
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -103,7 +102,14 @@ fun RankRoute(
     rankViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is RankSideEffect.NavigatePopUp -> navigatePopUp()
-            is RankSideEffect.NetworkError -> {}
+            is RankSideEffect.NetworkError -> {
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(
+                        message = sideEffect.msg
+                    )
+                }
+            }
             is RankSideEffect.SnackBarMsg -> {
                 scope.launch {
                     snackBarHostState.currentSnackbarData?.dismiss()

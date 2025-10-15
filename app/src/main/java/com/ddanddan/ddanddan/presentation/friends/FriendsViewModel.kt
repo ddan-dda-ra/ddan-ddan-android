@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.chottulink.lib.ChottuLink
 import com.chottulink.lib.DynamicLink
+import com.ddanddan.ddanddan.util.toBaseErrorResponse
 import com.ddanddan.domain.entity.Friend
 import com.ddanddan.domain.usecase.DeleteFriendUseCase
 import com.ddanddan.domain.usecase.GetFriendsListUseCase
@@ -20,6 +21,7 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import retrofit2.HttpException
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -158,7 +160,12 @@ class FriendsViewModel @Inject constructor(
                 }
             }
             .onFailure {
-                postSideEffect(FriendsSideEffect.FailCheers)
+                if (it is HttpException) {
+                    it.toBaseErrorResponse()?.let { error ->
+                        postSideEffect(FriendsSideEffect.NetworkError(error.message))
+
+                    }
+                }
             }
     }
 
