@@ -144,7 +144,7 @@ fun PetCollectionScreen(
             )
         },
         bottomBar = {
-            SetPetBtn(state = petCollectionState, text = stringResource(R.string.petcollection_button_text), onClick = onConfirmClick)
+            SetPetBtn(state = petCollectionState, onClick = onConfirmClick)
         },
         snackbarHost = {
             DDanSnackBar(snackBarHostState = snackBarHostState)
@@ -221,7 +221,6 @@ fun PetItem(
 @Composable
 fun SetPetBtn(
     state: PetCollectionState = PetCollectionState(),
-    text: String = "",
     onClick: () -> Unit = {}
 ) {
     val buttonColors =
@@ -243,7 +242,7 @@ fun SetPetBtn(
         ),
     ) {
         androidx.compose.material.Text(
-            text = text,
+            text = if (state.selectedPetId == state.mainPetId) stringResource(R.string.petcollection_main_pet_button_text) else stringResource(R.string.petcollection_button_text),
             style = DDanDDanTypo.current.HeadLine6,
             color = textColors
         )
