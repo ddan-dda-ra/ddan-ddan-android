@@ -35,7 +35,7 @@ fun DDanDDanBottomBar(
         DDanDDanNavItem(DDanDDanRoute.HOME.route, stringResource(R.string.bottom_navi_home), R.drawable.ic_home),
         DDanDDanNavItem(DDanDDanRoute.RANKING.route, stringResource(R.string.bottom_navi_ranking), R.drawable.ic_trophy),
         DDanDDanNavItem(DDanDDanRoute.FRIENDS.route, stringResource(R.string.bottom_navi_friends), R.drawable.ic_friends),
-        DDanDDanNavItem(DDanDDanRoute.SETTING.route, stringResource(R.string.bottom_navi_mypage), R.drawable.ic_hamburger)
+        DDanDDanNavItem(DDanDDanRoute.SETTING.route, stringResource(R.string.bottom_navi_mypage), R.drawable.ic_mypage)
     )
 
     Column(
