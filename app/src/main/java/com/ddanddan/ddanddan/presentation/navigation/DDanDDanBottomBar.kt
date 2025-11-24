@@ -1,12 +1,15 @@
 package com.ddanddan.ddanddan.presentation.navigation
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -16,7 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,12 +48,49 @@ fun DDanDDanBottomBar(
             .background(
                 color = DDanDDanColorPalette.current.color_background
             )
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .fillMaxWidth()
     ) {
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = DDanDDanColorPalette.current.color_divider_level02
-        )
+        val dividerColor = DDanDDanColorPalette.current.color_divider_level02
+
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+        ) {
+            val radius = 16.dp.toPx()
+            val strokeWidth = 1.dp.toPx()
+
+            // 왼쪽 radius 부분
+            drawArc(
+                color = dividerColor,
+                startAngle = 180f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = androidx.compose.ui.geometry.Offset(0f, 0f),
+                size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2),
+                style = Stroke(width = strokeWidth)
+            )
+
+            // 가운데 직선
+            drawLine(
+                color = dividerColor,
+                start = androidx.compose.ui.geometry.Offset(radius, 0f),
+                end = androidx.compose.ui.geometry.Offset(size.width - radius, 0f),
+                strokeWidth = strokeWidth
+            )
+
+            // 오른쪽 radius 부분
+            drawArc(
+                color = dividerColor,
+                startAngle = 270f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = androidx.compose.ui.geometry.Offset(size.width - radius * 2, 0f),
+                size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2),
+                style = Stroke(width = strokeWidth)
+            )
+        }
 
         NavigationBar(
             modifier = Modifier
