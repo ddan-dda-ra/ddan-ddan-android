@@ -84,6 +84,10 @@ class FriendsViewModel @Inject constructor(
         }
         deleteFriendUseCase(friendId)
             .onSuccess {
+                reduce {
+                    state.copy(isShowDeleteDialog = false)
+                }
+                postSideEffect(FriendsSideEffect.ShowDeleteFriendsSnackBar)
                 postSideEffect(FriendsSideEffect.RefreshList)
             }
             .onFailure {

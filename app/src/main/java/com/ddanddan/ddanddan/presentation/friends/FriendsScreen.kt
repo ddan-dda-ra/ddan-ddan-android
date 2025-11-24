@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toAnimal
@@ -100,6 +103,17 @@ fun FriendsRoute(
                 navigateAddedFriend(sideEffect.type, sideEffect.level)
             }
             is FriendsSideEffect.FailCheers -> {}
+            is FriendsSideEffect.ShowDeleteFriendsSnackBar -> {
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(
+                        message = "친구가 삭제됐어요.",
+                        iconResId = R.drawable.icon_radio_check_on,
+                        duration = SnackbarDuration.Short,
+                        bottomPadding = 88
+                    )
+                }
+            }
         }
     }
 
