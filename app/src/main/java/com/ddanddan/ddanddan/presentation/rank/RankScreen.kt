@@ -697,7 +697,7 @@ fun SimpleRankerView(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (isBottomSheet) "나" else "me",
+                    text = "나",
                     style = DDanDDanTypo.current.Caption1,
                     fontFamily = Pretendard,
                     color = DDanDDanColorPalette.current.color_text_body_quinary,
