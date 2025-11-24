@@ -203,6 +203,7 @@ fun ProfileDialog(
                                 )
                                 DDanMarginHorizontalSpacer(8)
                                 Text(
+                                    modifier = Modifier.padding(top = 4.dp),
                                     text = userDetail.monthlyReceivedCheerCount.toString(),
                                     style = DDanDDanTypo.current.NeoDgm24,
                                     color = DDanDDanColorPalette.current.color_text_headline_primary
