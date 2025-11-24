@@ -172,7 +172,8 @@ fun FriendsScreen(
             onClickCheers = onCheersFriend,
             onClickCancel = onDetailDismiss,
             isMyself = friendsState.myProfile?.id == friendsState.chosenUserDetail.id,
-            showFireworks = friendsState.showFireworks
+            showFireworks = friendsState.showFireworks,
+            friendsState = friendsState
         )
     }
 }

@@ -56,6 +56,7 @@ import com.ddanddan.ui.ext.noRippleClickable
 
 @Composable
 fun ProfileDialog(
+    friendsState: FriendsState? = null,
     userDetail: UserDetail,
     onClickCheers: (String) -> Unit = {},
     onClickCancel: () -> Unit = {},
@@ -243,7 +244,7 @@ fun ProfileDialog(
                     }
                 }
             }
-            if (!isMyself) {
+            if (!isMyself && userDetail.isFriend && friendsState?.isCheeredToday == false) {
                 DDanMarginVerticalSpacer(20)
                 Button(
                     onClick = {

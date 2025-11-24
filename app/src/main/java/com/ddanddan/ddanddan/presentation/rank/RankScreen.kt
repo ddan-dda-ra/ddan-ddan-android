@@ -205,7 +205,7 @@ fun RankScreen(
             onClickCheers = onCheersUser,
             onClickCancel = onDetailDismiss,
             isMyself = rankState.myRank?.userId == rankState.chosenUserDetail.id,
-            showFireworks = rankState.showFireworks
+            showFireworks = rankState.showFireworks,
         )
     }
 }
