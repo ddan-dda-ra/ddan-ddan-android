@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toAnimal
@@ -100,6 +103,17 @@ fun FriendsRoute(
                 navigateAddedFriend(sideEffect.type, sideEffect.level)
             }
             is FriendsSideEffect.FailCheers -> {}
+            is FriendsSideEffect.ShowDeleteFriendsSnackBar -> {
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(
+                        message = "친구가 삭제됐어요.",
+                        iconResId = R.drawable.icon_radio_check_on,
+                        duration = SnackbarDuration.Short,
+                        bottomPadding = 88
+                    )
+                }
+            }
         }
     }
 
@@ -141,15 +155,24 @@ fun FriendsScreen(
                 .background(DDanDDanColorPalette.current.color_background)
         ) {
             FriendsTopBar(
+                friendsState = friendsState,
                 copyFriendsLink = { onCopyInviteLink() }
             )
-            DDanMarginVerticalSpacer(9)
-            FriendsListView(
-                modifier = Modifier.weight(1f),
-                friendsState = friendsState,
-                onDelete = onDeleteClick,
-                onClickFriend = onClickFriend
-            )
+            if (friendsState.friends.isEmpty()) {
+                Spacer(Modifier.weight(1f))
+                EmptyFriendsView(
+                    onCopyInviteLink = onCopyInviteLink
+                )
+                Spacer(Modifier.weight(2f))
+            } else {
+                DDanMarginVerticalSpacer(9)
+                FriendsListView(
+                    modifier = Modifier.weight(1f),
+                    friendsState = friendsState,
+                    onDelete = onDeleteClick,
+                    onClickFriend = onClickFriend
+                )
+            }
             MyselfBottomSheet(
                 friendsState = friendsState,
                 onClick = onClickFriend
@@ -172,7 +195,8 @@ fun FriendsScreen(
             onClickCheers = onCheersFriend,
             onClickCancel = onDetailDismiss,
             isMyself = friendsState.myProfile?.id == friendsState.chosenUserDetail.id,
-            showFireworks = friendsState.showFireworks
+            showFireworks = friendsState.showFireworks,
+            friendsState = friendsState
         )
     }
 }
@@ -226,9 +250,9 @@ private fun MyselfBottomSheet(
     }
 }
 
-@Preview
 @Composable
 fun FriendsTopBar(
+    friendsState: FriendsState,
     copyFriendsLink: () -> Unit = {}
 ) {
     Row(
@@ -243,21 +267,23 @@ fun FriendsTopBar(
             color = DDanDDanColorPalette.current.color_text_headline_secondary,
         )
         Spacer(modifier = Modifier.weight(1f))
-        Box(
-            modifier = Modifier
-                .wrapContentSize()
-                .clip(RoundedCornerShape(4.dp))
-                .background(DDanDDanColorPalette.current.elevation_color_elevation_level03)
-                .noRippleClickable { copyFriendsLink() }
-        ) {
-            Text(
-                text = "친구 추가",
-                style = DDanDDanTypo.current.SubTitle1,
-                fontFamily = Pretendard,
-                color = DDanDDanColorPalette.current.color_text_caption_primary_default,
+        if (friendsState.friends.isNotEmpty()) {
+            Box(
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-            )
+                    .wrapContentSize()
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(DDanDDanColorPalette.current.elevation_color_elevation_level03)
+                    .noRippleClickable { copyFriendsLink() }
+            ) {
+                Text(
+                    text = "친구 추가",
+                    style = DDanDDanTypo.current.SubTitle1,
+                    fontFamily = Pretendard,
+                    color = DDanDDanColorPalette.current.color_text_caption_primary_default,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                )
+            }
         }
     }
 }
@@ -336,4 +362,65 @@ fun FriendRow(
         }
     }
 
+}
+
+@Composable
+fun EmptyFriendsView(
+    modifier: Modifier = Modifier,
+    onCopyInviteLink: () -> Unit
+) {
+    ConstraintLayout(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        val (image, title, btn) = createRefs()
+
+        Image(
+            painter = painterResource(id = com.ddanddan.base.R.drawable.ic_error),
+            contentDescription = null,
+            modifier = Modifier
+                .wrapContentSize()
+                .constrainAs(image) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+        )
+
+        Text(
+            text = "아직 친구가 없네요.\n친구를 추가해 함께 성장해 보세요!",
+            style = DDanDDanTypo.current.HeadLine7,
+            color = DDanDDanColorPalette.current.color_text_headline_teritary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.constrainAs(title) {
+                top.linkTo(image.bottom, margin = 16.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        )
+
+        Button(
+            onClick = {
+                onCopyInviteLink()
+            },
+            modifier = Modifier.constrainAs(btn) {
+                top.linkTo(title.bottom, margin = 16.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+                .size(width = 132.dp, height = 40.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = DDanDDanColorPalette.current.color_button_default02,
+                contentColor = DDanDDanColorPalette.current.color_text_button_primary_default
+            ),
+            elevation = ButtonDefaults.elevation(0.dp),
+            shape = RoundedCornerShape(4.dp)
+        ) {
+           Text(
+                text = "친구 추가",
+                style = DDanDDanTypo.current.HeadLine6,
+                color = DDanDDanColorPalette.current.color_text_button_primary_default
+            )
+        }
+    }
 }

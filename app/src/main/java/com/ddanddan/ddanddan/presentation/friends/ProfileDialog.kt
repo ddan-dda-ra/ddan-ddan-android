@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +22,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,9 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.friends.fireworks.FireworkEffect
 import com.ddanddan.ddanddan.util.toAnimal
+import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.ddanddan.util.toRectBackgroundImage
 import com.ddanddan.domain.entity.UserDetail
 import com.ddanddan.ui.compose.DDanDDanColorPalette
@@ -56,6 +63,7 @@ import com.ddanddan.ui.ext.noRippleClickable
 
 @Composable
 fun ProfileDialog(
+    friendsState: FriendsState? = null,
     userDetail: UserDetail,
     onClickCheers: (String) -> Unit = {},
     onClickCancel: () -> Unit = {},
@@ -64,6 +72,16 @@ fun ProfileDialog(
     onAddFriend: (String) -> Unit = {},
     showFireworks: Boolean = false
     ) {
+
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(
+            userDetail.mainPet.type.toLottie(
+                userDetail.mainPet.level,
+                isPlayAndEatLottie = false
+            )
+        )
+    )
+
     Dialog(
         onDismissRequest = { onClickCancel() }
     ) {
@@ -126,16 +144,23 @@ fun ProfileDialog(
                                 }
                             }
 
-                            Image(
+                            Column(
                                 modifier = Modifier.constrainAs(pet) {
                                     start.linkTo(parent.start)
                                     end.linkTo(parent.end)
-                                    bottom.linkTo(parent.bottom, margin = 23.dp)
+                                    bottom.linkTo(parent.bottom)
                                 }
-                                    .wrapContentSize(),
-                                painter = painterResource(id = userDetail.mainPet.type.toAnimal(userDetail.mainPet.level)),
-                                contentDescription = null
-                            )
+                            ) {
+                                Spacer(modifier = Modifier.weight(1f))
+                                LottieAnimation(
+                                    composition = composition,
+                                    modifier = Modifier
+                                        .size(100.dp),
+                                    iterations = LottieConstants.IterateForever
+                                )
+
+                                Spacer(modifier = Modifier.weight(0.262f))
+                            }
 
                             if (showFireworks) {
                                 FireworkEffect(
@@ -202,6 +227,7 @@ fun ProfileDialog(
                                 )
                                 DDanMarginHorizontalSpacer(8)
                                 Text(
+                                    modifier = Modifier.padding(top = 4.dp),
                                     text = userDetail.monthlyReceivedCheerCount.toString(),
                                     style = DDanDDanTypo.current.NeoDgm24,
                                     color = DDanDDanColorPalette.current.color_text_headline_primary
@@ -243,7 +269,7 @@ fun ProfileDialog(
                     }
                 }
             }
-            if (!isMyself) {
+            if (!isMyself && userDetail.isFriend && friendsState?.isCheeredToday == false) {
                 DDanMarginVerticalSpacer(20)
                 Button(
                     onClick = {

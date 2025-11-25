@@ -84,6 +84,10 @@ class FriendsViewModel @Inject constructor(
         }
         deleteFriendUseCase(friendId)
             .onSuccess {
+                reduce {
+                    state.copy(isShowDeleteDialog = false)
+                }
+                postSideEffect(FriendsSideEffect.ShowDeleteFriendsSnackBar)
                 postSideEffect(FriendsSideEffect.RefreshList)
             }
             .onFailure {
@@ -133,7 +137,8 @@ class FriendsViewModel @Inject constructor(
                 reduce {
                     state.copy(
                         chosenUserDetail = it,
-                        isShowProfileDialog = true
+                        isShowProfileDialog = true,
+                        isCheeredToday = it.isCheeredToday
                     )
                 }
             }
@@ -156,7 +161,10 @@ class FriendsViewModel @Inject constructor(
             .onSuccess {
                 // 불꽃 애니메이션
                 reduce {
-                    state.copy(showFireworks = true)
+                    state.copy(
+                        showFireworks = true,
+                        isCheeredToday = true
+                    )
                 }
             }
             .onFailure {
