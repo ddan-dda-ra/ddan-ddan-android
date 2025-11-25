@@ -54,7 +54,7 @@ fun FireworkEffect(
                 )
             }
             particles = particles + newParticles
-            kotlinx.coroutines.delay(100) // 0.1초마다 생성
+            kotlinx.coroutines.delay(250) // 0.1초마다 생성
         }
         onFinish()
     }
