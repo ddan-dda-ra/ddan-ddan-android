@@ -8,7 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -46,17 +50,24 @@ import com.ddanddan.ddanddan.presentation.signup.name.SetNameRoute
 import com.ddanddan.ddanddan.presentation.signup.target.SetTargetRoute
 import com.ddanddan.ddanddan.presentation.signup.terms.onTermsScreen
 import com.ddanddan.ddanddan.presentation.splash.SplashRoute
+import com.ddanddan.ddanddan.util.VersionChecker
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.enums.toPetTypeEnum
+import com.ddanddan.ui.compose.component.DDanOneButtonDialog
 import com.ddanddan.ui.ext.sharedViewModel
 
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
+    goToPlayStore: () -> Unit,
     inviteCode: String? = null
 ) {
+    val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    var isShowForceDialog by remember { mutableStateOf(false) }
+    var forceDialogMsg by remember { mutableStateOf("") }
 
     val bottomBarScreens = setOf(
         DDanDDanRoute.HOME.route,
@@ -73,6 +84,23 @@ fun MainScreen(
             }
         }
     }
+
+    LaunchedEffect(Unit) {
+        VersionChecker(context).checkVersion {
+            forceDialogMsg = it
+            isShowForceDialog = true
+        }
+    }
+
+    if (isShowForceDialog) {
+        DDanOneButtonDialog(
+            title = "앱 업데이트",
+            content = forceDialogMsg,
+            buttonText = "업데이트 하러가기",
+            onClickConfirm = { goToPlayStore() }
+        )
+    }
+
 
     Scaffold(
         bottomBar = {

@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.net.toUri
 import com.chottulink.lib.ChottuLink
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.theme.DDanDDanTheme
@@ -28,7 +30,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = DDanDDanColorPalette.current.color_background
                 ) {
-                    MainScreen(inviteCode = inviteCode)
+                    MainScreen(
+                        goToPlayStore = {
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://play.google.com/store/apps/details?id=$packageName".toUri()
+                                )
+                            )
+                        },
+                        inviteCode = inviteCode
+                    )
                 }
             }
 
