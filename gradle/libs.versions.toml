@@ -206,6 +206,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx"}
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx"}
 firebase-remoteConfig = { group = "com.google.firebase", name = "firebase-config-ktx"}
+firebase-database = { group = "com.google.firebase", name = "firebase-database-ktx"}
 
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activityKtxVersion" }
 compose-material = { group = "androidx.compose.material", name = "material", version.ref = "composeVersion" }
@@ -328,6 +329,6 @@ appModuleLibraryEtc = [
     "flexbox"
 ]
 okhttp = ["okhttp", "okhttp-logging-interceptor"]
-firebase = ["firebase-analytics", "firebase-crashlytics", "firebase-messaging", "firebase-remoteConfig"]
+firebase = ["firebase-analytics", "firebase-crashlytics", "firebase-messaging", "firebase-remoteConfig", "firebase-database"]
 flipper = ["flipper", "soloader", "flipper-network", "flipper-leakcanary"]
 retrofit = ["retrofit", "retrofit-json-converter"]
