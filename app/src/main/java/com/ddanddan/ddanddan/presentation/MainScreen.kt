@@ -79,7 +79,7 @@ fun MainScreen(
     LaunchedEffect(inviteCode) {
         inviteCode?.let {
             navController.navigate("${DDanDDanRoute.FRIENDS.route}?inviteCode=$it") {
-                popUpTo(0) // 스택 초기화
+                popUpTo(navController.graph.id) { inclusive = false }
                 launchSingleTop = true
             }
         }
