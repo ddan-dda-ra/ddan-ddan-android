@@ -269,7 +269,7 @@ fun ProfileDialog(
                     }
                 }
             }
-            if (!isMyself && userDetail.isFriend && friendsState?.isCheeredToday == false) {
+            if (!isMyself && (isFromInvitation || (userDetail.isFriend && friendsState?.isCheeredToday == false))) {
                 DDanMarginVerticalSpacer(20)
                 Button(
                     onClick = {

@@ -8,6 +8,7 @@ import com.chottulink.lib.DynamicLink
 import com.ddanddan.ddanddan.util.toBaseErrorResponse
 import com.ddanddan.domain.entity.Friend
 import com.ddanddan.domain.usecase.DeleteFriendUseCase
+import com.ddanddan.domain.usecase.GetFriendByCodeUseCase
 import com.ddanddan.domain.usecase.GetFriendsListUseCase
 import com.ddanddan.domain.usecase.GetInviteCodeUseCase
 import com.ddanddan.domain.usecase.GetMainPetUseCase
@@ -36,7 +37,8 @@ class FriendsViewModel @Inject constructor(
     private val postCheersUseCase: PostCheersUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getUserDetailUseCase: GetUserDetailUseCase,
-    private val getMainPetUseCase: GetMainPetUseCase
+    private val getMainPetUseCase: GetMainPetUseCase,
+    private val getFriendByCodeUseCase: GetFriendByCodeUseCase
 ) : ViewModel(), ContainerHost<FriendsState, FriendsSideEffect> {
 
     override val container =
@@ -46,8 +48,18 @@ class FriendsViewModel @Inject constructor(
 
     init {
         inviteCode?.let {
-            postInviteFriend(it)
+            getFriendByCode(it)
         }
+    }
+
+    private fun getFriendByCode(code: String) = intent {
+        getFriendByCodeUseCase(code)
+            .onSuccess { inviterUser ->
+                reduce { state.copy(pendingInviteCode = code) }
+                getUserDetail(inviterUser.id)
+            }.onFailure {
+                postSideEffect(FriendsSideEffect.NetworkError("초대 정보를 불러오지 못했어요"))
+            }
     }
 
     fun getFriendsList() = intent {
@@ -99,8 +111,8 @@ class FriendsViewModel @Inject constructor(
             getInviteCodeUseCase()
                 .onSuccess {
                     val shortUrl = createInviteLink(it)
-                    shortUrl?.let {
-                        postSideEffect(FriendsSideEffect.CopyInviteLink(it))
+                    shortUrl?.let { code ->
+                        postSideEffect(FriendsSideEffect.CopyInviteLink(code))
                     } ?: run {
                         postSideEffect(FriendsSideEffect.NetworkError("링크를 불러오지 못했어요. 다시 시도해주세요."))
                     }
@@ -202,12 +214,16 @@ class FriendsViewModel @Inject constructor(
             }
     }
 
-    private fun postInviteFriend(code: String) = intent {
+    fun postInviteFriend(code: String) = intent {
         postInviteFriendUseCase(code)
             .onSuccess {
                 postSideEffect(FriendsSideEffect.NavigateAddedFriend(it.mainPetType, it.petLevel))
             }.onFailure {
                 postSideEffect(FriendsSideEffect.NetworkError("친구 추가에 실패했습니다"))
             }
+    }
+
+    fun clearPendingInviteCode() = intent {
+        reduce { state.copy(pendingInviteCode = null) }
     }
 }

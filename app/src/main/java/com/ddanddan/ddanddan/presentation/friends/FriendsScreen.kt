@@ -126,7 +126,13 @@ fun FriendsRoute(
         onDeleteClick = friendsViewModel::chooseDeleteFriend,
         onClickFriend = friendsViewModel::getUserDetail,
         onCheersFriend = friendsViewModel::postCheers,
-        onDetailDismiss = friendsViewModel::dismissDetailDialog
+        onDetailDismiss = {
+            friendsViewModel.dismissDetailDialog()
+            friendsViewModel.clearPendingInviteCode()
+        },
+        onAddFriend = { _ ->
+            friendsState.pendingInviteCode?.let { friendsViewModel.postInviteFriend(it) }
+        }
     )
 }
 
@@ -141,8 +147,9 @@ fun FriendsScreen(
     onDeleteClick: (String) -> Unit = {},
     onClickFriend: (String) -> Unit = {},
     onCheersFriend: (String) -> Unit = {},
-    onDetailDismiss: () -> Unit = {}
-) {
+    onDetailDismiss: () -> Unit = {},
+    onAddFriend: (String) -> Unit = {}
+    ) {
     Scaffold(
         snackbarHost = {
             DDanSnackBar(snackBarHostState = snackBarHostState)
@@ -196,7 +203,9 @@ fun FriendsScreen(
             onClickCancel = onDetailDismiss,
             isMyself = friendsState.myProfile?.id == friendsState.chosenUserDetail.id,
             showFireworks = friendsState.showFireworks,
-            friendsState = friendsState
+            friendsState = friendsState,
+            isFromInvitation = friendsState.pendingInviteCode != null,  // 추가
+            onAddFriend = onAddFriend                                    // 추가
         )
     }
 }
@@ -339,7 +348,9 @@ fun FriendRow(
                     fontFamily = Pretendard,
                     color = DDanDDanColorPalette.current.color_text_body_quinary,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.wrapContentWidth().padding(horizontal = 6.dp)
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .padding(horizontal = 6.dp)
                 )
             }
         } else {
@@ -403,11 +414,12 @@ fun EmptyFriendsView(
             onClick = {
                 onCopyInviteLink()
             },
-            modifier = Modifier.constrainAs(btn) {
-                top.linkTo(title.bottom, margin = 16.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
+            modifier = Modifier
+                .constrainAs(btn) {
+                    top.linkTo(title.bottom, margin = 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
                 .size(width = 132.dp, height = 40.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = DDanDDanColorPalette.current.color_button_default02,
