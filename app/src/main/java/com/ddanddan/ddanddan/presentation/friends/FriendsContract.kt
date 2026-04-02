@@ -14,7 +14,8 @@ data class FriendsState(
     val isShowProfileDialog: Boolean = false,
     val chosenUserDetail: UserDetail? = null,
     val showFireworks: Boolean = false,
-    val isCheeredToday: Boolean = false
+    val isCheeredToday: Boolean = false,
+    val pendingInviteCode: String? = null
 )
 
 sealed class FriendsSideEffect {
