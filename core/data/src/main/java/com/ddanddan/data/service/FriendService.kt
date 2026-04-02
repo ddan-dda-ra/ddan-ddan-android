@@ -4,6 +4,7 @@ import com.ddanddan.model.response.ResponseCheers
 import com.ddanddan.model.response.ResponseFriends
 import com.ddanddan.model.response.ResponseInviteCode
 import com.ddanddan.model.response.ResponseInviteFriend
+import com.ddanddan.model.response.ResponseInviterUser
 import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -31,4 +32,9 @@ interface FriendService {
     suspend fun postCheers(
         @Path("friendId") friendId: String
     ): ResponseCheers
+
+    @GET("/v1/friends/invite-codes/{code}")
+    suspend fun getFriendByCode(
+        @Path("code") code: String
+    ): ResponseInviterUser
 }

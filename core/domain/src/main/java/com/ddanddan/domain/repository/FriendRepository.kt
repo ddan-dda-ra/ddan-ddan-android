@@ -8,4 +8,5 @@ interface FriendRepository {
     suspend fun postInviteFriend(code: String): Friend
     suspend fun deleteFriend(fId: String): Unit
     suspend fun postCheers(fId: String): Unit
+    suspend fun getFriendByCode(code: String): Friend
 }

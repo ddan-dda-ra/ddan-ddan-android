@@ -12,4 +12,5 @@ class RemoteFriendDataSource @Inject constructor(
     suspend fun postInviteFriend(code: String): ResponseFriend = friendService.postInviteFriend(code).friendUser
     suspend fun deleteFriend(fId: String) = friendService.deleteFriend(fId)
     suspend fun postCheers(fId: String) = friendService.postCheers(fId)
+    suspend fun getFriendByCode(code: String): ResponseFriend = friendService.getFriendByCode(code).inviterUser
 }

@@ -27,4 +27,8 @@ class FriendRepositoryImpl @Inject constructor(
     override suspend fun postCheers(fId: String) {
         friendDataSource.postCheers(fId)
     }
+
+    override suspend fun getFriendByCode(code: String): Friend {
+        return friendDataSource.getFriendByCode(code).toFriend()
+    }
 }
