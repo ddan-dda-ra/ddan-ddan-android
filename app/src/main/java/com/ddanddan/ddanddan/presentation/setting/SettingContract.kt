@@ -38,6 +38,7 @@ sealed class SettingSideEffect {
     object EditNickname: SettingSideEffect()
     object EditTargetCalories : SettingSideEffect()
     object AgreeToTerms : SettingSideEffect()
+    object CustomerService : SettingSideEffect()
     object DeleteAccount : SettingSideEffect()
 
     object SuccessChange : SettingSideEffect()
