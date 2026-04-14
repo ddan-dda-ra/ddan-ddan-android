@@ -40,7 +40,8 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         },
-                        inviteCode = inviteCode
+                        inviteCode = inviteCode,
+                        onInviteCodeConsumed = { inviteCode = null }
                     )
                 }
             }
