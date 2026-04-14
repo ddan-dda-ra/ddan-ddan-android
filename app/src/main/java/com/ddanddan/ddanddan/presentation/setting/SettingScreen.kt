@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ddanddan.ddanddan.BuildConfig.VERSION_NAME
 import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
+import com.ddanddan.ddanddan.util.event.MyPageEvent
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.Pretendard
@@ -75,11 +76,24 @@ fun SettingRoute(
     SettingScreen(
         settingState = settingState,
         navigatePopUp = viewModel::navigatePopUp,
-        onSettingItemClick = viewModel::onSettingItemClick,
+        onSettingItemClick = { titleId ->
+            val event = when (titleId) {
+                com.ddanddan.base.R.string.setting_title_text0 -> MyPageEvent.ClickPetBox(touchpoint = "mypage")
+                com.ddanddan.base.R.string.setting_title_text1 -> MyPageEvent.ClickChangeName(touchpoint = "mypage")
+                com.ddanddan.base.R.string.setting_title_text2 -> MyPageEvent.ClickChangeGoal(touchpoint = "mypage")
+                com.ddanddan.base.R.string.setting_title_text4 -> MyPageEvent.ClickTerms(touchpoint = "mypage")
+                else -> MyPageEvent.ClickDeleteAccount(touchpoint = "mypage")
+            }
+            viewModel.logEvent(event)
+            viewModel.onSettingItemClick(titleId)
+        },
         onLogOutClick = viewModel::showDialog,
         onDialogDismiss = viewModel::dismissDialog,
         onDialogConfirm = viewModel::navigateLogin,
-        onPushToggleClick = viewModel::onPushNotificationToggle
+        onPushToggleClick = {
+            viewModel.logEvent(MyPageEvent.ClickPushAlarm(touchpoint = "mypage"))
+            viewModel.onPushNotificationToggle()
+        }
     )
 }
 

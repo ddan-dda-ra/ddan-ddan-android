@@ -222,6 +222,12 @@ fun MainScreen(
                     navController = navController,
                     onTopBarBackClick = {
                         navController.popBackStack()
+                    },
+                    onServiceTermsClick = {
+                        analyticsManager.logEvent(MyPageEvent.ClickServiceTermsBtn(touchpoint = "mypage-terms"))
+                    },
+                    onPrivacyTermsClick = {
+                        analyticsManager.logEvent(MyPageEvent.ClickPrivacyTermsBtn(touchpoint = "mypage-terms"))
                     }
                 )
             }
