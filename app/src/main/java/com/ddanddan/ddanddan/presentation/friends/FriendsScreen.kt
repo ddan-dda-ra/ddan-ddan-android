@@ -204,8 +204,8 @@ fun FriendsScreen(
             isMyself = friendsState.myProfile?.id == friendsState.chosenUserDetail.id,
             showFireworks = friendsState.showFireworks,
             friendsState = friendsState,
-            isFromInvitation = friendsState.pendingInviteCode != null,  // 추가
-            onAddFriend = onAddFriend                                    // 추가
+            isFromInvitation = friendsState.pendingInviteCode != null,
+            onAddFriend = onAddFriend
         )
     }
 }

@@ -273,7 +273,7 @@ fun ProfileDialog(
                 DDanMarginVerticalSpacer(20)
                 Button(
                     onClick = {
-                        if (!isFromInvitation) onClickCheers(userDetail.id)
+                        if (!isFromInvitation || userDetail.isFriend) onClickCheers(userDetail.id)
                         else onAddFriend(userDetail.id)
                     },
                     modifier = Modifier
@@ -287,7 +287,7 @@ fun ProfileDialog(
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(
-                        text = if (!isFromInvitation) "응원해요" else "친구하기",
+                        text = if (!isFromInvitation || userDetail.isFriend) "응원해요" else "친구하기",
                         style = DDanDDanTypo.current.HeadLine6,
                         color = DDanDDanColorPalette.current.color_text_button_primary_default
                     )
