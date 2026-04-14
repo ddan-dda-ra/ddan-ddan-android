@@ -21,10 +21,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private var inviteCode by mutableStateOf<String?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var inviteCode by remember { mutableStateOf<String?>(null) }
             DDanDDanTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -39,19 +40,29 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         },
-                        inviteCode = inviteCode
+                        inviteCode = inviteCode,
+                        onInviteCodeConsumed = { inviteCode = null }
                     )
                 }
             }
+            handleInviteLink(intent)
+        }
+    }
 
-            ChottuLink.getAppLinkData(intent).addOnSuccessListener { result ->
-                result?.link?.let { link ->
-                    val code = link.getQueryParameter("code")
-                    if (!code.isNullOrEmpty()) {
-                        inviteCode = code
-                    }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleInviteLink(intent)
+    }
+
+    private fun handleInviteLink(intent: Intent) {
+        ChottuLink.getAppLinkData(intent).addOnSuccessListener { result ->
+            result?.link?.let { link ->
+                val code = link.getQueryParameter("code")
+                if (!code.isNullOrEmpty()) {
+                    inviteCode = code
                 }
             }
-        } }
+        }
+    }
 
 }

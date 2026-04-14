@@ -67,7 +67,8 @@ import dagger.hilt.android.EntryPointAccessors
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
     goToPlayStore: () -> Unit,
-    inviteCode: String? = null
+    inviteCode: String? = null,
+    onInviteCodeConsumed: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -94,6 +95,7 @@ fun MainScreen(
                 popUpTo(navController.graph.id) { inclusive = false }
                 launchSingleTop = true
             }
+            onInviteCodeConsumed()
         }
     }
 
