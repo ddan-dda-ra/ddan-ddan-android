@@ -356,6 +356,7 @@ fun MainScreen(
             composable(route = DDanDDanRoute.ONBOARDING.route) {
                 OnboardingRoute(
                     onNavigateSignIn = {
+                        analyticsManager.logEvent(OnboardingEvent.ClickCTA(touchpoint = "onboarding"))
                         navController.navigate(DDanDDanRoute.SIGN_IN.route) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
