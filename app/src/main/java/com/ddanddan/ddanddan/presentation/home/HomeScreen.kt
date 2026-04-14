@@ -64,6 +64,7 @@ import com.ddanddan.ddanddan.presentation.component.CoachMark
 import com.ddanddan.ddanddan.presentation.component.EggCounterBadge
 import com.ddanddan.ddanddan.presentation.component.EggGachaCard
 import com.ddanddan.ddanddan.service.PhoneDataLayerService
+import com.ddanddan.ddanddan.util.event.HomeEvent
 import com.ddanddan.ddanddan.util.toBackgroundImage
 import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.ddanddan.util.toLottie
@@ -198,14 +199,29 @@ fun HomeRoute(
         homeState = homeState,
         snackBarHostState = snackBarHostState,
         composition = composition,
-        onEatClick = homeViewModel::postFoodPet,
-        onPlayClick = homeViewModel::postPlayPet,
-        onPetClick = { homeViewModel.showTooltipState(it, TooltipType.BASIC) },
+        onEatClick = {
+            homeViewModel.logEvent(HomeEvent.ClickFeedBtn)
+            homeViewModel.postFoodPet()
+        },
+        onPlayClick = {
+            homeViewModel.logEvent(HomeEvent.ClickPlayBtn)
+            homeViewModel.postPlayPet()
+        },
+        onPetClick = {
+            homeViewModel.logEvent(HomeEvent.ClickPet)
+            homeViewModel.showTooltipState(it, TooltipType.BASIC)
+        },
         onTooltipVisibilityChanged = homeViewModel::setTooltipState,
         onCoachMarkDismiss = homeViewModel::dismissCoachMark,
         onEggCounterBadgeClick = homeViewModel::eggCountBadgeClick,
-        onEggAnimationComplete = homeViewModel::onEggAnimationComplete,
-        onGrowClick = homeViewModel::postRandomPet
+        onEggAnimationComplete = {
+            homeViewModel.logEvent(HomeEvent.ClickCancelBtn(path = "select-egg"))
+            homeViewModel.onEggAnimationComplete()
+        },
+        onGrowClick = {
+            homeViewModel.logEvent(HomeEvent.ClickBtn(path = "select-egg"))
+            homeViewModel.postRandomPet()
+        }
     )
 }
 

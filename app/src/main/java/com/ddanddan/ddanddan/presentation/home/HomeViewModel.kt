@@ -1,9 +1,10 @@
 package com.ddanddan.ddanddan.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.widget.WidgetManager
+import com.ddanddan.ddanddan.util.AnalyticsEvent
+import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.GetMainPetUseCase
@@ -36,7 +37,8 @@ class HomeViewModel @Inject constructor(
     private val getNotificationAskedUseCase: GetNotificationAskedUseCase,
     private val userRepository: UserRepository,
     private val ddanddanDataStore: ddanddanDataStore,
-    private val widgetManager: WidgetManager
+    private val widgetManager: WidgetManager,
+    private val analyticsManager: AnalyticsManager
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
@@ -49,6 +51,10 @@ class HomeViewModel @Inject constructor(
         observeCalories()
 
         animationEggCounterBadge()
+    }
+
+    fun logEvent(event: AnalyticsEvent) {
+        analyticsManager.logEvent(event)
     }
 
     fun getHomeInfo() {
