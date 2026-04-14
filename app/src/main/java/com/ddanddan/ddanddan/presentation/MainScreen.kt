@@ -60,6 +60,7 @@ import com.ddanddan.ddanddan.util.event.OnboardingEvent
 import com.ddanddan.ddanddan.util.event.SignUpEvent
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.enums.toPetTypeEnum
+import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanOneButtonDialog
 import com.ddanddan.ui.ext.sharedViewModel
 import dagger.hilt.android.EntryPointAccessors
@@ -141,7 +142,8 @@ fun MainScreen(
                     }
                 )
             }
-        }
+        },
+        containerColor = DDanDDanColorPalette.current.color_background,
     ) { paddingValues ->
         NavHost(
             modifier = Modifier.padding(paddingValues),
@@ -169,6 +171,11 @@ fun MainScreen(
                     },
                     onNavigateError = { errorCode ->
                         navController.navigate(DDanDDanRoute.ERROR.route + "?errorCode=${errorCode}")
+                    },
+                    onNavigateGrantNotPermission = {
+                        navController.navigate(DDanDDanRoute.GRANT_NOT_PERMISSION.route) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
                     }
                 )
             }
@@ -363,9 +370,9 @@ fun MainScreen(
 
             composable(route = DDanDDanRoute.ONBOARDING.route) {
                 OnboardingRoute(
-                    onNavigateSignIn = {
+                    onNavigateGrantNotPermission = {
                         analyticsManager.logEvent(OnboardingEvent.ClickCTA(touchpoint = "onboarding"))
-                        navController.navigate(DDanDDanRoute.SIGN_IN.route) {
+                        navController.navigate(DDanDDanRoute.GRANT_NOT_PERMISSION.route) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
                     }

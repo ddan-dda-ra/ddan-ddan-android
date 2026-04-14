@@ -1,13 +1,16 @@
 package com.ddanddan.ddanddan.service
 
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.ddanddan.ddanddan.R
 import com.ddanddan.domain.repository.UserRepository
 import com.google.android.gms.wearable.DataEvent
@@ -37,8 +40,17 @@ class PhoneDataLayerService : WearableListenerService() {
     override fun onCreate() {
         super.onCreate()
 
-        startForegroundService()
-        requestLatestCaloriesFromWatch()
+        val hasPermission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.BODY_SENSORS
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasPermission) {
+            startForegroundService()
+            requestLatestCaloriesFromWatch()
+        } else {
+            stopSelf()  // 권한 없으면 바로 종료
+        }
     }
 
     @androidx.annotation.RequiresApi(VERSION_CODES.UPSIDE_DOWN_CAKE)
