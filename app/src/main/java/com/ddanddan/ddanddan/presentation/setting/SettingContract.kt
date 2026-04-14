@@ -5,14 +5,15 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class SettingState(
     val settingItems: List<Pair<Int, Int?>> = listOf(
-        Pair(com.ddanddan.base.R.string.setting_title_text0, com.ddanddan.base.R.string.setting_description_text0),
-        Pair(com.ddanddan.base.R.string.setting_title_text1, null),
-        Pair(com.ddanddan.base.R.string.setting_title_text2, null)
+        Pair(com.ddanddan.base.R.string.setting_title_petbox, com.ddanddan.base.R.string.setting_description_text0),
+        Pair(com.ddanddan.base.R.string.setting_title_edit_nickname, null),
+        Pair(com.ddanddan.base.R.string.setting_title_edit_calories, null)
     ),
     val settingItemsBottom: List<Int> = listOf(
-        com.ddanddan.base.R.string.setting_title_text4,
-        com.ddanddan.base.R.string.setting_title_text5,
-        com.ddanddan.base.R.string.setting_title_text6
+        com.ddanddan.base.R.string.setting_title_cs,
+        com.ddanddan.base.R.string.setting_title_terms,
+        com.ddanddan.base.R.string.setting_title_delete_account,
+        com.ddanddan.base.R.string.setting_title_logout
     ),
     val signOutList: List<String> = listOf(
         "쓰지 않는 앱이에요",
@@ -37,6 +38,7 @@ sealed class SettingSideEffect {
     object EditNickname: SettingSideEffect()
     object EditTargetCalories : SettingSideEffect()
     object AgreeToTerms : SettingSideEffect()
+    object CustomerService : SettingSideEffect()
     object DeleteAccount : SettingSideEffect()
 
     object SuccessChange : SettingSideEffect()

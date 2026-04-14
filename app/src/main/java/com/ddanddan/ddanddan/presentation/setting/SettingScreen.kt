@@ -1,5 +1,7 @@
 package com.ddanddan.ddanddan.presentation.setting
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,12 +22,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,6 +61,7 @@ fun SettingRoute(
     onPetCollectionClick: () -> Unit
 ) {
     val settingState by viewModel.collectAsState()
+    val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -69,6 +72,10 @@ fun SettingRoute(
             is SettingSideEffect.DeleteAccount -> onSignOutClick()
             is SettingSideEffect.NavigateLogin -> navigateLogin()
             is SettingSideEffect.NavigatePetCollection -> onPetCollectionClick()
+            is SettingSideEffect.CustomerService -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://tally.so/r/Gx1GEe"))
+                context.startActivity(intent)
+            }
             else -> {}
         }
     }
@@ -78,10 +85,11 @@ fun SettingRoute(
         navigatePopUp = viewModel::navigatePopUp,
         onSettingItemClick = { titleId ->
             val event = when (titleId) {
-                com.ddanddan.base.R.string.setting_title_text0 -> MyPageEvent.ClickPetBox(touchpoint = "mypage")
-                com.ddanddan.base.R.string.setting_title_text1 -> MyPageEvent.ClickChangeName(touchpoint = "mypage")
-                com.ddanddan.base.R.string.setting_title_text2 -> MyPageEvent.ClickChangeGoal(touchpoint = "mypage")
-                com.ddanddan.base.R.string.setting_title_text4 -> MyPageEvent.ClickTerms(touchpoint = "mypage")
+                R.string.setting_title_petbox -> MyPageEvent.ClickPetBox(touchpoint = "mypage")
+                R.string.setting_title_edit_nickname -> MyPageEvent.ClickChangeName(touchpoint = "mypage")
+                R.string.setting_title_edit_calories -> MyPageEvent.ClickChangeGoal(touchpoint = "mypage")
+                R.string.setting_title_terms -> MyPageEvent.ClickTerms(touchpoint = "mypage")
+                R.string.setting_title_cs -> MyPageEvent.ClickTerms(touchpoint = "cs")
                 else -> MyPageEvent.ClickDeleteAccount(touchpoint = "mypage")
             }
             viewModel.logEvent(event)
@@ -161,7 +169,7 @@ fun SettingScreen(
             SettingColumn(
                 settingItems = settingState.settingItemsBottom,
                 onClick = { titleId ->
-                    if (titleId == R.string.setting_title_text6) {
+                    if (titleId == R.string.setting_title_logout) {
                         onLogOutClick()
                     } else {
                         onSettingItemClick(titleId)
