@@ -1,7 +1,9 @@
 package com.ddanddan.ddanddan.presentation.home
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -36,6 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +56,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -91,11 +98,46 @@ fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     needRefresh: Boolean,
     onNavigateLevelUp: (level: Int, petType: String) -> Unit,
-    onNavigateError: (Int?) -> Unit = {}
+    onNavigateError: (Int?) -> Unit = {},
+    onNavigateGrantNotPermission: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
-    context.startService(Intent(context, PhoneDataLayerService::class.java))
+    LaunchedEffect(Unit) {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.BODY_SENSORS
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!hasPermission) {
+            onNavigateGrantNotPermission()
+            return@LaunchedEffect
+        }
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                val hasPermission = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.BODY_SENSORS
+                ) == PackageManager.PERMISSION_GRANTED
+
+                if (!hasPermission) {
+                    context.stopService(Intent(context, PhoneDataLayerService::class.java))
+                    onNavigateGrantNotPermission()
+                } else {
+                    context.startService(Intent(context, PhoneDataLayerService::class.java))
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     val homeState by homeViewModel.collectAsState()
 
