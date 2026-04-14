@@ -75,6 +75,8 @@ fun GrantedNotRoute(
 @Composable
 fun GrantedNotScreen(
     onPermissionGranted: () -> Unit,
+    onDisagreeClick: () -> Unit = {},
+    onAgreeClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = context as? ComponentActivity
@@ -182,7 +184,10 @@ fun GrantedNotScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = { isShowWarning = true },
+                    onClick = {
+                        onDisagreeClick()
+                        isShowWarning = true
+                    },
                     modifier = Modifier
                         .weight(1f),
                     contentPadding = PaddingValues(vertical = 17.dp),
@@ -199,7 +204,10 @@ fun GrantedNotScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = { onButtonClick() },
+                    onClick = {
+                        onAgreeClick()
+                        onButtonClick()
+                    },
                     modifier = Modifier
                         .weight(1f),
                     contentPadding = PaddingValues(vertical = 17.dp),

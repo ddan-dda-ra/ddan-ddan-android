@@ -53,6 +53,7 @@ import com.ddanddan.ddanddan.presentation.signup.target.SetTargetRoute
 import com.ddanddan.ddanddan.presentation.signup.terms.onTermsScreen
 import com.ddanddan.ddanddan.presentation.splash.SplashRoute
 import com.ddanddan.ddanddan.util.VersionChecker
+import com.ddanddan.ddanddan.util.event.LevelEvent
 import com.ddanddan.ddanddan.util.event.MainTabEvent
 import com.ddanddan.ddanddan.util.event.MyPageEvent
 import com.ddanddan.ddanddan.util.event.OnboardingEvent
@@ -320,8 +321,12 @@ fun MainScreen(
                 LevelUpRoute(
                     level = it.arguments?.getInt("level") ?: 1,
                     petType = petType,
-                    onButtonClick = navController::popBackStack,
+                    onButtonClick = {
+                        analyticsManager.logEvent(LevelEvent.ClickCTA)
+                        navController.popBackStack()
+                    },
                     navigateToNetPet = {
+                        analyticsManager.logEvent(LevelEvent.ClickCTA)
                         navController.navigate(DDanDDanRoute.NET_PET.route)
                     }
                 )
@@ -329,6 +334,7 @@ fun MainScreen(
             composable(DDanDDanRoute.NET_PET.route) {
                 NewPetRoute(
                     onButtonClick = {
+                        analyticsManager.logEvent(LevelEvent.ClickCTA)
                         navController.navigate(DDanDDanRoute.HOME.route + "?isNewPet=true") {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
