@@ -26,6 +26,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.data.provider.KakaoProvider
 import com.ddanddan.base.R
+import com.ddanddan.ddanddan.util.event.LoginEvent
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanLoadingDialog
@@ -56,6 +57,9 @@ fun SignInRoute(
         snackBarHostState = snackBarHostState,
         onProgressBarDismiss = signInViewModel::dismissProgressBar,
         onProgressBarShow = signInViewModel::showProgressBar,
+        onKakaoClick = {
+            signInViewModel.logEvent(LoginEvent.ClickKakaoBtn(touchpoint = "sign-up"))
+        },
         onLoginWithToken = { token ->
             FirebaseMessaging.getInstance().token.addOnCompleteListener {
                 val deviceToken = if (it.isSuccessful) it.result else null
@@ -71,6 +75,7 @@ fun SignInScreen (
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onProgressBarDismiss: () -> Unit = { },
     onProgressBarShow: () -> Unit = { },
+    onKakaoClick: () -> Unit = {},
     onLoginWithToken: (String) -> Unit = { }
 ) {
     val context = LocalContext.current // Context 가져오기
@@ -116,6 +121,7 @@ fun SignInScreen (
             Spacer(modifier = Modifier.weight(1f))
             KakaoButton(
                 onButtonClick = {
+                    onKakaoClick()
                     onProgressBarShow()
                     kakaoProvider.loginWithKakao { token, error ->
                         if (error == null) token?.accessToken?.let {
