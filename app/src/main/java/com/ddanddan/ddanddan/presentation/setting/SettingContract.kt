@@ -10,9 +10,7 @@ data class SettingState(
         Pair(com.ddanddan.base.R.string.setting_title_edit_calories, null)
     ),
     val settingItemsBottom: List<Int> = listOf(
-        com.ddanddan.base.R.string.setting_title_text4,
-        com.ddanddan.base.R.string.setting_title_text5,
-        com.ddanddan.base.R.string.setting_title_text6
+        com.ddanddan.base.R.string.setting_title_cs,
         com.ddanddan.base.R.string.setting_title_terms,
         com.ddanddan.base.R.string.setting_title_delete_account,
         com.ddanddan.base.R.string.setting_title_logout
