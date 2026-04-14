@@ -329,6 +329,6 @@ appModuleLibraryEtc = [
     "flexbox"
 ]
 okhttp = ["okhttp", "okhttp-logging-interceptor"]
-firebase = ["firebase-analytics", "firebase-crashlytics", "firebase-messaging", "firebase-remoteConfig", "firebase-database"]
+firebase = ["firebase-bom", "firebase-analytics", "firebase-crashlytics", "firebase-messaging", "firebase-remoteConfig", "firebase-database"]
 flipper = ["flipper", "soloader", "flipper-network", "flipper-leakcanary"]
 retrofit = ["retrofit", "retrofit-json-converter"]

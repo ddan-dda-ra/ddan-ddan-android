@@ -28,6 +28,7 @@ import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
+import com.ddanddan.ddanddan.util.event.MyPageEvent
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -69,7 +70,10 @@ fun EditNickNameRoute(
         snackBarHostState = snackBarHostState,
         navigatePopUp = viewModel::navigatePopUp,
         onValueChange = viewModel::changeNickName,
-        onEditBtnClick = viewModel::onEditBtnClick
+        onEditBtnClick = {
+            viewModel.logEvent(MyPageEvent.ClickSavedCTA(touchpoint = "mypage-change-name"))
+            viewModel.onEditBtnClick()
+        }
     )
 }
 

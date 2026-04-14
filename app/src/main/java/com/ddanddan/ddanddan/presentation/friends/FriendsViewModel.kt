@@ -5,6 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.chottulink.lib.ChottuLink
 import com.chottulink.lib.DynamicLink
+import com.ddanddan.ddanddan.util.AnalyticsEvent
+import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.ddanddan.util.toBaseErrorResponse
 import com.ddanddan.domain.entity.Friend
 import com.ddanddan.domain.usecase.DeleteFriendUseCase
@@ -38,8 +40,9 @@ class FriendsViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getUserDetailUseCase: GetUserDetailUseCase,
     private val getMainPetUseCase: GetMainPetUseCase,
-    private val getFriendByCodeUseCase: GetFriendByCodeUseCase
-) : ViewModel(), ContainerHost<FriendsState, FriendsSideEffect> {
+    private val getFriendByCodeUseCase: GetFriendByCodeUseCase,
+    private val analyticsManager: AnalyticsManager,
+    ) : ViewModel(), ContainerHost<FriendsState, FriendsSideEffect> {
 
     override val container =
         container<FriendsState, FriendsSideEffect>(FriendsState())
@@ -50,6 +53,10 @@ class FriendsViewModel @Inject constructor(
         inviteCode?.let {
             getFriendByCode(it)
         }
+    }
+
+    fun logEvent(event: AnalyticsEvent) {
+        analyticsManager.logEvent(event)
     }
 
     private fun getFriendByCode(code: String) = intent {

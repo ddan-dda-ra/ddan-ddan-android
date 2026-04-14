@@ -34,6 +34,7 @@ import com.ddanddan.ui.ext.noRippleClickable
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import com.ddanddan.base.R.drawable
+import com.ddanddan.ddanddan.util.event.MyPageEvent
 
 @Composable
 fun SignOutSecondRoute(
@@ -54,8 +55,14 @@ fun SignOutSecondRoute(
     SignOutSecondScreen(
         settingState = settingState,
         navigatePopUp = viewModel::navigatePopUp,
-        onToggleClick = viewModel::onToggleClick,
-        onDeleteUserClick = viewModel::deleteUser
+        onToggleClick = {
+            viewModel.logEvent(MyPageEvent.ClickCheckboxRecheck(touchpoint = "mypage-delect-account"))
+            viewModel.onToggleClick()
+        },
+        onDeleteUserClick = {
+            viewModel.logEvent(MyPageEvent.ClickCTABtn(touchpoint = "mypage-delect-account"))
+            viewModel.deleteUser()
+        }
     )
 }
 

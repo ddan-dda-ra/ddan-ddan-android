@@ -3,6 +3,8 @@ package com.ddanddan.ddanddan.presentation.setting.viewModel
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
+import com.ddanddan.ddanddan.util.AnalyticsEvent
+import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.domain.usecase.DeleteUserUseCase
 import com.ddanddan.domain.usecase.DisableAutoLoginUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
@@ -27,14 +29,19 @@ class SettingViewModel @Inject constructor(
     private val putUserInfoUseCase: PutUserInfoUseCase,
     private val deleteUserUseCase: DeleteUserUseCase,
     private val disableAutoLoginUseCase: DisableAutoLoginUseCase,
-    private val patchPushSettingUseCase: PatchPushSettingUseCase
-) :
+    private val patchPushSettingUseCase: PatchPushSettingUseCase,
+    private val analyticsManager: AnalyticsManager,
+    ) :
     ContainerHost<SettingState, SettingSideEffect>, ViewModel() {
     override val container =
         container<SettingState, SettingSideEffect>(SettingState())
 
     init {
         getUserInfo()
+    }
+
+    fun logEvent(event: AnalyticsEvent) {
+        analyticsManager.logEvent(event)
     }
 
     fun incrementTarget() = intent {

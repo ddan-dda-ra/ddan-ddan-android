@@ -27,6 +27,7 @@ import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
+import com.ddanddan.ddanddan.util.event.MyPageEvent
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
@@ -54,7 +55,10 @@ fun SignOutFirstRoute(
     SignOutFirstScreen(
         settingState = settingState,
         navigatePopUp = viewModel::navigatePopUp,
-        onReasonClick = viewModel::updateSelection,
+        onReasonClick = {
+            viewModel.logEvent(MyPageEvent.ClickCheckboxReason(touchpoint = "mypage-delect-account"))
+            viewModel.updateSelection(it)
+        },
         onSignOutBtnClick = viewModel::navigateSignOutSecond
     )
 }

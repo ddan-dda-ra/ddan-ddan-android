@@ -36,6 +36,7 @@ import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.signup.SignUpSideEffect
 import com.ddanddan.ddanddan.presentation.signup.SignUpState
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
+import com.ddanddan.ddanddan.util.event.SignUpEvent
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -72,7 +73,10 @@ fun SetEggRoute(
     SetEggScreen(
         signUpState = signUpState,
         onTypeChange = signUpViewModel::setPetType,
-        onNextBtnClick = signUpViewModel::putUserInfo
+        onNextBtnClick = {
+            signUpViewModel.logEvent(SignUpEvent.ClickCTA(touchpoint = "sign-up-select-pet"))
+            signUpViewModel.putUserInfo()
+        }
     )
 }
 

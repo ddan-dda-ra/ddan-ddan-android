@@ -32,6 +32,7 @@ import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.setting.SettingSideEffect
 import com.ddanddan.ddanddan.presentation.setting.SettingState
 import com.ddanddan.ddanddan.presentation.setting.viewModel.SettingViewModel
+import com.ddanddan.ddanddan.util.event.MyPageEvent
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -68,8 +69,14 @@ fun EditTargetRoute(
         snackBarHostState = snackBarHostState,
         navigatePopUp = viewModel::navigatePopUp,
         onPlusBtnClick = viewModel::incrementTarget,
-        onMinusBtnClick = viewModel::decrementTarget,
-        onEditBtnClick = viewModel::onEditBtnClick
+        onMinusBtnClick = {
+            viewModel.logEvent(MyPageEvent.ClickMinusBtn(touchpoint = "mypage-change-goal"))
+            viewModel.decrementTarget()
+        },
+        onEditBtnClick = {
+            viewModel.logEvent(MyPageEvent.ClickSavedCTA(touchpoint = "mypage-change-goal"))
+            viewModel.onEditBtnClick()
+        }
     )
 }
 

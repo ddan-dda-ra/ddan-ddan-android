@@ -1,6 +1,8 @@
 package com.ddanddan.ddanddan.presentation.signin
 
 import androidx.lifecycle.ViewModel
+import com.ddanddan.ddanddan.util.AnalyticsEvent
+import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.domain.usecase.PostLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
@@ -14,10 +16,15 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val postLoginUseCase: PostLoginUseCase,
-) : ContainerHost<SignInState, SignInSideEffect>, ViewModel() {
+    private val analyticsManager: AnalyticsManager,
+    ) : ContainerHost<SignInState, SignInSideEffect>, ViewModel() {
 
     override val container: Container<SignInState, SignInSideEffect>
         = container<SignInState, SignInSideEffect>(SignInState())
+
+    fun logEvent(event: AnalyticsEvent) {
+        analyticsManager.logEvent(event)
+    }
 
     private fun navigateSignUp() = intent {
         postSideEffect(SignInSideEffect.UserNotRegistered)

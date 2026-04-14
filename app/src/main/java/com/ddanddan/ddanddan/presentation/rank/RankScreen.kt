@@ -64,6 +64,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.friends.ProfileDialog
+import com.ddanddan.ddanddan.util.event.RankingEvent
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.domain.enums.PetTypeEnum
@@ -143,11 +144,32 @@ fun RankRoute(
         rankState = rankState,
         snackBarHostState = snackBarHostState,
         navigatePopUp = rankViewModel::onBackButtonClicked,
-        changeTab = rankViewModel::setCriteriaTab,
+        changeTab = { criteria ->
+            val touchpoint = when (criteria) {
+                RankCriteria.TOTAL_CALORIES -> "ranking-kcal"
+                RankCriteria.TOTAL_SUCCEEDED_DAYS -> "ranking-goal"
+            }
+            rankViewModel.logEvent(RankingEvent.ClickTab(touchpoint = touchpoint))
+            rankViewModel.setCriteriaTab(criteria)
+        },
         dismissToolTip = rankViewModel::dismissToolTip,
-        showToolTip = rankViewModel::showToolTip,
+        showToolTip = {
+            val touchpoint = when (rankState.criteria) {
+                RankCriteria.TOTAL_CALORIES -> "ranking-kcal"
+                RankCriteria.TOTAL_SUCCEEDED_DAYS -> "ranking-goal"
+            }
+            rankViewModel.logEvent(RankingEvent.ClickTooltip(touchpoint = touchpoint))
+            rankViewModel.showToolTip()
+        },
         onSnackBarEvent = rankViewModel::showSnackBarEvent,
-        goToMyRanking = rankViewModel::goToMyRanking,
+        goToMyRanking = {
+            val touchpoint = when (rankState.criteria) {
+                RankCriteria.TOTAL_CALORIES -> "ranking-kcal"
+                RankCriteria.TOTAL_SUCCEEDED_DAYS -> "ranking-goal"
+            }
+            rankViewModel.logEvent(RankingEvent.ClickMyRanking(touchpoint = touchpoint))
+            rankViewModel.goToMyRanking()
+        },
         listState = listState,
         onClickUser = rankViewModel::getUserDetail,
         onCheersUser = rankViewModel::postCheers,

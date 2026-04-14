@@ -21,7 +21,9 @@ import com.ddanddan.ui.compose.component.DdanScaffold
 @Composable
 fun onAgreeScreen(
     navController: NavHostController,
-    onTopBarBackClick: () -> Unit = {}
+    onTopBarBackClick: () -> Unit = {},
+    onServiceTermsClick: () -> Unit = {},
+    onPrivacyTermsClick: () -> Unit = {}
 ) {
     DdanScaffold(
         topbarText = stringResource(id = R.string.setting_notice_title),
@@ -44,12 +46,14 @@ fun onAgreeScreen(
                 SettingTitle(
                     title = "서비스 이용약관",
                     onClick = {
+                        onServiceTermsClick() // 추가
                         navController.navigate(DDanDDanRoute.WEBVIEW.route + "?url=https://www.notion.so/4105267fc3b849fba10b8a3155809255")
                     }
                 )
                 SettingTitle(
                     title = "개인정보 처리방침",
                     onClick = {
+                        onPrivacyTermsClick() // 추가
                         navController.navigate(DDanDDanRoute.WEBVIEW.route + "?url=https://www.notion.so/1d544c615c44412fa51d2ecb9f98116a")
                     }
                 )

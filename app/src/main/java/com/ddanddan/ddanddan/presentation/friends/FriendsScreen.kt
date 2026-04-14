@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.util.event.FriendsEvent.*
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.domain.enums.PetTypeEnum
@@ -120,17 +121,38 @@ fun FriendsRoute(
     FriendsScreen(
         friendsState = friendsState,
         snackBarHostState = snackBarHostState,
-        onCopyInviteLink = friendsViewModel::copyInviteCode,
-        onDialogDismiss = friendsViewModel::dismissDialog,
-        onDialogConfirm = friendsViewModel::deleteFriend,
-        onDeleteClick = friendsViewModel::chooseDeleteFriend,
-        onClickFriend = friendsViewModel::getUserDetail,
-        onCheersFriend = friendsViewModel::postCheers,
+        onCopyInviteLink = {
+            val state = if (friendsState.friends.isEmpty()) "no-friends" else "has-friend"
+            friendsViewModel.logEvent(ClickAddFriendBtn(state = state))
+            friendsViewModel.copyInviteCode()
+        },
+        onDialogDismiss = {
+            friendsViewModel.logEvent(ClickCancelDialogCTA(touchpoint = "friend-list"))
+            friendsViewModel.dismissDialog()
+        },
+        onDialogConfirm = {
+            friendsViewModel.logEvent(ClickDeleteDialogCTA(touchpoint = "friend-list"))
+            friendsViewModel.deleteFriend()
+        },
+        onDeleteClick = {
+            friendsViewModel.logEvent(ClickDeleteFriendBtn)
+            friendsViewModel.chooseDeleteFriend(it)
+        },
+        onClickFriend = {
+            friendsViewModel.logEvent(ClickFriendListGroup)
+            friendsViewModel.getUserDetail(it)
+        },
+        onCheersFriend = {
+            friendsViewModel.logEvent(ClickCheerUpBtn)
+            friendsViewModel.postCheers(it)
+        },
         onDetailDismiss = {
+            friendsViewModel.logEvent(ClickCloseBtn(touchpoint = "dialog"))
             friendsViewModel.dismissDetailDialog()
             friendsViewModel.clearPendingInviteCode()
         },
         onAddFriend = { _ ->
+            friendsViewModel.logEvent(ClickAddFriendDialogCTA(touchpoint = "friend-list"))
             friendsState.pendingInviteCode?.let { friendsViewModel.postInviteFriend(it) }
         }
     )
