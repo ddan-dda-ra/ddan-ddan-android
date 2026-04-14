@@ -4,8 +4,8 @@ import com.ddanddan.ddanddan.util.AnalyticsEvent
 
 sealed class LevelEvent : AnalyticsEvent {
 
-    data class ClickCTA(val touchpoint: String) : LevelEvent() {
+    data object ClickCTA : LevelEvent() {
         override val title = "click_cta"
-        override val parameter = mapOf("touchpoint" to touchpoint)
+        override val parameter = emptyMap<String, Any>()
     }
 }
