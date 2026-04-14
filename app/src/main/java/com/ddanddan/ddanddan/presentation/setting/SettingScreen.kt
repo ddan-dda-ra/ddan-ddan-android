@@ -78,10 +78,11 @@ fun SettingRoute(
         navigatePopUp = viewModel::navigatePopUp,
         onSettingItemClick = { titleId ->
             val event = when (titleId) {
-                com.ddanddan.base.R.string.setting_title_text0 -> MyPageEvent.ClickPetBox(touchpoint = "mypage")
-                com.ddanddan.base.R.string.setting_title_text1 -> MyPageEvent.ClickChangeName(touchpoint = "mypage")
-                com.ddanddan.base.R.string.setting_title_text2 -> MyPageEvent.ClickChangeGoal(touchpoint = "mypage")
-                com.ddanddan.base.R.string.setting_title_text4 -> MyPageEvent.ClickTerms(touchpoint = "mypage")
+                R.string.setting_title_petbox -> MyPageEvent.ClickPetBox(touchpoint = "mypage")
+                R.string.setting_title_edit_nickname -> MyPageEvent.ClickChangeName(touchpoint = "mypage")
+                R.string.setting_title_edit_calories -> MyPageEvent.ClickChangeGoal(touchpoint = "mypage")
+                R.string.setting_title_terms -> MyPageEvent.ClickTerms(touchpoint = "mypage")
+                R.string.setting_title_cs -> MyPageEvent.ClickTerms(touchpoint = "cs")
                 else -> MyPageEvent.ClickDeleteAccount(touchpoint = "mypage")
             }
             viewModel.logEvent(event)
@@ -161,7 +162,7 @@ fun SettingScreen(
             SettingColumn(
                 settingItems = settingState.settingItemsBottom,
                 onClick = { titleId ->
-                    if (titleId == R.string.setting_title_text6) {
+                    if (titleId == R.string.setting_title_logout) {
                         onLogOutClick()
                     } else {
                         onSettingItemClick(titleId)

@@ -1,14 +1,15 @@
 <resources>
     <string name="setting_topbar_title">마이 페이지</string>
-    <string name="setting_title_text0">펫 보관함</string>
+    <string name="setting_title_petbox">펫 보관함</string>
     <string name="setting_description_text0">같이 운동할 펫을 설정할 수 있어요</string>
-    <string name="setting_title_text1">내 별명 수정</string>
-    <string name="setting_title_text2">목표 칼로리 수정</string>
-    <string name="setting_title_text3">푸시 알림</string>
-    <string name="setting_title_text4">약관 및 개인정보 처리 동의</string>
-    <string name="setting_title_text5">탈퇴하기</string>
-    <string name="setting_title_text6">로그아웃</string>
+    <string name="setting_title_edit_nickname">내 별명 수정</string>
+    <string name="setting_title_edit_calories">목표 칼로리 수정</string>
+    <string name="setting_title_push_notification">푸시 알림</string>
+    <string name="setting_title_terms">약관 및 개인정보 처리 동의</string>
+    <string name="setting_title_delete_account">탈퇴하기</string>
+    <string name="setting_title_logout">로그아웃</string>
     <string name="setting_title_push">전체 푸시 알림</string>
+    <string name="setting_title_cs">문의하기</string>
     <string name="setting_part_text1">내 정보 수정</string>
     <string name="setting_part_text2">알림 설정</string>
     <string name="setting_version_text">앱 버전</string>

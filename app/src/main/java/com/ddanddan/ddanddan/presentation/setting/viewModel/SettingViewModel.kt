@@ -129,6 +129,10 @@ class SettingViewModel @Inject constructor(
             com.ddanddan.base.R.string.setting_title_text1 -> SettingSideEffect.EditNickname
             com.ddanddan.base.R.string.setting_title_text2 -> SettingSideEffect.EditTargetCalories
             com.ddanddan.base.R.string.setting_title_text4 -> SettingSideEffect.AgreeToTerms
+            com.ddanddan.base.R.string.setting_title_petbox -> SettingSideEffect.NavigatePetCollection
+            com.ddanddan.base.R.string.setting_title_edit_nickname -> SettingSideEffect.EditNickname
+            com.ddanddan.base.R.string.setting_title_edit_calories -> SettingSideEffect.EditTargetCalories
+            com.ddanddan.base.R.string.setting_title_terms -> SettingSideEffect.AgreeToTerms
             else -> SettingSideEffect.DeleteAccount
         }
         postSideEffect(sideEffect)
