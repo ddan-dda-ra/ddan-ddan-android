@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.presentation
 
+import android.app.Activity
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ddanddan.ddanddan.di.AnalyticsEntryPoint
 import com.ddanddan.ddanddan.presentation.error.ErrorScreen
 import com.ddanddan.ddanddan.presentation.friends.AddedFriendScreen
 import com.ddanddan.ddanddan.presentation.friends.FriendsRoute
@@ -51,10 +53,15 @@ import com.ddanddan.ddanddan.presentation.signup.target.SetTargetRoute
 import com.ddanddan.ddanddan.presentation.signup.terms.onTermsScreen
 import com.ddanddan.ddanddan.presentation.splash.SplashRoute
 import com.ddanddan.ddanddan.util.VersionChecker
+import com.ddanddan.ddanddan.util.event.MainTabEvent
+import com.ddanddan.ddanddan.util.event.MyPageEvent
+import com.ddanddan.ddanddan.util.event.OnboardingEvent
+import com.ddanddan.ddanddan.util.event.SignUpEvent
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.enums.toPetTypeEnum
 import com.ddanddan.ui.compose.component.DDanOneButtonDialog
 import com.ddanddan.ui.ext.sharedViewModel
+import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun MainScreen(
@@ -75,6 +82,11 @@ fun MainScreen(
         DDanDDanRoute.FRIENDS.route,
         DDanDDanRoute.SETTING.route
     )
+
+    val analyticsManager = EntryPointAccessors.fromActivity(
+        LocalContext.current as Activity,
+        AnalyticsEntryPoint::class.java
+    ).analyticsManager()
 
     LaunchedEffect(inviteCode) {
         inviteCode?.let {
@@ -108,6 +120,14 @@ fun MainScreen(
                 DDanDDanBottomBar(
                     currentRoute = currentRoute,
                     onItemClick = { route ->
+                        val event = when (route) {
+                            DDanDDanRoute.HOME.route -> MainTabEvent.ClickHomeBottomNavi
+                            DDanDDanRoute.RANKING.route -> MainTabEvent.ClickRankingBottomNavi
+                            DDanDDanRoute.FRIENDS.route -> MainTabEvent.ClickFriendBottomNavi
+                            DDanDDanRoute.SETTING.route -> MainTabEvent.ClickMypageBottomNavi
+                            else -> null
+                        }
+                        event?.let { analyticsManager.logEvent(it) }
                         navController.navigate(route) {
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
