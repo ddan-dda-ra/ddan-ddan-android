@@ -19,16 +19,19 @@ class SplashViewModel @Inject constructor(
     override val container: Container<Unit, SplashSideEffect>
         = container(Unit)
 
-    private fun isAutoLoginEnabled() = intent {
+    fun isAutoLoginEnabled() = intent {
         val isEnabled = getAutoLoginUseCase()
         if (isEnabled) postSideEffect(SplashSideEffect.NavigateHome)
         else postSideEffect(SplashSideEffect.NavigateSignIn)
     }
 
-    fun isFirstAfterInstall() = intent {
+    fun isFirstAfterInstall(hasPermission: Boolean) = intent {
         val isFirst = getFirstInstallUseCase()
-        if (isFirst) postSideEffect(SplashSideEffect.NavigateOnboarding)
-        else isAutoLoginEnabled()
+        when {
+            isFirst -> postSideEffect(SplashSideEffect.NavigateOnboarding)
+            !hasPermission -> postSideEffect(SplashSideEffect.NavigateGrantNotPermission)
+            else -> isAutoLoginEnabled()
+        }
     }
 
     fun disconnectedNetwork() = intent {

@@ -1,9 +1,6 @@
 package com.ddanddan.ddanddan.presentation.splash
 
 import android.Manifest
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,10 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -60,7 +54,9 @@ fun SplashRoute(
 
     SplashScreen(
         snackBarHostState = snackBarHostState,
-        onCheckNavigate = splashViewModel::isFirstAfterInstall,
+        onCheckNavigate = { hasPermission ->
+            splashViewModel.isFirstAfterInstall(hasPermission)
+        },
         onNetworkDisconnected = splashViewModel::disconnectedNetwork,
         onGrantNotPermission = splashViewModel::grantNotPermission
     )
@@ -70,23 +66,11 @@ fun SplashRoute(
 @Composable
 fun SplashScreen(
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    onCheckNavigate: () -> Unit = { },
+    onCheckNavigate: (Boolean) -> Unit = { },
     onNetworkDisconnected: () -> Unit = { },
     onGrantNotPermission: () -> Unit = { }
 ) {
     val context = LocalContext.current
-
-    var hasPermission by remember { mutableStateOf(false) }
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            onCheckNavigate()
-        } else {
-            onGrantNotPermission()
-        }
-    }
 
     LaunchedEffect(Unit) {
         if (!NetworkManager.checkNetworkState(context)) {
@@ -94,16 +78,11 @@ fun SplashScreen(
             return@LaunchedEffect
         }
         delay(3000)
-
-        hasPermission = ContextCompat.checkSelfPermission(
+        val hasPermission = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.BODY_SENSORS
         ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        if (hasPermission) {
-            onCheckNavigate()
-        } else {
-            permissionLauncher.launch(Manifest.permission.BODY_SENSORS)
-        }
+        onCheckNavigate(hasPermission)
     }
 
     Scaffold(
