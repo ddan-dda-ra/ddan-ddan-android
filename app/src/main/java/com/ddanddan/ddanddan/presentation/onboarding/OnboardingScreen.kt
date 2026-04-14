@@ -36,10 +36,10 @@ import com.ddanddan.ui.compose.DDanDDanTypo
 
 @Composable
 fun OnboardingRoute(
-    onNavigateSignIn: () -> Unit
+    onNavigateGrantNotPermission: () -> Unit
 ) {
     OnboardingScreen(
-        onSkipOnboarding = onNavigateSignIn
+        onSkipOnboarding = onNavigateGrantNotPermission
     )
 }
 

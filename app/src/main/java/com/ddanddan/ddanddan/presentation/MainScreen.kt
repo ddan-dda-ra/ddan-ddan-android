@@ -357,9 +357,9 @@ fun MainScreen(
 
             composable(route = DDanDDanRoute.ONBOARDING.route) {
                 OnboardingRoute(
-                    onNavigateSignIn = {
+                    onNavigateGrantNotPermission = {
                         analyticsManager.logEvent(OnboardingEvent.ClickCTA(touchpoint = "onboarding"))
-                        navController.navigate(DDanDDanRoute.SIGN_IN.route) {
+                        navController.navigate(DDanDDanRoute.GRANT_NOT_PERMISSION.route) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
                     }
