@@ -31,6 +31,7 @@ import com.ddanddan.ddanddan.presentation.setting.target.EditTargetBtn
 import com.ddanddan.ddanddan.presentation.signup.SignUpSideEffect
 import com.ddanddan.ddanddan.presentation.signup.SignUpState
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
+import com.ddanddan.ddanddan.util.event.SignUpEvent
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -63,7 +64,10 @@ fun SetTargetRoute(
         signUpState = signUpState,
         onPlusBtnClick = signUpViewModel::incrementTarget,
         onMinusBtnClick = signUpViewModel::decrementTarget,
-        onNextBtnClick = onNavigatePetType
+        onNextBtnClick = {
+            signUpViewModel.logEvent(SignUpEvent.ClickCTA(touchpoint = "sign-up-goal"))
+            onNavigatePetType()
+        }
     )
 }
 

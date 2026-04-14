@@ -393,6 +393,7 @@ fun MainScreen(
                 onTermsScreen(
                     navController = navController,
                     onAgreeTerms = {
+                        analyticsManager.logEvent(SignUpEvent.ClickStartCTA(touchpoint = "sign-up-consent"))
                         navController.navigate(DDanDDanRoute.SIGN_UP_NICKNAME.route)
                     }
                 )
@@ -451,6 +452,7 @@ fun MainScreen(
             composable(DDanDDanRoute.SIGN_UP_DONE.route) {
                 onSignUpDoneScreen(
                     onNavigateHome = {
+                        analyticsManager.logEvent(SignUpEvent.ClickCTA(touchpoint = "sign-up-start"))
                         navController.navigate(DDanDDanRoute.HOME.route) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }

@@ -27,6 +27,7 @@ import com.ddanddan.base.R
 import com.ddanddan.ddanddan.presentation.signup.SignUpSideEffect
 import com.ddanddan.ddanddan.presentation.signup.SignUpState
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
+import com.ddanddan.ddanddan.util.event.SignUpEvent
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -57,7 +58,10 @@ fun SetNameRoute(
     SetNameScreen(
         signUpState = signUpState,
         onValueChange = signUpViewModel::setNickname,
-        onNextBtnClick = onNavigateTargetCalories
+        onNextBtnClick = {
+            signUpViewModel.logEvent(SignUpEvent.ClickNextCTA(touchpoint = "sign-up-nickname"))
+            onNavigateTargetCalories()
+        }
     )
 }
 

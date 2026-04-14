@@ -1,6 +1,8 @@
 package com.ddanddan.ddanddan.presentation.signup
 
 import androidx.lifecycle.ViewModel
+import com.ddanddan.ddanddan.util.AnalyticsEvent
+import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.usecase.PostMainPetUseCase
 import com.ddanddan.domain.usecase.PostTypePetUseCase
@@ -17,11 +19,16 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val putUserInfoUseCase: PutUserInfoUseCase,
     private val postTypePetUseCase: PostTypePetUseCase,
-    private val postMainPetUseCase: PostMainPetUseCase
-) : ViewModel(), ContainerHost<SignUpState, SignUpSideEffect> {
+    private val postMainPetUseCase: PostMainPetUseCase,
+    private val analyticsManager: AnalyticsManager,
+    ) : ViewModel(), ContainerHost<SignUpState, SignUpSideEffect> {
 
     override val container =
         container<SignUpState, SignUpSideEffect>(SignUpState())
+
+    fun logEvent(event: AnalyticsEvent) {
+        analyticsManager.logEvent(event)
+    }
 
     private fun isKoreanOnly(input: String): Boolean {
         val regex = "^[가-힣]+$"  // 한글 음절 블록만 허용하는 정규 표현식
