@@ -16,8 +16,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +28,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -46,13 +49,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -263,7 +277,8 @@ fun HomeRoute(
         onGrowClick = {
             homeViewModel.logEvent(HomeEvent.ClickBtn(path = "select-egg"))
             homeViewModel.postRandomPet()
-        }
+        },
+        onGuidelineDismiss = homeViewModel::dismissGuideline
     )
 }
 
@@ -279,9 +294,16 @@ fun HomeScreen(
     onCoachMarkDismiss: () -> Unit = {},
     onEggCounterBadgeClick: () -> Unit = {},
     onEggAnimationComplete: () -> Unit = {},
-    onGrowClick: () -> Unit = {}
+    onGrowClick: () -> Unit = {},
+    onGuidelineDismiss: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
+
+        var eatButtonPosition by remember { mutableStateOf(Offset.Zero) }
+        var eatButtonSize by remember { mutableStateOf(IntSize.Zero) }
+        var playButtonPosition by remember { mutableStateOf(Offset.Zero) }
+        var playButtonSize by remember { mutableStateOf(IntSize.Zero) }
+
         Scaffold(
             containerColor = DDanDDanColorPalette.current.color_background,
             snackbarHost = {
@@ -292,7 +314,15 @@ fun HomeScreen(
                     foodCount = homeState.user?.foodQuantity ?: 0,
                     toyCount = homeState.user?.toyQuantity ?: 0,
                     onEatClick = onEatClick,
-                    onPlayClick = onPlayClick
+                    onPlayClick = onPlayClick,
+                    onEatButtonPositioned = { position, size ->
+                        eatButtonPosition = position
+                        eatButtonSize = size
+                    },
+                    onPlayButtonPositioned = { position, size ->
+                        playButtonPosition = position
+                        playButtonSize = size
+                    }
                 )
             }) { paddingValues ->
             Box {
@@ -367,6 +397,19 @@ fun HomeScreen(
                 newPet = homeState.newPet,
                 onAnimationComplete = onEggAnimationComplete,
                 onGrowClick = onGrowClick
+            )
+        }
+
+        if (homeState.isShowGuideline) {
+            var isEatStep by remember { mutableStateOf(true) }
+            HomeGuidelineOverlay(
+                isEatStep = isEatStep,
+                eatButtonPosition = eatButtonPosition,
+                eatButtonSize = eatButtonSize,
+                playButtonPosition = playButtonPosition,
+                playButtonSize = playButtonSize,
+                onNext = { isEatStep = false },
+                onDismiss = onGuidelineDismiss
             )
         }
     }
@@ -469,7 +512,9 @@ fun HomeBottomItem(
     foodCount: Int = 0,
     toyCount: Int = 0,
     onEatClick: () -> Unit = {},
-    onPlayClick: () -> Unit = {}
+    onPlayClick: () -> Unit = {},
+    onEatButtonPositioned: (Offset, IntSize) -> Unit = { _, _ -> },
+    onPlayButtonPositioned: (Offset, IntSize) -> Unit = { _, _ -> }
 ) {
     Row(
         modifier = Modifier
@@ -479,7 +524,14 @@ fun HomeBottomItem(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         DDanActionButton(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .onGloballyPositioned { coordinates ->
+                    onEatButtonPositioned(
+                        coordinates.localToRoot(Offset.Zero),
+                        coordinates.size
+                    )
+                },
             icon = R.drawable.ic_action_apple,
             text = "먹이주기",
             count = foodCount,
@@ -487,7 +539,14 @@ fun HomeBottomItem(
         )
         Spacer(modifier = Modifier.width(12.dp))
         DDanActionButton(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .onGloballyPositioned { coordinates ->
+                    onPlayButtonPositioned(
+                        coordinates.localToRoot(Offset.Zero),
+                        coordinates.size
+                    )
+                },
             icon = R.drawable.ic_action_star,
             text = "놀아주기",
             count = toyCount,
@@ -744,7 +803,6 @@ fun HomeGuidelineOverlay(
             )
         }
 
-        // 화살표 - 버튼 중앙, 18px 위
         Image(
             painter = painterResource(
                 id = if (isEatStep) R.drawable.ic_arrow_guideline_l else R.drawable.ic_arrow_guideline_r
@@ -758,7 +816,6 @@ fun HomeGuidelineOverlay(
                 )
         )
 
-        // 텍스트 + 버튼 - 화면 정중앙
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
