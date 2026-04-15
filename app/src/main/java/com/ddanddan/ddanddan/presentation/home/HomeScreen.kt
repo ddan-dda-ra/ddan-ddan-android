@@ -294,8 +294,9 @@ fun HomeRoute(
                 data = Uri.fromParts("package", context.packageName, null)
             }
             context.startActivity(intent)
-        }
-    )
+        },
+        onTogglePermissionTooltip = homeViewModel::togglePermissionTooltip,
+        )
 }
 
 @Composable
@@ -314,13 +315,17 @@ fun HomeScreen(
     onGuidelineDismiss: () -> Unit = {},
     onPermissionDialogDismiss: () -> Unit = {},
     onPermissionDialogConfirm: () -> Unit = {},
-) {
+    onTogglePermissionTooltip: () -> Unit = {},
+    ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
         var eatButtonPosition by remember { mutableStateOf(Offset.Zero) }
         var eatButtonSize by remember { mutableStateOf(IntSize.Zero) }
         var playButtonPosition by remember { mutableStateOf(Offset.Zero) }
         var playButtonSize by remember { mutableStateOf(IntSize.Zero) }
+
+        var iconPosition by remember { mutableStateOf(Offset.Zero) }
+        var iconSize by remember { mutableStateOf(IntSize.Zero) }
 
         Scaffold(
             containerColor = DDanDDanColorPalette.current.color_background,
@@ -378,7 +383,13 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.padding(top = 32.dp))
                     HomeCalorieItem(
                         purposeCalorie = homeState.user?.purposeCalorie ?: 0,
-                        currentCalories = homeState.currentCalories.toInt().toString()
+                        currentCalories = homeState.currentCalories.toInt().toString(),
+                        hasPermission = homeState.hasPermission,
+                        onIconClick = onTogglePermissionTooltip,
+                        onIconPositioned = { offset, size ->
+                            iconPosition = offset
+                            iconSize = size
+                        }
                     )
                     Spacer(modifier = Modifier.padding(top = 14.dp))
                     PetContent(
@@ -418,6 +429,14 @@ fun HomeScreen(
             )
         }
 
+        if (homeState.isShowPermissionTooltip) {
+            HomePermissionTooltip(
+                iconPosition = iconPosition,
+                iconSize = iconSize,
+                onDismiss = onTogglePermissionTooltip
+            )
+        }
+
         if (homeState.isShowGuideline) {
             var isEatStep by remember { mutableStateOf(true) }
             HomeGuidelineOverlay(
@@ -447,7 +466,6 @@ fun HomeScreen(
 @Composable
 fun HomeCalorieItem(
     purposeCalorie: Int = 500,
-    currentCalories: String
     currentCalories: String,
     hasPermission: Boolean = true,
     onIconClick: () -> Unit = {},
