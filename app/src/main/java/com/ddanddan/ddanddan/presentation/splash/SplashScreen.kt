@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.base.R
 import com.ddanddan.ddanddan.util.NetworkManager
@@ -37,7 +36,6 @@ fun SplashRoute(
     splashViewModel: SplashViewModel = hiltViewModel(),
     onNavigateHome: () -> Unit,
     onNavigateSignIn: () -> Unit,
-    onNavigateGrantNotPermission: () -> Unit,
     onNavigateOnboarding: () -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
@@ -47,18 +45,14 @@ fun SplashRoute(
             is SplashSideEffect.NavigateSignIn -> onNavigateSignIn()
             is SplashSideEffect.NavigateHome -> onNavigateHome()
             is SplashSideEffect.NavigateOnboarding -> onNavigateOnboarding()
-            is SplashSideEffect.NavigateGrantNotPermission -> onNavigateGrantNotPermission()
             is SplashSideEffect.NetworkError -> snackBarHostState.showSnackbar("인터넷 연결이 필요합니다.")
         }
     }
 
     SplashScreen(
         snackBarHostState = snackBarHostState,
-        onCheckNavigate = { hasPermission ->
-            splashViewModel.isFirstAfterInstall(hasPermission)
-        },
+        onCheckNavigate = splashViewModel::isFirstAfterInstall,
         onNetworkDisconnected = splashViewModel::disconnectedNetwork,
-        onGrantNotPermission = splashViewModel::grantNotPermission
     )
 }
 
@@ -66,9 +60,8 @@ fun SplashRoute(
 @Composable
 fun SplashScreen(
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    onCheckNavigate: (Boolean) -> Unit = { },
-    onNetworkDisconnected: () -> Unit = { },
-    onGrantNotPermission: () -> Unit = { }
+    onCheckNavigate: () -> Unit = { },
+    onNetworkDisconnected: () -> Unit = { }
 ) {
     val context = LocalContext.current
 
@@ -78,11 +71,7 @@ fun SplashScreen(
             return@LaunchedEffect
         }
         delay(3000)
-        val hasPermission = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.BODY_SENSORS
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        onCheckNavigate(hasPermission)
+        onCheckNavigate()
     }
 
     Scaffold(
