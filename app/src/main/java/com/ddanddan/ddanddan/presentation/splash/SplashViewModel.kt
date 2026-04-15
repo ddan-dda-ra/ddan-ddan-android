@@ -25,20 +25,13 @@ class SplashViewModel @Inject constructor(
         else postSideEffect(SplashSideEffect.NavigateSignIn)
     }
 
-    fun isFirstAfterInstall(hasPermission: Boolean) = intent {
+    fun isFirstAfterInstall() = intent {
         val isFirst = getFirstInstallUseCase()
-        when {
-            isFirst -> postSideEffect(SplashSideEffect.NavigateOnboarding)
-            !hasPermission -> postSideEffect(SplashSideEffect.NavigateGrantNotPermission)
-            else -> isAutoLoginEnabled()
-        }
+        if (isFirst) postSideEffect(SplashSideEffect.NavigateOnboarding)
+        else isAutoLoginEnabled()
     }
 
     fun disconnectedNetwork() = intent {
         postSideEffect(SplashSideEffect.NetworkError)
-    }
-
-    fun grantNotPermission() = intent {
-        postSideEffect(SplashSideEffect.NavigateGrantNotPermission)
     }
 }

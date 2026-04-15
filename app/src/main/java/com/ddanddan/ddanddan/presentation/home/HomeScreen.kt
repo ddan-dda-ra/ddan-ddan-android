@@ -4,10 +4,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.provider.Settings
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -55,6 +57,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -70,6 +73,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -97,6 +101,7 @@ import com.ddanddan.ui.compose.component.DDanActionButton
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanLoadingDialog
 import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.compose.component.DDanTwoButtonDialog
 import com.ddanddan.ui.compose.component.showSnackbar
 import com.ddanddan.ui.compose.theme.DDanDDanTheme
 import com.ddanddan.ui.enums.TooltipType
@@ -113,7 +118,6 @@ fun HomeRoute(
     needRefresh: Boolean,
     onNavigateLevelUp: (level: Int, petType: String) -> Unit,
     onNavigateError: (Int?) -> Unit = {},
-    onNavigateGrantNotPermission: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -123,8 +127,10 @@ fun HomeRoute(
             Manifest.permission.BODY_SENSORS
         ) == PackageManager.PERMISSION_GRANTED
 
+        homeViewModel.updatePermission(hasPermission)
+
         if (!hasPermission) {
-            onNavigateGrantNotPermission()
+            homeViewModel.showPermissionDialog()
             return@LaunchedEffect
         }
     }
@@ -141,8 +147,10 @@ fun HomeRoute(
 
                 if (!hasPermission) {
                     context.stopService(Intent(context, PhoneDataLayerService::class.java))
-                    onNavigateGrantNotPermission()
+                    homeViewModel.updatePermission(false)
+                    homeViewModel.showPermissionDialog()
                 } else {
+                    homeViewModel.updatePermission(true)
                     context.startService(Intent(context, PhoneDataLayerService::class.java))
                 }
             }
@@ -278,8 +286,17 @@ fun HomeRoute(
             homeViewModel.logEvent(HomeEvent.ClickBtn(path = "select-egg"))
             homeViewModel.postRandomPet()
         },
-        onGuidelineDismiss = homeViewModel::dismissGuideline
-    )
+        onGuidelineDismiss = homeViewModel::dismissGuideline,
+        onPermissionDialogDismiss = homeViewModel::dismissPermissionDialog,
+        onPermissionDialogConfirm = {
+            homeViewModel.dismissPermissionDialog()
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", context.packageName, null)
+            }
+            context.startActivity(intent)
+        },
+        onTogglePermissionTooltip = homeViewModel::togglePermissionTooltip,
+        )
 }
 
 @Composable
@@ -296,13 +313,19 @@ fun HomeScreen(
     onEggAnimationComplete: () -> Unit = {},
     onGrowClick: () -> Unit = {},
     onGuidelineDismiss: () -> Unit = {},
-) {
+    onPermissionDialogDismiss: () -> Unit = {},
+    onPermissionDialogConfirm: () -> Unit = {},
+    onTogglePermissionTooltip: () -> Unit = {},
+    ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
         var eatButtonPosition by remember { mutableStateOf(Offset.Zero) }
         var eatButtonSize by remember { mutableStateOf(IntSize.Zero) }
         var playButtonPosition by remember { mutableStateOf(Offset.Zero) }
         var playButtonSize by remember { mutableStateOf(IntSize.Zero) }
+
+        var iconPosition by remember { mutableStateOf(Offset.Zero) }
+        var iconSize by remember { mutableStateOf(IntSize.Zero) }
 
         Scaffold(
             containerColor = DDanDDanColorPalette.current.color_background,
@@ -360,7 +383,13 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.padding(top = 32.dp))
                     HomeCalorieItem(
                         purposeCalorie = homeState.user?.purposeCalorie ?: 0,
-                        currentCalories = homeState.currentCalories.toInt().toString()
+                        currentCalories = homeState.currentCalories.toInt().toString(),
+                        hasPermission = homeState.hasPermission,
+                        onIconClick = onTogglePermissionTooltip,
+                        onIconPositioned = { offset, size ->
+                            iconPosition = offset
+                            iconSize = size
+                        }
                     )
                     Spacer(modifier = Modifier.padding(top = 14.dp))
                     PetContent(
@@ -400,6 +429,14 @@ fun HomeScreen(
             )
         }
 
+        if (homeState.isShowPermissionTooltip) {
+            HomePermissionTooltip(
+                iconPosition = iconPosition,
+                iconSize = iconSize,
+                onDismiss = onTogglePermissionTooltip
+            )
+        }
+
         if (homeState.isShowGuideline) {
             var isEatStep by remember { mutableStateOf(true) }
             HomeGuidelineOverlay(
@@ -412,13 +449,27 @@ fun HomeScreen(
                 onDismiss = onGuidelineDismiss
             )
         }
+
+        if (homeState.isShowPermissionDialog) {
+            DDanTwoButtonDialog(
+                title = "건강 데이터 연결이 끊겼어요",
+                content = "칼로리 측정을 위해 건강 데이터 권한을\n허용해 주세요.",
+                cancelText = "취소",
+                confirmText = "허용하기",
+                onClickCancel = onPermissionDialogDismiss,
+                onClickConfirm = onPermissionDialogConfirm
+            )
+        }
     }
 }
 
 @Composable
 fun HomeCalorieItem(
     purposeCalorie: Int = 500,
-    currentCalories: String
+    currentCalories: String,
+    hasPermission: Boolean = true,
+    onIconClick: () -> Unit = {},
+    onIconPositioned: (Offset, IntSize) -> Unit = { _, _ -> }
 ) {
     Row(
         modifier = Modifier
@@ -457,6 +508,23 @@ fun HomeCalorieItem(
             fontSize = 22.sp,
             color = DDanDDanColorPalette.current.color_text_headline_primary
         )
+        if (!hasPermission) {
+            Spacer(modifier = Modifier.padding(start = 4.dp))
+            Column {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_system_fill),
+                    colorFilter = ColorFilter.tint(DDanDDanColorPalette.current.color_text_headline_primary),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            onIconPositioned(coordinates.localToRoot(Offset.Zero), coordinates.size)
+                        }
+                        .size(24.dp)
+                        .noRippleClickable { onIconClick() }
+                )
+                Spacer(modifier = Modifier.padding(bottom = (7.5).dp))
+            }
+        }
     }
 }
 
@@ -849,6 +917,57 @@ fun HomeGuidelineOverlay(
                     color = DDanDDanColorPalette.current.color_text_button_primary_default
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun HomePermissionTooltip(
+    iconPosition: Offset,
+    iconSize: IntSize,
+    onDismiss: () -> Unit
+) {
+    var tooltipWidth by remember { mutableStateOf(0) }
+
+    ConstraintLayout(
+        modifier = Modifier
+            .offset(
+                x = with(LocalDensity.current) { (iconPosition.x + iconSize.width / 2).toDp() - (tooltipWidth / 2).toDp() },  // 툴팁 너비 절반만큼 왼쪽으로
+                y = with(LocalDensity.current) { (iconPosition.y + iconSize.height).toDp() }
+            )
+            .onGloballyPositioned { tooltipWidth = it.size.width }
+    ) {
+        val (polygon, msg) = createRefs()
+        Image(
+            painter = painterResource(R.drawable.ic_tooltip_polygon),
+            colorFilter = ColorFilter.tint(DDanDDanColorPalette.current.elevation_color_elevation_level02),
+            modifier = Modifier
+                .size(16.dp)
+                .constrainAs(polygon) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            contentDescription = null
+        )
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
+                .constrainAs(msg) {
+                    top.linkTo(polygon.top, margin = 8.dp)
+                    start.linkTo(parent.start)
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                }
+                .noRippleClickable { onDismiss() }
+        ) {
+            Text(
+                text = "건강 데이터를 허용하면\n칼로리를 측정할 수 있어요",
+                style = DDanDDanTypo.current.SubTitle1,
+                color = DDanDDanColorPalette.current.color_text_headline_secondary,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
         }
     }
 }

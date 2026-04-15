@@ -172,11 +172,6 @@ fun MainScreen(
                     onNavigateError = { errorCode ->
                         navController.navigate(DDanDDanRoute.ERROR.route + "?errorCode=${errorCode}")
                     },
-                    onNavigateGrantNotPermission = {
-                        navController.navigate(DDanDDanRoute.GRANT_NOT_PERMISSION.route) {
-                            popUpTo(navController.graph.id) { inclusive = true }
-                        }
-                    }
                 )
             }
             composable(route = DDanDDanRoute.PET_COLLECTION.route) {
@@ -396,11 +391,6 @@ fun MainScreen(
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
                     },
-                    onNavigateGrantNotPermission = {
-                        navController.navigate(DDanDDanRoute.GRANT_NOT_PERMISSION.route) {
-                            popUpTo(navController.graph.id) { inclusive = true }
-                        }
-                    }
                 )
             }
 
@@ -483,11 +473,6 @@ fun MainScreen(
                 GrantedNotRoute(
                     onNavigateHome = {
                         navController.navigate(DDanDDanRoute.HOME.route) {
-                            popUpTo(navController.graph.id) { inclusive = true }
-                        }
-                    },
-                    onNavigateOnboarding = {
-                        navController.navigate(DDanDDanRoute.ONBOARDING.route) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
                     },

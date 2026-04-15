@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -56,13 +57,11 @@ fun GrantedNotRoute(
     viewModel: SplashViewModel = hiltViewModel(),
     onNavigateHome: () -> Unit,
     onNavigateSignIn: () -> Unit,
-    onNavigateOnboarding: () -> Unit
 ) {
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is SplashSideEffect.NavigateSignIn -> onNavigateSignIn()
             is SplashSideEffect.NavigateHome -> onNavigateHome()
-            is SplashSideEffect.NavigateOnboarding -> onNavigateOnboarding()
             else -> {}
         }
     }
@@ -72,19 +71,15 @@ fun GrantedNotRoute(
         }
     )
 }
+
 @Composable
 fun GrantedNotScreen(
     onPermissionGranted: () -> Unit,
-    onDisagreeClick: () -> Unit = {},
-    onAgreeClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = context as? ComponentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var isShowWarning by remember { mutableStateOf(false) }
-
-    // 권한 요청 런처
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -93,12 +88,10 @@ fun GrantedNotScreen(
         }
     }
 
-    // 권한 요청 함수
     val requestPermission = {
         permissionLauncher.launch(Manifest.permission.BODY_SENSORS)
     }
 
-    // 앱이 포그라운드로 돌아올 때마다 권한 상태 확인
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
@@ -119,7 +112,6 @@ fun GrantedNotScreen(
         }
     }
 
-    // 설정 화면으로 이동하는 함수
     val openAppSettings = {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
             data = Uri.fromParts("package", context.packageName, null)
@@ -127,40 +119,29 @@ fun GrantedNotScreen(
         context.startActivity(intent)
     }
 
-    // 버튼 클릭 시 호출되는 함수
     val onButtonClick = {
         activity?.let {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(it, Manifest.permission.BODY_SENSORS)) {
-                // 아직 시스템 팝업을 띄울 수 있으면 팝업 표시
                 requestPermission()
             } else {
-                // 더 이상 시스템 팝업을 띄울 수 없으면 설정으로 이동
                 openAppSettings()
             }
         } ?: run {
-            // activity가 null이면 안전하게 설정으로 이동
             openAppSettings()
         }
     }
 
-    ConstraintLayout(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(DDanDDanColorPalette.current.color_background)
-            .padding(horizontal = 24.dp)
+            .padding(horizontal = 24.dp),
+        contentAlignment = Alignment.Center
     ) {
-        val (card, warning) = createRefs()
-
         Column(
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .constrainAs(card) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
                 .clip(RoundedCornerShape(8.dp))
                 .background(DDanDDanColorPalette.current.elevation_color_elevation_level01)
                 .padding(top = 40.dp, start = 20.dp, end = 20.dp, bottom = 20.dp),
@@ -184,12 +165,8 @@ fun GrantedNotScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = {
-                        onDisagreeClick()
-                        isShowWarning = true
-                    },
-                    modifier = Modifier
-                        .weight(1f),
+                    onClick = { onPermissionGranted() },
+                    modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(vertical = 17.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = DDanDDanColorPalette.current.color_button_alternative,
@@ -204,12 +181,8 @@ fun GrantedNotScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = {
-                        onAgreeClick()
-                        onButtonClick()
-                    },
-                    modifier = Modifier
-                        .weight(1f),
+                    onClick = { onButtonClick() },
+                    modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(vertical = 17.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = DDanDDanColorPalette.current.color_button_active,
@@ -221,20 +194,6 @@ fun GrantedNotScreen(
                     Text(text = "허용", style = DDanDDanTypo.current.HeadLine6, color = DDanDDanColorPalette.current.color_text_button_primary_default)
                 }
             }
-        }
-
-        if (isShowWarning) {
-            Text(
-                modifier = Modifier.constrainAs(warning) {
-                    top.linkTo(card.bottom, margin = 24.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-                text = "이 앱은 건강 데이터를 수집하여 칼로리 소모량을 계산하기 위해 생체 신호 센서 권한이 필요합니다. 권한을 허용하지 않으면 앱의 핵심 기능을 사용하실 수 없습니다.",
-                style = DDanDDanTypo.current.Body2,
-                color = DDanDDanColorPalette.current.color_text_body_teritary,
-                textAlign = TextAlign.Center
-            )
         }
     }
 }
