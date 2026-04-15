@@ -712,3 +712,86 @@ fun EggGachaResultUI(
         }
     }
 }
+
+@Composable
+fun HomeGuidelineOverlay(
+    isEatStep: Boolean,
+    eatButtonPosition: Offset,
+    eatButtonSize: IntSize,
+    playButtonPosition: Offset,
+    playButtonSize: IntSize,
+    onNext: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    val currentPosition = if (isEatStep) eatButtonPosition else playButtonPosition
+    val currentSize = if (isEatStep) eatButtonSize else playButtonSize
+    var arrowHeight by remember { mutableStateOf(0) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+            .pointerInput(Unit) { detectTapGestures { } }
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawRect(color = Color.Black.copy(alpha = 0.7f))
+            drawRoundRect(
+                color = Color.Transparent,
+                topLeft = Offset(currentPosition.x, currentPosition.y),
+                size = Size(currentSize.width.toFloat(), currentSize.height.toFloat()),
+                cornerRadius = CornerRadius(8.dp.toPx()),
+                blendMode = BlendMode.Clear
+            )
+        }
+
+        // 화살표 - 버튼 중앙, 18px 위
+        Image(
+            painter = painterResource(
+                id = if (isEatStep) R.drawable.ic_arrow_guideline_l else R.drawable.ic_arrow_guideline_r
+            ),
+            contentDescription = null,
+            modifier = Modifier
+                .onGloballyPositioned { arrowHeight = it.size.height }
+                .offset(
+                    x = with(LocalDensity.current) { (currentPosition.x + currentSize.width / 2).toDp() },
+                    y = with(LocalDensity.current) { (currentPosition.y).toDp() - 18.dp - arrowHeight.toDp() }
+                )
+        )
+
+        // 텍스트 + 버튼 - 화면 정중앙
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = if (isEatStep) "100kcal를 소모할 때 마다\n먹이 1개를 받아요" else "3일동안 목표를 달성하면\n펫을 놀아줄 수 있어요",
+                style = DDanDDanTypo.current.NeoDgm24,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = if (isEatStep) "'먹이주기' 버튼을 누르면 먹이를 줄 수 있어요" else "'놀아주기' 버튼을 누르면 놀아줄 수 있어요",
+                style = DDanDDanTypo.current.Body1,
+                color = Color.White.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(28.dp))
+            Box(
+                modifier = Modifier
+                    .size(width = 100.dp, height = 56.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(DDanDDanColorPalette.current.color_button_active)
+                    .noRippleClickable { if (isEatStep) onNext() else onDismiss() },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = if (isEatStep) "다음" else "시작하기",
+                    style = DDanDDanTypo.current.HeadLine6,
+                    color = DDanDDanColorPalette.current.color_text_button_primary_default
+                )
+            }
+        }
+    }
+}
