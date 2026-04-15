@@ -14,6 +14,7 @@ import com.ddanddan.domain.usecase.PostFoodPetUseCase
 import com.ddanddan.domain.usecase.PostMainPetUseCase
 import com.ddanddan.domain.usecase.PostPlayPetUseCase
 import com.ddanddan.domain.usecase.PostRandomPetUseCase
+import com.ddanddan.domain.usecase.SetNotificationAskedUseCase
 import com.ddanddan.ui.enums.TooltipType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -35,6 +36,7 @@ class HomeViewModel @Inject constructor(
     private val postRandomPetUseCase: PostRandomPetUseCase,
     private val postMainPetUseCase: PostMainPetUseCase,
     private val getNotificationAskedUseCase: GetNotificationAskedUseCase,
+    private val setNotificationAskedUseCase: SetNotificationAskedUseCase,
     private val userRepository: UserRepository,
     private val ddanddanDataStore: ddanddanDataStore,
     private val widgetManager: WidgetManager,
@@ -71,7 +73,13 @@ class HomeViewModel @Inject constructor(
 
     private fun getNotificationAsked() = intent {
         val isAsked = getNotificationAskedUseCase()
-        if (!isAsked) postSideEffect(HomeSideEffect.AskNotification)
+        if (!isAsked) reduce { state.copy(isShowGuideline = true) }
+    }
+
+    fun dismissGuideline() = intent {
+        setNotificationAskedUseCase()
+        reduce { state.copy(isShowGuideline = false )}
+        postSideEffect(HomeSideEffect.AskNotification)
     }
 
     private fun getUserInfo() = intent {
