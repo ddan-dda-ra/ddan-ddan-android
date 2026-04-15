@@ -281,6 +281,14 @@ class HomeViewModel @Inject constructor(
         reduce { state.copy(isShowPermissionDialog = false) }
     }
 
+    fun togglePermissionTooltip() = intent {
+        reduce { state.copy(isShowPermissionTooltip = !state.isShowPermissionTooltip) }
+    }
+
+    fun updatePermission(hasPermission: Boolean) = intent {
+        reduce { state.copy(hasPermission = hasPermission) }
+    }
+
     /**
      * 칼로리 변화 관찰
      */

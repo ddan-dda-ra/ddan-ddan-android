@@ -24,7 +24,9 @@ data class HomeState(
     // 알 뽑기 애니메이션
     val isShowingEggAnimation: Boolean = false,
     val isShowGuideline: Boolean = false,
-    val isShowPermissionDialog: Boolean = false
+    val isShowPermissionDialog: Boolean = false,
+    val hasPermission: Boolean = true,
+    val isShowPermissionTooltip: Boolean = false
 )
 
 sealed class HomeSideEffect {
