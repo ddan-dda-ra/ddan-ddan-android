@@ -127,6 +127,8 @@ fun HomeRoute(
             Manifest.permission.BODY_SENSORS
         ) == PackageManager.PERMISSION_GRANTED
 
+        homeViewModel.updatePermission(hasPermission)
+
         if (!hasPermission) {
             homeViewModel.showPermissionDialog()
             return@LaunchedEffect
@@ -145,8 +147,10 @@ fun HomeRoute(
 
                 if (!hasPermission) {
                     context.stopService(Intent(context, PhoneDataLayerService::class.java))
+                    homeViewModel.updatePermission(false)
                     homeViewModel.showPermissionDialog()
                 } else {
+                    homeViewModel.updatePermission(true)
                     context.startService(Intent(context, PhoneDataLayerService::class.java))
                 }
             }
@@ -444,6 +448,10 @@ fun HomeScreen(
 fun HomeCalorieItem(
     purposeCalorie: Int = 500,
     currentCalories: String
+    currentCalories: String,
+    hasPermission: Boolean = true,
+    onIconClick: () -> Unit = {},
+    onIconPositioned: (Offset, IntSize) -> Unit = { _, _ -> }
 ) {
     Row(
         modifier = Modifier
@@ -482,6 +490,23 @@ fun HomeCalorieItem(
             fontSize = 22.sp,
             color = DDanDDanColorPalette.current.color_text_headline_primary
         )
+        if (!hasPermission) {
+            Spacer(modifier = Modifier.padding(start = 4.dp))
+            Column {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_system_fill),
+                    colorFilter = ColorFilter.tint(DDanDDanColorPalette.current.color_text_headline_primary),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            onIconPositioned(coordinates.localToRoot(Offset.Zero), coordinates.size)
+                        }
+                        .size(24.dp)
+                        .noRippleClickable { onIconClick() }
+                )
+                Spacer(modifier = Modifier.padding(bottom = (7.5).dp))
+            }
+        }
     }
 }
 
