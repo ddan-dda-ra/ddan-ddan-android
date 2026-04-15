@@ -21,11 +21,10 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile =
-                file("../app/ddanddan_debug.keystore")
-            storePassword = gradleLocalProperties(rootDir).getProperty("storePassword")
-            keyAlias = gradleLocalProperties(rootDir).getProperty("keyAlias")
-            keyPassword = gradleLocalProperties(rootDir).getProperty("keyPassword")
+            storeFile = file("../app/ddanddan_debug.keystore")
+            storePassword = gradleLocalProperties(rootDir, providers).getProperty("storePassword")
+            keyAlias = gradleLocalProperties(rootDir, providers).getProperty("keyAlias")
+            keyPassword = gradleLocalProperties(rootDir, providers).getProperty("keyPassword")
         }
     }
 
@@ -44,13 +43,11 @@ android {
     productFlavors {
         create("dev") {
             dimension = "environment"
-
-            buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("dev.base.url"))
+            buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir, providers).getProperty("dev.base.url"))
         }
         create("prod") {
             dimension = "environment"
-
-            buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("base.url"))
+            buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir, providers).getProperty("base.url"))
         }
     }
 

@@ -18,11 +18,6 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
-/**
- * Android Application 모듈에 적용할 Plugin
- *
- * plugin id : [ddanddan.android.application]
- */
 class AndroidApplicationPlugin : Plugin<Project> {
     override fun apply(target: Project) =
         with(target) {
@@ -42,25 +37,32 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 configureAndroidCommonPlugin()
                 configureDefault()
 
-                packagingOptions {
-                    exclude("META-INF/DEPENDENCIES")
-                    exclude("migrateToAndroidx/migration.xml")
+                packaging {
+                    resources.excludes.add("META-INF/DEPENDENCIES")
+                    resources.excludes.add("migrateToAndroidx/migration.xml")
+                    jniLibs {
+                        useLegacyPackaging = true
+                    }
                 }
 
                 defaultConfig {
-                    buildConfigField("String", "KAKAO_APP_KEY", gradleLocalProperties(rootDir).getProperty("kakao.key"))
-                    buildConfigField("String", "AES_KEY", gradleLocalProperties(rootDir).getProperty("AES_KEY"),)
-                    manifestPlaceholders["KAKAO_APP_KEY"] = gradleLocalProperties(rootDir).getProperty("kakaoAppKey")
-
+                    buildConfigField("String", "KAKAO_APP_KEY", gradleLocalProperties(rootDir, providers).getProperty("kakao.key"))
+                    buildConfigField("String", "AES_KEY", gradleLocalProperties(rootDir, providers).getProperty("AES_KEY"))
+                    manifestPlaceholders["KAKAO_APP_KEY"] = gradleLocalProperties(rootDir, providers).getProperty("kakaoAppKey")
                 }
 
                 signingConfigs {
                     getByName("debug") {
-                        storeFile =
-                            file("ddanddan_debug.keystore")
-                        storePassword = gradleLocalProperties(rootDir).getProperty("storePassword")
-                        keyAlias = gradleLocalProperties(rootDir).getProperty("keyAlias")
-                        keyPassword = gradleLocalProperties(rootDir).getProperty("keyPassword")
+                        storeFile = file("ddanddan_debug.keystore")
+                        storePassword = gradleLocalProperties(rootDir, providers).getProperty("storePassword")
+                        keyAlias = gradleLocalProperties(rootDir, providers).getProperty("keyAlias")
+                        keyPassword = gradleLocalProperties(rootDir, providers).getProperty("keyPassword")
+                    }
+                    create("release") {
+                        storeFile = file("ddanddan_release_key")
+                        storePassword = gradleLocalProperties(rootDir, providers).getProperty("releaseStorePassword")
+                        keyAlias = gradleLocalProperties(rootDir, providers).getProperty("releaseKeyAlias")
+                        keyPassword = gradleLocalProperties(rootDir, providers).getProperty("releaseKeyPassword")
                     }
                 }
 
@@ -74,6 +76,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 buildTypes {
                     release {
                         isMinifyEnabled = false
+                        signingConfig = signingConfigs.getByName("release")
                         proguardFiles(
                             getDefaultProguardFile("proguard-android-optimize.txt"),
                             "proguard-rules.pro",
@@ -86,15 +89,13 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 productFlavors {
                     create("dev") {
                         dimension = "environment"
-
-                        buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("dev.base.url"))
-                        buildConfigField("String", "CHOTTULINK_KEY", gradleLocalProperties(rootDir).getProperty("chottulink.key"))
+                        buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir, providers).getProperty("dev.base.url"))
+                        buildConfigField("String", "CHOTTULINK_KEY", gradleLocalProperties(rootDir, providers).getProperty("chottulink.key"))
                     }
                     create("prod") {
                         dimension = "environment"
-
-                        buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("base.url"))
-                        buildConfigField("String", "CHOTTULINK_KEY", gradleLocalProperties(rootDir).getProperty("chottulink.key"))
+                        buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir, providers).getProperty("base.url"))
+                        buildConfigField("String", "CHOTTULINK_KEY", gradleLocalProperties(rootDir, providers).getProperty("chottulink.key"))
                     }
                 }
 
@@ -104,55 +105,42 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 }
 
                 composeOptions {
-                    kotlinCompilerExtensionVersion = "1.5.0"
+                    kotlinCompilerExtensionVersion = "1.5.15"
                 }
-
-
             }
 
             val libs = extensions.getVersionCatalog()
 
             dependencies {
-                // androidx
                 implementation(libs.getBundle("androidx"))
 
-                // firebase
                 implementation(platform(libs.getLibrary("firebase-bom")))
                 implementation(libs.getBundle("firebase"))
 
-                // flipper
                 implementation(libs.getBundle("flipper"))
 
-                // retrofit
                 implementation(libs.getBundle("retrofit"))
 
-                // test
                 testImplementation(libs.getLibrary("jUnit"))
                 debugImplementation(libs.getLibrary("ui-tooling-compose"))
                 androidTestImplementation(libs.getLibrary("androidTest"))
                 androidTestImplementation(libs.getLibrary("espresso"))
 
-//                // google
-//                implementation(libs.getLibrary("inAppUpdate"))
                 implementation(libs.getLibrary("ossLicense"))
                 implementation(libs.getLibrary("gson"))
 
-                // okhttp
                 implementation(platform(libs.getLibrary("okhttp-Bom")))
                 implementation(libs.getBundle("okhttp"))
 
                 implementation(libs.getBundle("compose"))
 
-//                // kakao
                 implementation(libs.getBundle("kakao"))
 
-                // Orbit
                 implementation(libs.getLibrary("orbit-core"))
                 implementation(libs.getLibrary("orbit-viewmodel"))
                 implementation(libs.getLibrary("orbit-compose"))
                 testImplementation(libs.getLibrary("orbit-test"))
 
-                // hilt
                 implementation(libs.getLibrary("hilt"))
                 kapt(libs.getLibrary("hiltAndroidCompiler"))
                 kapt(libs.getLibrary("hiltWorkManagerCompiler"))
@@ -160,10 +148,8 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 implementation(libs.getBundle("appModuleLibraryEtc"))
 
                 implementation(libs.getLibrary("play-services-location"))
-
                 implementation(libs.getLibrary("play-services-wearable"))
 
-                // chottulink
                 implementation(libs.getLibrary("chottulink"))
             }
         }
