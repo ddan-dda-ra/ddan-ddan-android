@@ -56,13 +56,11 @@ fun GrantedNotRoute(
     viewModel: SplashViewModel = hiltViewModel(),
     onNavigateHome: () -> Unit,
     onNavigateSignIn: () -> Unit,
-    onNavigateOnboarding: () -> Unit
 ) {
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is SplashSideEffect.NavigateSignIn -> onNavigateSignIn()
             is SplashSideEffect.NavigateHome -> onNavigateHome()
-            is SplashSideEffect.NavigateOnboarding -> onNavigateOnboarding()
             else -> {}
         }
     }

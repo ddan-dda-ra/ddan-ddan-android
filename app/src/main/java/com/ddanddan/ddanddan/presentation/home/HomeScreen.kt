@@ -4,10 +4,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.provider.Settings
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -97,6 +99,7 @@ import com.ddanddan.ui.compose.component.DDanActionButton
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanLoadingDialog
 import com.ddanddan.ui.compose.component.DDanSnackBar
+import com.ddanddan.ui.compose.component.DDanTwoButtonDialog
 import com.ddanddan.ui.compose.component.showSnackbar
 import com.ddanddan.ui.compose.theme.DDanDDanTheme
 import com.ddanddan.ui.enums.TooltipType
@@ -113,7 +116,6 @@ fun HomeRoute(
     needRefresh: Boolean,
     onNavigateLevelUp: (level: Int, petType: String) -> Unit,
     onNavigateError: (Int?) -> Unit = {},
-    onNavigateGrantNotPermission: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -124,7 +126,7 @@ fun HomeRoute(
         ) == PackageManager.PERMISSION_GRANTED
 
         if (!hasPermission) {
-            onNavigateGrantNotPermission()
+            homeViewModel.showPermissionDialog()
             return@LaunchedEffect
         }
     }
@@ -141,7 +143,7 @@ fun HomeRoute(
 
                 if (!hasPermission) {
                     context.stopService(Intent(context, PhoneDataLayerService::class.java))
-                    onNavigateGrantNotPermission()
+                    homeViewModel.showPermissionDialog()
                 } else {
                     context.startService(Intent(context, PhoneDataLayerService::class.java))
                 }
@@ -278,7 +280,15 @@ fun HomeRoute(
             homeViewModel.logEvent(HomeEvent.ClickBtn(path = "select-egg"))
             homeViewModel.postRandomPet()
         },
-        onGuidelineDismiss = homeViewModel::dismissGuideline
+        onGuidelineDismiss = homeViewModel::dismissGuideline,
+        onPermissionDialogDismiss = homeViewModel::dismissPermissionDialog,
+        onPermissionDialogConfirm = {
+            homeViewModel.dismissPermissionDialog()
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", context.packageName, null)
+            }
+            context.startActivity(intent)
+        }
     )
 }
 
@@ -296,6 +306,8 @@ fun HomeScreen(
     onEggAnimationComplete: () -> Unit = {},
     onGrowClick: () -> Unit = {},
     onGuidelineDismiss: () -> Unit = {},
+    onPermissionDialogDismiss: () -> Unit = {},
+    onPermissionDialogConfirm: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -410,6 +422,17 @@ fun HomeScreen(
                 playButtonSize = playButtonSize,
                 onNext = { isEatStep = false },
                 onDismiss = onGuidelineDismiss
+            )
+        }
+
+        if (homeState.isShowPermissionDialog) {
+            DDanTwoButtonDialog(
+                title = "건강 데이터 연결이 끊겼어요",
+                content = "칼로리 측정을 위해 건강 데이터 권한을\n허용해 주세요.",
+                cancelText = "취소",
+                confirmText = "허용하기",
+                onClickCancel = onPermissionDialogDismiss,
+                onClickConfirm = onPermissionDialogConfirm
             )
         }
     }

@@ -273,6 +273,14 @@ class HomeViewModel @Inject constructor(
         reduce { state.copy(isShowingEggAnimation = true) }
     }
 
+    fun showPermissionDialog() = intent {
+        reduce { state.copy(isShowPermissionDialog = true) }
+    }
+
+    fun dismissPermissionDialog() = intent {
+        reduce { state.copy(isShowPermissionDialog = false) }
+    }
+
     /**
      * 칼로리 변화 관찰
      */
