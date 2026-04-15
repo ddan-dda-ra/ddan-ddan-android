@@ -57,6 +57,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -72,6 +73,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -872,6 +874,57 @@ fun HomeGuidelineOverlay(
                     color = DDanDDanColorPalette.current.color_text_button_primary_default
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun HomePermissionTooltip(
+    iconPosition: Offset,
+    iconSize: IntSize,
+    onDismiss: () -> Unit
+) {
+    var tooltipWidth by remember { mutableStateOf(0) }
+
+    ConstraintLayout(
+        modifier = Modifier
+            .offset(
+                x = with(LocalDensity.current) { (iconPosition.x + iconSize.width / 2).toDp() - (tooltipWidth / 2).toDp() },  // 툴팁 너비 절반만큼 왼쪽으로
+                y = with(LocalDensity.current) { (iconPosition.y + iconSize.height).toDp() }
+            )
+            .onGloballyPositioned { tooltipWidth = it.size.width }
+    ) {
+        val (polygon, msg) = createRefs()
+        Image(
+            painter = painterResource(R.drawable.ic_tooltip_polygon),
+            colorFilter = ColorFilter.tint(DDanDDanColorPalette.current.elevation_color_elevation_level02),
+            modifier = Modifier
+                .size(16.dp)
+                .constrainAs(polygon) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            contentDescription = null
+        )
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(DDanDDanColorPalette.current.elevation_color_elevation_level02)
+                .constrainAs(msg) {
+                    top.linkTo(polygon.top, margin = 8.dp)
+                    start.linkTo(parent.start)
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                }
+                .noRippleClickable { onDismiss() }
+        ) {
+            Text(
+                text = "건강 데이터를 허용하면\n칼로리를 측정할 수 있어요",
+                style = DDanDDanTypo.current.SubTitle1,
+                color = DDanDDanColorPalette.current.color_text_headline_secondary,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
         }
     }
 }
