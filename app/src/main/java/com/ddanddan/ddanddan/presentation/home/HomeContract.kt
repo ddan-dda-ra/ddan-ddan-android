@@ -23,12 +23,12 @@ data class HomeState(
     val currentCalories: Double = 0.0,
     // 알 뽑기 애니메이션
     val isShowingEggAnimation: Boolean = false,
+    val isShowGuideline: Boolean = false
 )
 
 sealed class HomeSideEffect {
     data class NetworkError(val code: Int?) : HomeSideEffect()
     data class NavigateLevelUp(val level: Int, val petType: PetTypeEnum) : HomeSideEffect()
-//    data class NavigatePetCollection(val petId: String) : HomeSideEffect()
-    object AskNotification: HomeSideEffect()
+    data object AskNotification : HomeSideEffect()
     data class SnackBarMsg(val msg: String) : HomeSideEffect()
 }
