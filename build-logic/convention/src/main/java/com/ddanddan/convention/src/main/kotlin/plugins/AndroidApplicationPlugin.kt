@@ -117,7 +117,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
                 implementation(platform(libs.getLibrary("firebase-bom")))
                 implementation(libs.getBundle("firebase"))
 
-                implementation(libs.getBundle("flipper"))
+                debugImplementation(libs.getBundle("flipper"))
 
                 implementation(libs.getBundle("retrofit"))
 
