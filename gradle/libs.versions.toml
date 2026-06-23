@@ -1,7 +1,7 @@
 [versions]
 buildToolsVersion = "30.0.3"
 ## Kotlin
-kotlinVersion = "1.8.21"
+kotlinVersion = "1.9.25"
 kotlinSerializationJsonVersion = "1.5.1"
 serializationVersion = "1.8.10"
 coroutinesAndroidVersion = "1.7.1"
@@ -19,7 +19,7 @@ mdcVersion="1.1.16"
 composeAppcompatVersion="0.28.0"
 composeLifecycleVersion="2.3.1"
 uiPreviewCompose ="1.7.2"
-composeCompilerVersion = "1.5.0"
+composeCompilerVersion = "1.5.15"
 pager-google="0.20.1"
 
 ## AndroidX
@@ -76,7 +76,7 @@ healthServicesVersion = "1.0.0-rc02"
 
 orbitVersion = "6.1.1"
 
-gradlePlugin = "8.1.2"
+gradlePlugin = "8.5.1"
 googleServicePlugin = "4.4.2"
 googleAppdistributionPlugin = "4.0.0"
 googleCrashlyticsPlguin = "2.9.7"
