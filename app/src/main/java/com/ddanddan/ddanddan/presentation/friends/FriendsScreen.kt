@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,6 +69,10 @@ fun FriendsRoute(
     val clipboardManager = LocalClipboardManager.current
     val scope = rememberCoroutineScope()
 
+    val friendsInviteTextStr = stringResource(R.string.friends_invite_text)
+    val friendsInviteSnackbarStr = stringResource(R.string.friends_invite_snackbar)
+    val friendsDeleteSnackbarStr = stringResource(R.string.friends_delete_snackbar)
+
     LaunchedEffect(Unit) {
         friendsViewModel.getFriendsList()
         friendsViewModel.getMyProfile()
@@ -85,15 +90,13 @@ fun FriendsRoute(
             }
             is FriendsSideEffect.RefreshList -> friendsViewModel.getFriendsList()
             is FriendsSideEffect.CopyInviteLink -> {
-                    clipboardManager.setText(AnnotatedString("'딴딴'에서 운동하면서 펫 키워요!\n" +
-                            "혼자보다 같이 하면 더 꾸준해지고, 펫도 더 건강해져요 \uD83D\uDC3E\n" +
-                            "우리 같이 운동하고 서로 응원해요 \uD83D\uDCAA \n\n" +
+                    clipboardManager.setText(AnnotatedString(friendsInviteTextStr +
                             sideEffect.link
                     ))
                     scope.launch {
                         snackBarHostState.currentSnackbarData?.dismiss()
                         snackBarHostState.showSnackbar(
-                            message = "친구 추가 링크를 복사했어요.",
+                            message = friendsInviteSnackbarStr,
                             iconResId = R.drawable.icon_radio_check_on,
                             duration = SnackbarDuration.Short,
                             bottomPadding = 88
@@ -108,7 +111,7 @@ fun FriendsRoute(
                 scope.launch {
                     snackBarHostState.currentSnackbarData?.dismiss()
                     snackBarHostState.showSnackbar(
-                        message = "친구가 삭제됐어요.",
+                        message = friendsDeleteSnackbarStr,
                         iconResId = R.drawable.icon_radio_check_on,
                         duration = SnackbarDuration.Short,
                         bottomPadding = 88
@@ -210,10 +213,10 @@ fun FriendsScreen(
     }
     if (friendsState.isShowDeleteDialog) {
         DDanTwoButtonDialog(
-            title = "정말 삭제하시겠어요?",
-            content = "친구가 삭제돼요",
-            cancelText = "취소",
-            confirmText = "삭제하기",
+            title = stringResource(R.string.friends_delete_dialog_title),
+            content = stringResource(R.string.friends_delete_dialog_content),
+            cancelText = stringResource(R.string.friends_delete_dialog_cancel),
+            confirmText = stringResource(R.string.friends_delete_dialog_confirm),
             onClickCancel = onDialogDismiss,
             onClickConfirm = onDialogConfirm
         )
@@ -293,7 +296,7 @@ fun FriendsTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "친구 목록",
+            text = stringResource(R.string.friends_list_title),
             style = DDanDDanTypo.current.NeoDgm24,
             color = DDanDDanColorPalette.current.color_text_headline_secondary,
         )
@@ -307,7 +310,7 @@ fun FriendsTopBar(
                     .noRippleClickable { copyFriendsLink() }
             ) {
                 Text(
-                    text = "친구 추가",
+                    text = stringResource(R.string.friends_list_button_add),
                     style = DDanDDanTypo.current.SubTitle1,
                     fontFamily = Pretendard,
                     color = DDanDDanColorPalette.current.color_text_caption_primary_default,
@@ -365,7 +368,7 @@ fun FriendRow(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "나",
+                    text = stringResource(R.string.friends_list_my_label),
                     style = DDanDDanTypo.current.Caption1,
                     fontFamily = Pretendard,
                     color = DDanDDanColorPalette.current.color_text_body_quinary,
@@ -421,7 +424,7 @@ fun EmptyFriendsView(
         )
 
         Text(
-            text = "아직 친구가 없네요.\n친구를 추가해 함께 성장해 보세요!",
+            text = stringResource(R.string.friends_empty_description),
             style = DDanDDanTypo.current.HeadLine7,
             color = DDanDDanColorPalette.current.color_text_headline_teritary,
             textAlign = TextAlign.Center,
@@ -451,7 +454,7 @@ fun EmptyFriendsView(
             shape = RoundedCornerShape(4.dp)
         ) {
            Text(
-                text = "친구 추가",
+                text = stringResource(R.string.friends_list_button_add),
                 style = DDanDDanTypo.current.HeadLine6,
                 color = DDanDDanColorPalette.current.color_text_button_primary_default
             )

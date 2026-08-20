@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -81,7 +82,7 @@ fun AddedFriendScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "친구가 되었어요!",
+                    text = stringResource(R.string.added_friend_description_done),
                     style = DDanDDanTypo.current.HeadLine3,
                     fontFamily = NeoDgm,
                     color = DDanDDanColorPalette.current.color_text_headline_primary
@@ -94,7 +95,7 @@ fun AddedFriendScreen(
                     exit = fadeOut()
                 ) {
                     Text(
-                        text = "이제 친구와 함께 운동해보세요!",
+                        text = stringResource(R.string.added_friend_description_start),
                         style = DDanDDanTypo.current.Body1,
                         color = DDanDDanColorPalette.current.color_text_body_quaternary
                     )
@@ -146,6 +147,6 @@ fun CheckBtn(
             contentColor = DDanDDanColorPalette.current.color_text_button_primary_default
         )
     ) {
-        Text(text = "확인", style = DDanDDanTypo.current.HeadLine6)
+        Text(text = stringResource(R.string.added_friend_button_text), style = DDanDDanTypo.current.HeadLine6)
     }
 }
