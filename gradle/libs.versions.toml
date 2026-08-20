@@ -105,6 +105,8 @@ glanceVersion = "1.1.1"
 ## chottulink
 chottulinkVersion = "1.0.8"
 
+roomVersion = "2.6.1"
+
 [libraries]
 # gradle
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradlePlugin" }
@@ -250,6 +252,9 @@ androidx-glance-material3 = { group = "androidx.glance", name="glance-material3"
 ## Chottulink
 chottulink = { group = "com.chottulink", name = "android-sdk", version.ref = "chottulinkVersion" }
 
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
 
 # 사용될 플러그인
 [plugins]
