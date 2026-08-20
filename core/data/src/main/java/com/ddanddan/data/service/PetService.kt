@@ -2,10 +2,13 @@ package com.ddanddan.data.service
 
 import com.ddanddan.model.request.RequestTypePet
 import com.ddanddan.model.response.ResponsePet
+import com.ddanddan.model.response.ResponsePetCatalog
 import com.ddanddan.model.response.ResponsePets
 import com.ddanddan.model.response.ResponseUserPet
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -30,4 +33,9 @@ interface PetService {
 
     @POST("/v1/pets/me/random")
     suspend fun postRandomPet(): ResponsePet
+
+    @GET("/v1/pets/catalog")
+    suspend fun getPetCatalog(
+        @Header("X-Pet-Catalog-Version") version: String?
+    ): Response<ResponsePetCatalog>
 }
