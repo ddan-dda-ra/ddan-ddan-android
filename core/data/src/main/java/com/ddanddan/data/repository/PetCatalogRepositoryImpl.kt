@@ -41,6 +41,7 @@ class PetCatalogRepositoryImpl @Inject constructor(
         petCatalogDao.deleteAllLevels()
         petCatalogDao.insertPets(catalog.pets.toEntityList(catalog.revision))
         petCatalogDao.insertLevels(catalog.pets.toLevelEntityList())
+        dataStore.petCatalogRevision = catalog.revision  // 추가!
     }
 
     private suspend fun getLocalCatalog(): PetCatalog {
