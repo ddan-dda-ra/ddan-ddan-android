@@ -106,6 +106,7 @@ glanceVersion = "1.1.1"
 chottulinkVersion = "1.0.8"
 
 roomVersion = "2.6.1"
+roomRuntimeAndroidVersion = "2.8.4"
 
 [libraries]
 # gradle
@@ -255,6 +256,7 @@ chottulink = { group = "com.chottulink", name = "android-sdk", version.ref = "ch
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
+androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroidVersion" }
 
 # 사용될 플러그인
 [plugins]
