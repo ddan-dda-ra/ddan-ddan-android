@@ -2,6 +2,7 @@ package com.ddanddan.data.repository
 
 import com.ddanddan.data.datasource.remote.RemotePetDataSource
 import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.UserPet
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.repository.PetRepository
@@ -28,5 +29,17 @@ class PetRepositoryImpl @Inject constructor(
 
     override suspend fun postRandomPet(): Pet {
         return petDataSource.postRandomPet().toPet()
+    }
+
+    override suspend fun getPetCatalog(): PetCatalog {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun savePetCatalog(catalog: PetCatalog) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCachedCatalogRevision(): String? {
+        TODO("Not yet implemented")
     }
 }
