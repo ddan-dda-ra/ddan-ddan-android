@@ -76,4 +76,111 @@
     <string name="rank_tablayout_target_subtitle">꾸준하게\n목표를 달성했어요</string>
     <string name="rank_tooltip_calorie">한 달 동안 칼로리를 많이 소비한 순서에요</string>
     <string name="rank_tooltip_target">한 달 동안 목표한 칼로리를\n누적 달성한 순서에요</string>
+
+    <string name="error_button_text">홈으로 이동</string>
+    <string name="error_description_not_page">페이지를 찾을 수 없습니다.</string>
+    <string name="error_description_page">오류가 발생했습니다.</string>
+    <string name="error_description_temp">일시적인 현상이니 잠시 후 다시 시도해 주세요</string>
+    <string name="error_description_code">오류코드</string>
+
+    <string name="added_friend_description_done">친구가 되었어요!</string>
+    <string name="added_friend_description_start">이제 친구와 함께 운동해보세요!</string>
+    <string name="added_friend_button_text">확인</string>
+
+    <string name="friends_invite_text">\'딴딴\'에서 운동하면서 펫 키워요!\n혼자보다 같이 하면 더 꾸준해지고, 펫도 더 건강해져요 🐾\n우리 같이 운동하고 서로 응원해요 💪\n\n</string>
+    <string name="friends_invite_snackbar">친구 추가 링크를 복사했어요.</string>
+    <string name="friends_delete_snackbar">친구가 삭제됐어요.</string>
+    <string name="friends_delete_dialog_title">정말 삭제하시겠어요?</string>
+    <string name="friends_delete_dialog_content">친구가 삭제돼요</string>
+    <string name="friends_delete_dialog_cancel">취소</string>
+    <string name="friends_delete_dialog_confirm">삭제하기</string>
+    <string name="friends_list_title">친구 목록</string>
+    <string name="friends_list_button_add">친구 추가</string>
+    <string name="friends_list_my_label">나</string>
+    <string name="friends_list_friend_label">친구</string>
+    <string name="friends_empty_description">아직 친구가 없네요.\n친구를 추가해 함께 성장해 보세요!</string>
+
+    <string name="friends_error_invite">초대 정보를 불러오지 못했어요</string>
+    <string name="friends_error_network">정보를 가져오는데 실패했습니다</string>
+    <string name="friends_error_choice">삭제할 친구를 선택해주세요</string>
+    <string name="friends_error_link">링크를 불러오지 못했어요. 다시 시도해주세요.</string>
+    <string name="friends_error_add">친구 추가에 실패했습니다</string>
+
+    <string name="pet_collection_title">펫 보관함</string>
+    <string name="pet_collection_empty">새로운 펫을 준비중이에요</string>
+
+    <string name="level_up_button_next">다음</string>
+    <string name="level_up_button_grow">성장하기</string>
+    <string name="level_up_done_title">펫 성장 완료!</string>
+    <string name="level_up_done_subtitle">성장을 완료한 펫과 꾸준히 운동해\n경험치를 올려보세요!</string>
+    <string name="level_up_upgrade_subtitle">로\n업그레이드 되었어요!</string>
+
+    <string name="new_pet_button">시작하기</string>
+    <string name="new_pet_title">이제 새로운 펫을\n뽑을 수 있어요</string>
+
+    <string name="toy_reward_button">획득하기</string>
+    <string name="toy_reward_title">3일 내내 운동을\n열심히 하셨네요!</string>
+
+    <string name="granted_not_title">생체 신호 센서 접근 권한을 허용해주세요</string>
+    <string name="granted_not_subtitle">서비스 이용을 위하여\n생체 신호 센서 접근 권한이 필요합니다.</string>
+    <string name="granted_not_button_deny">허용 안함</string>
+    <string name="granted_not_button_allow">허용</string>
+
+    <string name="home_permission_title">건강 데이터 연결이 끊겼어요</string>
+    <string name="home_permission_content">칼로리 측정을 위해 건강 데이터 권한을\n허용해 주세요.</string>
+    <string name="home_permission_cancel">취소</string>
+    <string name="home_permission_confirm">허용하기</string>
+    <string name="home_button_eat">먹이주기</string>
+    <string name="home_button_play">놀아주기</string>
+    <string name="home_gacha_title_1">어떤 펫이 나올까요?</string>
+    <string name="home_gacha_title_2">반가워</string>
+    <string name="home_gacha_subtitle_1">아래 버튼을 눌러 알을 골라주세요</string>
+    <string name="home_gacha_subtitle_2">새로운 펫을 뽑았어요!</string>
+    <string name="home_gacha_button_close">닫기</string>
+    <string name="home_gacha_button_grow">키우기</string>
+    <string name="home_guideline_eat_1">100kcal를 소모할 때 마다\n먹이 1개를 받아요</string>
+    <string name="home_guideline_eat_2">\'먹이주기\' 버튼을 누르면 먹이를 줄 수 있어요</string>
+    <string name="home_guideline_play_1">3일동안 목표를 달성하면\n펫을 놀아줄 수 있어요</string>
+    <string name="home_guideline_play_2">\'놀아주기\' 버튼을 누르면 놀아줄 수 있어요</string>
+    <string name="home_guideline_button_next">다음</string>
+    <string name="home_guideline_button_start">시작하기</string>
+    <string name="home_permission_tooltip">건강 데이터를 허용하면\n칼로리를 측정할 수 있어요</string>
+
+    <string name="home_error_play">놀아주기 개수가 부족합니다.</string>
+    <string name="home_error_eat">먹이주기 개수가 부족합니다.</string>
+    <string name="home_error_pet_id">펫 아이디에 오류가 발생했습니다.</string>
+    <string name="home_error_new_pet">새로운 펫을 불러오는데 오류가 발생했습니다.</string>
+
+    <string name="rank_date_year">년</string>
+    <string name="rank_date_month">월 기준</string>
+    <string name="rank_snackbar_not_enough_1">랭킹이 아직</string>
+    <string name="rank_snackbar_not_enough_2">등까지 밖에 없어요</string>
+    <string name="rank_snackbar_hundred">랭킹은 100등까지만 노출해요</string>
+    <string name="rank_date_day">일</string>
+
+    <string name="setting_error_nickname">별명 변경에 실패했습니다.</string>
+    <string name="setting_error_delete">회원탈퇴에 실패했습니다.</string>
+    <string name="setting_error_push">푸시 알림 설정에 실패했습니다.</string>
+
+    <string name="on_agree_terms_service">서비스 이용약관</string>
+    <string name="on_agree_terms_privacy">개인정보 처리방침</string>
+
+    <string name="setting_signout_1">쓰지 않는 앱이에요</string>
+    <string name="setting_signout_2">오류가 생겨서 쓸 수 없어요</string>
+    <string name="setting_signout_3">개인정보가 불안해요</string>
+    <string name="setting_signout_4">앱 사용법을 모르겠어요</string>
+    <string name="setting_signout_5">기타</string>
+
+    <string name="setting_dialog_title">정말 로그아웃 하시겠습니까?</string>
+    <string name="setting_dialog_cancel">취소</string>
+    <string name="setting_dialog_confirm">로그아웃</string>
+    <string name="setting_toggle_title">전체 푸시 알림</string>
+    <string name="setting_box_title">펫 보관함</string>
+
+    <string name="signin_error">로그인에 실패했습니다.</string>
+    <string name="signup_error">회원가입에 실패했습니다</string>
+
+    <string name="main_update_title">앱 업데이트</string>
+    <string name="main_update_button">업데이트 하러가기</string>
+
 </resources>

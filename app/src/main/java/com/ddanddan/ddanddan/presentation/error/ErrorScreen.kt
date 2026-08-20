@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,7 +29,7 @@ fun ErrorScreen(
     Scaffold(
         containerColor = DDanDDanColorPalette.current.color_background,
         bottomBar = {
-            BottomButton(btnText = "홈으로 이동") {
+            BottomButton(btnText = stringResource(R.string.error_button_text)) {
                 onMoveHomeClicked()
             }
         }
@@ -52,7 +53,7 @@ fun ErrorScreen(
             )
 
             Text(
-                text = if (isNotPage) "페이지를 찾을 수 없습니다." else "오류가 발생했습니다.",
+                text = if (isNotPage) stringResource(R.string.error_description_not_page) else stringResource(R.string.error_description_page),
                 style = DDanDDanTypo.current.HeadLine7,
                 color = DDanDDanColorPalette.current.color_text_headline_teritary,
                 modifier = Modifier.constrainAs(title) {
@@ -64,8 +65,8 @@ fun ErrorScreen(
 
             if (!isNotPage) {
                 Text(
-                    text = "일시적인 현상이니 잠시 후 다시 시도해 주세요\n" +
-                            "(오류코드 : $errorCode)",
+                    text = stringResource(R.string.error_description_code) + "\n("
+                        + stringResource(R.string.error_description_code) + " : $errorCode)",
                     textAlign = TextAlign.Center,
                     style = DDanDDanTypo.current.Body1,
                     color = DDanDDanColorPalette.current.color_text_body_quinary,

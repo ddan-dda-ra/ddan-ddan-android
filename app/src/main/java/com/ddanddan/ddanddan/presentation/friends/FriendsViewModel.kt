@@ -1,10 +1,12 @@
 package com.ddanddan.ddanddan.presentation.friends
 
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.chottulink.lib.ChottuLink
 import com.chottulink.lib.DynamicLink
+import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.AnalyticsEvent
 import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.ddanddan.util.toBaseErrorResponse
