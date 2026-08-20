@@ -56,6 +56,10 @@ class DdanDdanDataStoreImpl @Inject constructor(
             _caloriesFlow.value = value
         }
 
+    override var petCatalogRevision: String?
+        get() = userPref.getString(PREF_PET_CATALOG_REVISION, null)
+        set(value) { userPref.edit { putString(PREF_PET_CATALOG_REVISION, value) } }
+
     override fun clearLocalPref() = userPref.edit { clear() }
 
     companion object {
@@ -69,5 +73,6 @@ class DdanDdanDataStoreImpl @Inject constructor(
         private const val PREF_ASKED_NOTIFICATION = "ASKED_NOTIFICATION"
         private const val PREF_ON_NOTIFICATION = "ON_NOTIFICATION"
         private const val PREF_CALORIES = "CALORIES"
+        private const val PREF_PET_CATALOG_REVISION = "PET_CATALOG_REVISION"
     }
 }
