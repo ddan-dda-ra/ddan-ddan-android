@@ -107,6 +107,7 @@ chottulinkVersion = "1.0.8"
 
 roomVersion = "2.6.1"
 roomRuntimeAndroidVersion = "2.8.4"
+lottie = "5.2.0"
 
 [libraries]
 # gradle
@@ -257,6 +258,7 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
 androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroidVersion" }
+android-lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 
 # 사용될 플러그인
 [plugins]

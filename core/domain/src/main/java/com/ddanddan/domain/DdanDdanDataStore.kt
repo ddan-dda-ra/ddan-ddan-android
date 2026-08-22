@@ -19,6 +19,7 @@ interface ddanddanDataStore {
     var calories: Float
 
     var petCatalogRevision: String?
+    var isPetCatalogUpdateRequired: Boolean
 
     fun clearLocalPref()
 }

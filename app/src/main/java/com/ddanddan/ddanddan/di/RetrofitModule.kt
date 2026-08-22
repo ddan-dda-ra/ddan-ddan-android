@@ -1,6 +1,8 @@
 package com.ddanddan.ddanddan.di
 
 import com.ddanddan.data.interceptor.AuthInterceptor
+import com.ddanddan.data.interceptor.PetCatalogInterceptor
+import com.ddanddan.ddanddan.BuildConfig
 import com.ddanddan.ddanddan.BuildConfig.BASE_URL
 import com.ddanddan.ddanddan.FlipperUtil
 import com.ddanddan.ddanddan.di.qualifier.Auth
@@ -65,5 +67,21 @@ object RetrofitModule {
         .baseUrl(BASE_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Mobile
+    fun provideOkHttpClient(
+        @Logger loggingInterceptor: Interceptor,
+        @Auth authInterceptor: Interceptor,
+        petCatalogInterceptor: PetCatalogInterceptor,  // 추가
+    ): OkHttpClient = OkHttpClient.Builder()
+        .apply {
+            if (BuildConfig.DEBUG) {
+                addNetworkInterceptor(FlipperUtil.flipperInterceptor)
+            }
+        }
+        .addInterceptor(loggingInterceptor)
+        .addInterceptor(authInterceptor)
+        .addInterceptor(petCatalogInterceptor)  // 추가
         .build()
 }
