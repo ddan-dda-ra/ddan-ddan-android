@@ -7,6 +7,7 @@ import com.ddanddan.ddanddan.util.AnalyticsEvent
 import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.repository.UserRepository
+import com.ddanddan.domain.usecase.FetchPetCatalogUseCase
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetNotificationAskedUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
@@ -40,7 +41,8 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val ddanddanDataStore: ddanddanDataStore,
     private val widgetManager: WidgetManager,
-    private val analyticsManager: AnalyticsManager
+    private val analyticsManager: AnalyticsManager,
+    private val fetchPetCatalogUseCase: FetchPetCatalogUseCase,  // 추가
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
@@ -48,11 +50,22 @@ class HomeViewModel @Inject constructor(
     private val isNewPet = savedStateHandle["isNewPet"] ?: false
 
     init {
+        checkPetCatalogUpdate()  // 추가
         getNotificationAsked()
         getHomeInfo()
         observeCalories()
 
         animationEggCounterBadge()
+    }
+
+    private fun checkPetCatalogUpdate() = intent {
+        if (ddanddanDataStore.isPetCatalogUpdateRequired) {
+            runCatching {
+                fetchPetCatalogUseCase()
+            }.onSuccess {
+                ddanddanDataStore.isPetCatalogUpdateRequired = false
+            }
+        }
     }
 
     fun logEvent(event: AnalyticsEvent) {
