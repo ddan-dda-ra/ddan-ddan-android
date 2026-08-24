@@ -44,11 +44,12 @@ class PetCatalogRepositoryImpl @Inject constructor(
         dataStore.petCatalogRevision = catalog.revision  // 추가!
     }
 
-    private suspend fun getLocalCatalog(): PetCatalog {
+    override suspend fun getLocalCatalog(): PetCatalog {
         val pets = petCatalogDao.getAllPets()
         val levels = pets.map { pet ->
             petCatalogDao.getLevelsByPetType(pet.type)
         }
         return pets.toPetCatalog(levels)
     }
+
 }

@@ -2,6 +2,7 @@ package com.ddanddan.ddanddan.presentation.home
 
 import androidx.compose.runtime.Immutable
 import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.User
 import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.enums.TooltipType
@@ -26,7 +27,8 @@ data class HomeState(
     val isShowGuideline: Boolean = false,
     val isShowPermissionDialog: Boolean = false,
     val hasPermission: Boolean = true,
-    val isShowPermissionTooltip: Boolean = false
+    val isShowPermissionTooltip: Boolean = false,
+    val catalog: PetCatalog? = null,  // 추가
 )
 
 sealed class HomeSideEffect {
