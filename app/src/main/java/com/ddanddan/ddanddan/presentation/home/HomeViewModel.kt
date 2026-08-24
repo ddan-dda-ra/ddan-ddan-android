@@ -8,6 +8,7 @@ import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.domain.ddanddanDataStore
 import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.FetchPetCatalogUseCase
+import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetNotificationAskedUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
@@ -43,6 +44,7 @@ class HomeViewModel @Inject constructor(
     private val widgetManager: WidgetManager,
     private val analyticsManager: AnalyticsManager,
     private val fetchPetCatalogUseCase: FetchPetCatalogUseCase,  // 추가
+    private val getLocalCatalogUseCase: GetLocalCatalogUseCase,  // 추가
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
@@ -58,6 +60,14 @@ class HomeViewModel @Inject constructor(
         animationEggCounterBadge()
     }
 
+    private fun loadCatalog() = intent {
+        runCatching {
+            getLocalCatalogUseCase()
+        }.onSuccess { catalog ->
+            reduce { state.copy(catalog = catalog) }
+        }
+    }
+
     private fun checkPetCatalogUpdate() = intent {
         if (ddanddanDataStore.isPetCatalogUpdateRequired) {
             runCatching {
@@ -66,6 +76,7 @@ class HomeViewModel @Inject constructor(
                 ddanddanDataStore.isPetCatalogUpdateRequired = false
             }
         }
+        loadCatalog()  // 업데이트 여부와 관계없이 마지막에 로드
     }
 
     fun logEvent(event: AnalyticsEvent) {
