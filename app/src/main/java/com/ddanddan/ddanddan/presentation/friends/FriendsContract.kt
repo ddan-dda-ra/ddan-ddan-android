@@ -2,6 +2,7 @@ package com.ddanddan.ddanddan.presentation.friends
 
 import androidx.compose.runtime.Immutable
 import com.ddanddan.domain.entity.Friend
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.UserDetail
 
 @Immutable
@@ -14,7 +15,8 @@ data class FriendsState(
     val chosenUserDetail: UserDetail? = null,
     val showFireworks: Boolean = false,
     val isCheeredToday: Boolean = false,
-    val pendingInviteCode: String? = null
+    val pendingInviteCode: String? = null,
+    val catalog: PetCatalog? = null
 )
 
 sealed class FriendsSideEffect {

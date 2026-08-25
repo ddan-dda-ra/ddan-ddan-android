@@ -42,9 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.presentation.component.PetImage
+import com.ddanddan.ddanddan.util.colorFor
 import com.ddanddan.ddanddan.util.event.FriendsEvent.*
-import com.ddanddan.ddanddan.util.toAnimal
-import com.ddanddan.ddanddan.util.toColor
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.Pretendard
@@ -223,6 +224,7 @@ fun FriendsScreen(
     if (friendsState.isShowProfileDialog && friendsState.chosenUserDetail != null) {
         ProfileDialog(
             userDetail = friendsState.chosenUserDetail,
+            catalog = friendsState.catalog,
             onClickCheers = onCheersFriend,
             onClickCancel = onDetailDismiss,
             isMyself = friendsState.myProfile?.id == friendsState.chosenUserDetail.id,
@@ -254,6 +256,7 @@ private fun FriendsListView(
                 nickname = friendsState.friends[idx].name,
                 mainPetType = friendsState.friends[idx].mainPetType,
                 petLevel = friendsState.friends[idx].petLevel,
+                catalog = friendsState.catalog,
                 onDelete = { onDelete(friendsState.friends[idx].id) },
             )
         }
@@ -277,6 +280,7 @@ private fun MyselfBottomSheet(
                 nickname = friendsState.myProfile.name,
                 mainPetType = friendsState.myProfile.mainPetType,
                 petLevel = friendsState.myProfile.petLevel,
+                catalog = friendsState.catalog,
                 isBottomSheet = true
             )
         }
@@ -328,6 +332,7 @@ fun FriendRow(
     nickname: String? = "이름입니뎅",
     mainPetType: String? = "CAT",
     petLevel: Int? = 1,
+    catalog: PetCatalog? = null,
     onDelete: () -> Unit = {},
     isBottomSheet: Boolean = false
 ) {
@@ -340,11 +345,13 @@ fun FriendRow(
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(mainPetType.toColor()),
+                .background(catalog.colorFor(mainPetType)),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = mainPetType.toAnimal(petLevel)),
+            PetImage(
+                petType = mainPetType,
+                level = petLevel,
+                catalog = catalog,
                 contentDescription = "펫 이미지",
                 modifier = Modifier.size(42.dp)
             )

@@ -39,9 +39,10 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.friends.fireworks.FireworkEffect
-import com.ddanddan.ddanddan.util.toAnimal
+import com.ddanddan.ddanddan.util.lottieUrlFor
 import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.ddanddan.util.toRectBackgroundImage
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.UserDetail
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -65,6 +66,7 @@ import com.ddanddan.ui.ext.noRippleClickable
 fun ProfileDialog(
     friendsState: FriendsState? = null,
     userDetail: UserDetail,
+    catalog: PetCatalog? = null,
     onClickCheers: (String) -> Unit = {},
     onClickCancel: () -> Unit = {},
     isMyself: Boolean = false,
@@ -73,14 +75,19 @@ fun ProfileDialog(
     showFireworks: Boolean = false
     ) {
 
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(
+    val catalogLottieUrl = catalog.lottieUrlFor(
+        userDetail.mainPet.type,
+        userDetail.mainPet.level,
+        isPlayEat = false
+    )
+    val compositionSpec = catalogLottieUrl?.let { LottieCompositionSpec.Url(it) }
+        ?: LottieCompositionSpec.RawRes(
             userDetail.mainPet.type.toLottie(
                 userDetail.mainPet.level,
                 isPlayAndEatLottie = false
             )
         )
-    )
+    val composition by rememberLottieComposition(compositionSpec)
 
     Dialog(
         onDismissRequest = { onClickCancel() }

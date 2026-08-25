@@ -15,6 +15,7 @@ import com.ddanddan.domain.usecase.DeleteFriendUseCase
 import com.ddanddan.domain.usecase.GetFriendByCodeUseCase
 import com.ddanddan.domain.usecase.GetFriendsListUseCase
 import com.ddanddan.domain.usecase.GetInviteCodeUseCase
+import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetUserDetailUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
@@ -43,6 +44,7 @@ class FriendsViewModel @Inject constructor(
     private val getUserDetailUseCase: GetUserDetailUseCase,
     private val getMainPetUseCase: GetMainPetUseCase,
     private val getFriendByCodeUseCase: GetFriendByCodeUseCase,
+    private val getLocalCatalogUseCase: GetLocalCatalogUseCase,
     private val analyticsManager: AnalyticsManager,
     ) : ViewModel(), ContainerHost<FriendsState, FriendsSideEffect> {
 
@@ -52,8 +54,17 @@ class FriendsViewModel @Inject constructor(
     private val inviteCode: String? = savedStateHandle["inviteCode"]
 
     init {
+        loadCatalog()
         inviteCode?.let {
             getFriendByCode(it)
+        }
+    }
+
+    private fun loadCatalog() = intent {
+        runCatching {
+            getLocalCatalogUseCase()
+        }.onSuccess { catalog ->
+            reduce { state.copy(catalog = catalog) }
         }
     }
 
