@@ -1,7 +1,6 @@
 package com.ddanddan.model.response
 
 import com.ddanddan.domain.entity.Pet
-import com.ddanddan.domain.enums.PetTypeEnum
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ResponsePet(
     val id: String,
-    val type: PetTypeEnum,
+    val type: String,
     val level: Int,
     val expPercent: Double
 ) {
