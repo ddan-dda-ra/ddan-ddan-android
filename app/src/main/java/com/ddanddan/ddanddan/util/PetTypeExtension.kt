@@ -197,3 +197,7 @@ fun String?.toColor(): Color {
         else -> Color(0xFFFD85FF)
     }
 }
+
+// 펫 카탈로그의 colorCode("#RRGGBB")를 파싱한다. 알 수 없는 포맷이면 null을 반환해 호출부가 로컬 기본값으로 폴백하게 한다.
+fun String?.toColorFromHex(): Color? =
+    this?.let { runCatching { Color(android.graphics.Color.parseColor(it)) }.getOrNull() }

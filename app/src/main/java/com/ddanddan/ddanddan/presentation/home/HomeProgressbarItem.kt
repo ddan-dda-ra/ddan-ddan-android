@@ -26,7 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ddanddan.ddanddan.util.toColor
+import com.ddanddan.ddanddan.util.toColorFromHex
 import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.entity.findColorHex
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -77,7 +79,8 @@ fun HomeProgressbarItem(
         DDanDDanProgressbar(
             totalSegments = totalSegments,
             progress = ((homeState.pet?.expPercent ?: 0.0) * 0.01).toFloat(),
-            progressColor = homeState.pet?.type.toColor()
+            progressColor = homeState.pet?.let { pet -> homeState.catalog?.findColorHex(pet.type)?.toColorFromHex() }
+                ?: homeState.pet?.type.toColor()
         )
     }
 }

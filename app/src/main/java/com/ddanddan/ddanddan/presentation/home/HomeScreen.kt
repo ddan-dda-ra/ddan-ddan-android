@@ -92,8 +92,11 @@ import com.ddanddan.ddanddan.service.PhoneDataLayerService
 import com.ddanddan.ddanddan.util.event.HomeEvent
 import com.ddanddan.ddanddan.util.toBackgroundImage
 import com.ddanddan.ddanddan.util.toColor
+import com.ddanddan.ddanddan.util.toColorFromHex
 import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.entity.findColorHex
+import com.ddanddan.domain.entity.findLottieUrl
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -165,14 +168,17 @@ fun HomeRoute(
 
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(
+    val catalogLottieUrl = homeState.pet?.let { pet ->
+        homeState.catalog?.findLottieUrl(pet.type, pet.level, homeState.isPlayAndEatLottie)
+    }
+    val compositionSpec = catalogLottieUrl?.let { LottieCompositionSpec.Url(it) }
+        ?: LottieCompositionSpec.RawRes(
             homeState.pet?.type.toLottie(
                 homeState.pet?.level,
                 homeState.isPlayAndEatLottie
             )
         )
-    )
+    val composition by rememberLottieComposition(compositionSpec)
 
     val vibrator = remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -422,7 +428,8 @@ fun HomeScreen(
         if (homeState.isShowingEggAnimation) {
             EggGachaAnimation(
                 modifier = Modifier.align(Alignment.TopCenter).padding(top = 203.dp),
-                petColor = homeState.pet?.type?.toColor() ?: Color(0xFFFD85FF),
+                petColor = homeState.pet?.let { pet -> homeState.catalog?.findColorHex(pet.type)?.toColorFromHex() }
+                    ?: homeState.pet?.type?.toColor() ?: Color(0xFFFD85FF),
                 newPet = homeState.newPet,
                 onAnimationComplete = onEggAnimationComplete,
                 onGrowClick = onGrowClick
