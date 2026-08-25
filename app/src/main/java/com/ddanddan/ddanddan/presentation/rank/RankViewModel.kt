@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.util.AnalyticsEvent
 import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.ddanddan.util.toBaseErrorResponse
+import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
 import com.ddanddan.domain.usecase.GetRankingUseCase
 import com.ddanddan.domain.usecase.GetUserDetailUseCase
 import com.ddanddan.domain.usecase.PatchDailyCaloriesUseCase
@@ -23,11 +24,24 @@ class RankViewModel @Inject constructor(
     private val patchDailyCaloriesUseCase: PatchDailyCaloriesUseCase,
     private val postCheersUseCase: PostCheersUseCase,
     private val getUserDetailUseCase: GetUserDetailUseCase,
+    private val getLocalCatalogUseCase: GetLocalCatalogUseCase,
     private val analyticsManager: AnalyticsManager,
     ) : ViewModel(), ContainerHost<RankState, RankSideEffect> {
 
     override val container =
         container<RankState, RankSideEffect>(RankState())
+
+    init {
+        loadCatalog()
+    }
+
+    private fun loadCatalog() = intent {
+        runCatching {
+            getLocalCatalogUseCase()
+        }.onSuccess { catalog ->
+            reduce { state.copy(catalog = catalog) }
+        }
+    }
 
     fun logEvent(event: AnalyticsEvent) {
         analyticsManager.logEvent(event)

@@ -63,10 +63,11 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.presentation.component.PetImage
 import com.ddanddan.ddanddan.presentation.friends.ProfileDialog
+import com.ddanddan.ddanddan.util.colorFor
 import com.ddanddan.ddanddan.util.event.RankingEvent
-import com.ddanddan.ddanddan.util.toAnimal
-import com.ddanddan.ddanddan.util.toColor
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -223,6 +224,7 @@ fun RankScreen(
     if (rankState.isShowProfileDialog && rankState.chosenUserDetail != null) {
         ProfileDialog(
             userDetail = rankState.chosenUserDetail,
+            catalog = rankState.catalog,
             onClickCheers = onCheersUser,
             onClickCancel = onDetailDismiss,
             isMyself = rankState.myRank?.userId == rankState.chosenUserDetail.id,
@@ -252,6 +254,7 @@ private fun MyRecordBottomSheet(
                 contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.myRank.totalCalories else rankState.myRank.totalSucceededDays,
                 mainPetType = rankState.myRank.mainPetType,
                 petLevel = rankState.myRank.petLevel,
+                catalog = rankState.catalog,
                 isBottomSheet = true,
                 isMyRecord = true
             )
@@ -338,7 +341,8 @@ private fun RankListView(
                             contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.silverRank?.totalCalories
                             else rankState.silverRank?.totalSucceededDays,
                             mainPetType = rankState.silverRank?.mainPetType,
-                            petLevel = rankState.silverRank?.petLevel
+                            petLevel = rankState.silverRank?.petLevel,
+                            catalog = rankState.catalog
                         )
                         DDanMarginHorizontalSpacer(13)
                         TopRankerView(
@@ -352,6 +356,7 @@ private fun RankListView(
                             else rankState.goldRank?.totalSucceededDays,
                             mainPetType = rankState.goldRank?.mainPetType,
                             petLevel = rankState.goldRank?.petLevel,
+                            catalog = rankState.catalog,
                             isCenter = true
                         )
                         DDanMarginHorizontalSpacer(13)
@@ -365,7 +370,8 @@ private fun RankListView(
                             contents = if (rankState.criteria == RankCriteria.TOTAL_CALORIES) rankState.bronzeRank?.totalCalories
                             else rankState.bronzeRank?.totalSucceededDays,
                             mainPetType = rankState.bronzeRank?.mainPetType,
-                            petLevel = rankState.bronzeRank?.petLevel
+                            petLevel = rankState.bronzeRank?.petLevel,
+                            catalog = rankState.catalog
                         )
                     }
                 }
@@ -430,6 +436,7 @@ private fun RankListView(
                     else rankState.otherRanking[idx].totalSucceededDays,
                 mainPetType = rankState.otherRanking[idx].mainPetType,
                 petLevel = rankState.otherRanking[idx].petLevel,
+                catalog = rankState.catalog,
                 isMyRecord = rankState.otherRanking[idx].userId == rankState.myRank?.userId
             )
         }
@@ -584,6 +591,7 @@ fun TopRankerView(
     contents: Int? = 1024,
     mainPetType: String? = "CAT",
     petLevel: Int? = 1,
+    catalog: PetCatalog? = null,
     isCenter: Boolean = false
 ) {
     ConstraintLayout(
@@ -609,8 +617,10 @@ fun TopRankerView(
             ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(mainPetType.toAnimal(petLevel)),
+            PetImage(
+                petType = mainPetType,
+                level = petLevel,
+                catalog = catalog,
                 contentDescription = null,
                 modifier = Modifier
                     .size(64.dp)
@@ -663,6 +673,7 @@ fun SimpleRankerView(
     contents: Int? = 987,
     mainPetType: String? = "CAT",
     petLevel: Int? = 1,
+    catalog: PetCatalog? = null,
     isBottomSheet: Boolean = false,
     isMyRecord: Boolean = false
 ) {
@@ -691,11 +702,13 @@ fun SimpleRankerView(
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(mainPetType.toColor()),
+                .background(catalog.colorFor(mainPetType)),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = mainPetType.toAnimal(petLevel)),
+            PetImage(
+                petType = mainPetType,
+                level = petLevel,
+                catalog = catalog,
                 contentDescription = "왕관 이미지",
                 modifier = Modifier.size(42.dp)
             )

@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.presentation.rank
 
 import com.ddanddan.ddanddan.R
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.Rank
 import com.ddanddan.domain.entity.UserDetail
 import javax.annotation.concurrent.Immutable
@@ -18,7 +19,8 @@ data class RankState(
     val isShowProfileDialog: Boolean = false,
     val chosenUserDetail: UserDetail? = null,
     val myIdx: Int = -1,
-    val showFireworks: Boolean = false
+    val showFireworks: Boolean = false,
+    val catalog: PetCatalog? = null
 )
 
 sealed class RankSideEffect {
