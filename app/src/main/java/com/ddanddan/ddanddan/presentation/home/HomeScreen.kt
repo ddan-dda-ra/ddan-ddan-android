@@ -90,13 +90,12 @@ import com.ddanddan.ddanddan.presentation.component.EggCounterBadge
 import com.ddanddan.ddanddan.presentation.component.EggGachaCard
 import com.ddanddan.ddanddan.service.PhoneDataLayerService
 import com.ddanddan.ddanddan.util.event.HomeEvent
+import com.ddanddan.ddanddan.util.colorFor
+import com.ddanddan.ddanddan.util.lottieUrlFor
 import com.ddanddan.ddanddan.util.toBackgroundImage
-import com.ddanddan.ddanddan.util.toColor
-import com.ddanddan.ddanddan.util.toColorFromHex
 import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.domain.entity.Pet
-import com.ddanddan.domain.entity.findColorHex
-import com.ddanddan.domain.entity.findLottieUrl
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -168,9 +167,11 @@ fun HomeRoute(
 
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val catalogLottieUrl = homeState.pet?.let { pet ->
-        homeState.catalog?.findLottieUrl(pet.type, pet.level, homeState.isPlayAndEatLottie)
-    }
+    val catalogLottieUrl = homeState.catalog.lottieUrlFor(
+        homeState.pet?.type,
+        homeState.pet?.level,
+        homeState.isPlayAndEatLottie
+    )
     val compositionSpec = catalogLottieUrl?.let { LottieCompositionSpec.Url(it) }
         ?: LottieCompositionSpec.RawRes(
             homeState.pet?.type.toLottie(
@@ -428,9 +429,9 @@ fun HomeScreen(
         if (homeState.isShowingEggAnimation) {
             EggGachaAnimation(
                 modifier = Modifier.align(Alignment.TopCenter).padding(top = 203.dp),
-                petColor = homeState.pet?.let { pet -> homeState.catalog?.findColorHex(pet.type)?.toColorFromHex() }
-                    ?: homeState.pet?.type?.toColor() ?: Color(0xFFFD85FF),
+                petColor = homeState.catalog.colorFor(homeState.pet?.type),
                 newPet = homeState.newPet,
+                catalog = homeState.catalog,
                 onAnimationComplete = onEggAnimationComplete,
                 onGrowClick = onGrowClick
             )
@@ -643,6 +644,7 @@ fun EggGachaAnimation(
     modifier: Modifier,
     petColor: Color,
     newPet: Pet?,
+    catalog: PetCatalog?,
     onAnimationComplete: () -> Unit,
     onGrowClick: () -> Unit
 ) {
@@ -723,7 +725,8 @@ fun EggGachaAnimation(
                         this.rotationY = if (isAnimating) rotationY else 0f
                         cameraDistance = 12f * density
                     },
-                pet = newPet
+                pet = newPet,
+                catalog = catalog
             )
 
             // 애니메이션이 끝난 후 나타나는 UI

@@ -2,6 +2,10 @@ package com.ddanddan.ddanddan.util
 
 import androidx.compose.ui.graphics.Color
 import com.ddanddan.ddanddan.R
+import com.ddanddan.domain.entity.PetCatalog
+import com.ddanddan.domain.entity.findColorHex
+import com.ddanddan.domain.entity.findImageUrl
+import com.ddanddan.domain.entity.findLottieUrl
 
 fun String?.toAnimal(level: Int?): Int {
     return when (this) {
@@ -201,3 +205,13 @@ fun String?.toColor(): Color {
 // 펫 카탈로그의 colorCode("#RRGGBB")를 파싱한다. 알 수 없는 포맷이면 null을 반환해 호출부가 로컬 기본값으로 폴백하게 한다.
 fun String?.toColorFromHex(): Color? =
     this?.let { runCatching { Color(android.graphics.Color.parseColor(it)) }.getOrNull() }
+
+// 카탈로그에 해당 타입/레벨이 있으면 그 값을, 없으면(카탈로그 미로딩·새 타입 등) 번들 리소스 기반 기본값을 쓴다.
+fun PetCatalog?.colorFor(type: String?): Color =
+    type?.let { this?.findColorHex(it)?.toColorFromHex() } ?: type.toColor()
+
+fun PetCatalog?.imageUrlFor(type: String?, level: Int?): String? =
+    if (type == null || level == null) null else this?.findImageUrl(type, level)
+
+fun PetCatalog?.lottieUrlFor(type: String?, level: Int?, isPlayEat: Boolean): String? =
+    if (type == null || level == null) null else this?.findLottieUrl(type, level, isPlayEat)
