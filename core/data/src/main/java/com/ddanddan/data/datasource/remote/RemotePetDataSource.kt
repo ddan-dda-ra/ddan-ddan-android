@@ -17,5 +17,5 @@ class RemotePetDataSource @Inject constructor(
 
     suspend fun postRandomPet() = petService.postRandomPet()
 
-    suspend fun getPetCatalog(version: String?) = petService.getPetCatalog(version)
+    suspend fun getPetCatalog() = petService.getPetCatalog()
 }
