@@ -1,6 +1,7 @@
 package com.ddanddan.ddanddan.presentation.home.collect
 
 import androidx.lifecycle.ViewModel
+import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetPetListUseCase
 import com.ddanddan.domain.usecase.PostMainPetUseCase
@@ -17,10 +18,23 @@ import javax.inject.Inject
 class CollectViewModel @Inject constructor(
     private val getPetListUseCase: GetPetListUseCase,
     private val postMainPetUseCase: PostMainPetUseCase,
-    private val getMainPetUseCase: GetMainPetUseCase
+    private val getMainPetUseCase: GetMainPetUseCase,
+    private val getLocalCatalogUseCase: GetLocalCatalogUseCase
 ) : ContainerHost<PetCollectionState, PetCollectionSideEffect>, ViewModel() {
     override val container =
         container<PetCollectionState, PetCollectionSideEffect>(PetCollectionState())
+
+    init {
+        loadCatalog()
+    }
+
+    private fun loadCatalog() = intent {
+        runCatching {
+            getLocalCatalogUseCase()
+        }.onSuccess { catalog ->
+            reduce { state.copy(catalog = catalog) }
+        }
+    }
 
     fun showSnackBarEvent(msg: String, icon: Int) = intent {
         postSideEffect(PetCollectionSideEffect.SnackBarMsg(msg, icon))
