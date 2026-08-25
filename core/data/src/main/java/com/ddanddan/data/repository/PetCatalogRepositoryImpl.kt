@@ -17,15 +17,13 @@ class PetCatalogRepositoryImpl @Inject constructor(
     private val dataStore: ddanddanDataStore
 ) : PetCatalogRepository {
 
-    override suspend fun getCachedRevision(): String? {
-        return dataStore.petCatalogRevision // DataStore에 revision 저장
-    }
-
     override suspend fun getPetCatalog(): PetCatalog {
-        val cachedRevision = getCachedRevision()
-        val response = remotePetDataSource.getPetCatalog(cachedRevision)
+        // /v1/pets/catalog는 항상 200을 반환하므로, 갱신 필요 여부는
+        // X-Pet-Catalog-Download-Required 응답 헤더로 판단한다 (304 아님)
+        val response = remotePetDataSource.getPetCatalog()
+        val needsDownload = response.headers()["X-Pet-Catalog-Download-Required"]?.toBoolean() ?: true
 
-        return if (response.code() == 304) {
+        return if (!needsDownload) {
             // 변경 없으면 로컬에서 반환
             getLocalCatalog()
         } else {
