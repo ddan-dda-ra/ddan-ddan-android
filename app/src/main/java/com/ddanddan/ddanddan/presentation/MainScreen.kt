@@ -24,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ddanddan.ddanddan.di.AnalyticsEntryPoint
 import com.ddanddan.ddanddan.presentation.error.ErrorScreen
-import com.ddanddan.ddanddan.presentation.friends.AddedFriendScreen
+import com.ddanddan.ddanddan.presentation.friends.AddedFriendRoute
 import com.ddanddan.ddanddan.presentation.friends.FriendsRoute
 import com.ddanddan.ddanddan.presentation.home.GrantedNotRoute
 import com.ddanddan.ddanddan.presentation.home.HomeRoute
@@ -501,7 +501,7 @@ fun MainScreen(
             ) {
                 val type = navBackStackEntry?.arguments?.getString("type") ?: "CAT"
                 val level = navBackStackEntry?.arguments?.getInt("level") ?: 1
-                AddedFriendScreen(
+                AddedFriendRoute(
                     friendPetType = type,
                     friendPetLevel = level,
                     onNavigateFriends = {
