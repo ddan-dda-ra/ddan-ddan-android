@@ -37,7 +37,6 @@ import com.ddanddan.ddanddan.presentation.signup.SignUpSideEffect
 import com.ddanddan.ddanddan.presentation.signup.SignUpState
 import com.ddanddan.ddanddan.presentation.signup.SignUpViewModel
 import com.ddanddan.ddanddan.util.event.SignUpEvent
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -84,19 +83,19 @@ fun SetEggRoute(
 @Preview
 fun SetEggScreen(
     signUpState: SignUpState = SignUpState(),
-    onTypeChange: (PetTypeEnum) -> Unit = {},
+    onTypeChange: (String) -> Unit = {},
     onNextBtnClick: () -> Unit = {}
 ) {
     val eggMap = mapOf(
-        PetTypeEnum.CAT to R.drawable.ic_egg_pink,
-        PetTypeEnum.HAMSTER to R.drawable.ic_egg_green,
-        PetTypeEnum.DOG to R.drawable.ic_egg_purple,
-        PetTypeEnum.PENGUIN to R.drawable.ic_egg_blue,
-        PetTypeEnum.MOLE to R.drawable.ic_egg_gray
+        "CAT" to R.drawable.ic_egg_pink,
+        "HAMSTER" to R.drawable.ic_egg_green,
+        "DOG" to R.drawable.ic_egg_purple,
+        "PENGUIN" to R.drawable.ic_egg_blue,
+        "MOLE" to R.drawable.ic_egg_gray
     )
 
     @Composable
-    fun EggItem(petTypeEnum: PetTypeEnum) {
+    fun EggItem(petType: String) {
         Box(
             modifier = Modifier
                 .aspectRatio(1f)
@@ -106,15 +105,15 @@ fun SetEggScreen(
                 )
                 .border(
                     3.dp,
-                    if (signUpState.petType == petTypeEnum) DDanDDanColorPalette.current.color_outline_level01_active
+                    if (signUpState.petType == petType) DDanDDanColorPalette.current.color_outline_level01_active
                     else DDanDDanColorPalette.current.elevation_color_elevation_level01,
                     RoundedCornerShape(8.dp)
                 )
-                .clickable { onTypeChange(petTypeEnum) },
+                .clickable { onTypeChange(petType) },
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = eggMap[petTypeEnum] ?: R.drawable.ic_egg_pink),
+                painter = painterResource(id = eggMap[petType] ?: R.drawable.ic_egg_pink),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(start = 34.29.dp, top = 40.dp, end = 34.29.dp, bottom = 24.29.dp)
@@ -174,7 +173,7 @@ fun SetEggScreen(
 @Composable
 fun SetEggBtn(
     text: String,
-    petTypeEnum: PetTypeEnum?,
+    petTypeEnum: String?,
     onClick: () -> Unit = {}
 ) {
     val isValid = petTypeEnum != null

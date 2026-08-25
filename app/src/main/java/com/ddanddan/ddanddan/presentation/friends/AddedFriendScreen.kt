@@ -32,7 +32,6 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.toAnimal
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -41,7 +40,7 @@ import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
 @Composable
 @Preview
 fun AddedFriendScreen(
-    friendPetType: PetTypeEnum = PetTypeEnum.DOG,
+    friendPetType: String = "DOG",
     friendPetLevel: Int = 1,
     onNavigateFriends: () -> Unit = {}
 ) {

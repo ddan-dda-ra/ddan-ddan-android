@@ -3,7 +3,6 @@ package com.ddanddan.ddanddan.presentation.signup
 import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.util.AnalyticsEvent
 import com.ddanddan.ddanddan.util.AnalyticsManager
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.usecase.PostMainPetUseCase
 import com.ddanddan.domain.usecase.PostTypePetUseCase
 import com.ddanddan.domain.usecase.PutUserInfoUseCase
@@ -67,9 +66,9 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun setPetType(petTypeEnum: PetTypeEnum) = intent {
+    fun setPetType(petType: String) = intent {
         reduce {
-            state.copy(petType = petTypeEnum)
+            state.copy(petType = petType)
         }
     }
 

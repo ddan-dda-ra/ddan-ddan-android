@@ -45,7 +45,6 @@ import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.util.event.FriendsEvent.*
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toColor
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.Pretendard
@@ -62,7 +61,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun FriendsRoute(
     friendsViewModel: FriendsViewModel = hiltViewModel(),
-    navigateAddedFriend: (PetTypeEnum, Int) -> Unit
+    navigateAddedFriend: (String, Int) -> Unit
 ) {
     val friendsState by friendsViewModel.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -327,7 +326,7 @@ fun FriendsTopBar(
 fun FriendRow(
     modifier: Modifier = Modifier,
     nickname: String? = "이름입니뎅",
-    mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
+    mainPetType: String? = "CAT",
     petLevel: Int? = 1,
     onDelete: () -> Unit = {},
     isBottomSheet: Boolean = false

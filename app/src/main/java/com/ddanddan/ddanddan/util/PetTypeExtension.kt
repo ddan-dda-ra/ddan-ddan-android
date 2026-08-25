@@ -2,11 +2,10 @@ package com.ddanddan.ddanddan.util
 
 import androidx.compose.ui.graphics.Color
 import com.ddanddan.ddanddan.R
-import com.ddanddan.domain.enums.PetTypeEnum
 
-fun PetTypeEnum?.toAnimal(level: Int?): Int {
+fun String?.toAnimal(level: Int?): Int {
     return when (this) {
-        PetTypeEnum.CAT -> {
+        "CAT" -> {
             when (level) {
                 1 -> R.drawable.ic_cat_level1
                 2 -> R.drawable.ic_cat_level2
@@ -16,7 +15,7 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
             }
         }
 
-        PetTypeEnum.DOG -> {
+        "DOG" -> {
             when (level) {
                 1 -> R.drawable.ic_dog_level1
                 2 -> R.drawable.ic_dog_level2
@@ -26,7 +25,7 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
             }
         }
 
-        PetTypeEnum.PENGUIN -> {
+        "PENGUIN" -> {
             when (level) {
                 1 -> R.drawable.ic_penguin_level1
                 2 -> R.drawable.ic_penguin_level2
@@ -36,7 +35,7 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
             }
         }
 
-        PetTypeEnum.HAMSTER -> {
+        "HAMSTER" -> {
             when (level) {
                 1 -> R.drawable.ic_hamster_level1
                 2 -> R.drawable.ic_hamster_level2
@@ -46,7 +45,7 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
             }
         }
 
-        PetTypeEnum.MOLE -> {
+        "MOLE" -> {
             when (level) {
                 1 -> R.drawable.ic_mole_level1
                 2 -> R.drawable.ic_mole_level2
@@ -60,9 +59,9 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
     }
 }
 
-fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
+fun String?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
     return when (this) {
-        PetTypeEnum.CAT -> {
+        "CAT" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_cat_level1_default
@@ -82,7 +81,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        PetTypeEnum.DOG -> {
+        "DOG" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_puppy_level1_default
@@ -102,7 +101,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        PetTypeEnum.PENGUIN -> {
+        "PENGUIN" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_penguin_level1_default
@@ -122,7 +121,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        PetTypeEnum.HAMSTER -> {
+        "HAMSTER" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_hamster_level1_default
@@ -142,7 +141,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        PetTypeEnum.MOLE -> {
+        "MOLE" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_mole_level1_default
@@ -166,35 +165,35 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
     }
 }
 
-fun PetTypeEnum?.toBackgroundImage(): Int {
+fun String?.toBackgroundImage(): Int {
     return when (this) {
-        PetTypeEnum.CAT -> R.drawable.ic_bg_cat
-        PetTypeEnum.DOG -> R.drawable.ic_bg_dog
-        PetTypeEnum.PENGUIN -> R.drawable.ic_bg_penguin
-        PetTypeEnum.HAMSTER -> R.drawable.ic_bg_hamster
-        PetTypeEnum.MOLE -> R.drawable.ic_bg_mole
+        "CAT" -> R.drawable.ic_bg_cat
+        "DOG" -> R.drawable.ic_bg_dog
+        "PENGUIN" -> R.drawable.ic_bg_penguin
+        "HAMSTER" -> R.drawable.ic_bg_hamster
+        "MOLE" -> R.drawable.ic_bg_mole
         else -> R.drawable.ic_bg_transparent
     }
 }
 
-fun PetTypeEnum?.toRectBackgroundImage(): Int {
+fun String?.toRectBackgroundImage(): Int {
     return when (this) {
-        PetTypeEnum.CAT -> R.drawable.ic_bg_cat_rect
-        PetTypeEnum.DOG -> R.drawable.ic_bg_dog_rect
-        PetTypeEnum.PENGUIN -> R.drawable.ic_bg_penguin_rect
-        PetTypeEnum.HAMSTER -> R.drawable.ic_bg_hamster_rect
-        PetTypeEnum.MOLE -> R.drawable.ic_bg_mole_rect
+        "CAT" -> R.drawable.ic_bg_cat_rect
+        "DOG" -> R.drawable.ic_bg_dog_rect
+        "PENGUIN" -> R.drawable.ic_bg_penguin_rect
+        "HAMSTER" -> R.drawable.ic_bg_hamster_rect
+        "MOLE" -> R.drawable.ic_bg_mole_rect
         else -> R.drawable.ic_bg_cat_rect
     }
 }
 
-fun PetTypeEnum?.toColor(): Color {
+fun String?.toColor(): Color {
     return when (this) {
-        PetTypeEnum.CAT -> Color(0xFFFD85FF)
-        PetTypeEnum.DOG -> Color(0xFF9B6CFF)
-        PetTypeEnum.PENGUIN -> Color(0xFF4E95FF)
-        PetTypeEnum.HAMSTER -> Color(0xFF46F8A2)
-        PetTypeEnum.MOLE -> Color(0xFFD0DAE4)
+        "CAT" -> Color(0xFFFD85FF)
+        "DOG" -> Color(0xFF9B6CFF)
+        "PENGUIN" -> Color(0xFF4E95FF)
+        "HAMSTER" -> Color(0xFF46F8A2)
+        "MOLE" -> Color(0xFFD0DAE4)
         else -> Color(0xFFFD85FF)
     }
 }

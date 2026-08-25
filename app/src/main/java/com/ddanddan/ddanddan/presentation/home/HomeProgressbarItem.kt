@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ddanddan.ddanddan.util.toColor
 import com.ddanddan.domain.entity.Pet
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -160,6 +159,6 @@ fun DDanDDanProgressbar(
 )
 fun HomeProgressbarItemPreview() {
     HomeProgressbarItem(
-        homeState = HomeState(pet = Pet("cat", PetTypeEnum.CAT, 1, 1.0))
+        homeState = HomeState(pet = Pet("cat", "CAT", 1, 1.0))
     )
 }

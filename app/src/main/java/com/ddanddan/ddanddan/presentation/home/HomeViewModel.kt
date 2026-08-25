@@ -127,7 +127,7 @@ class HomeViewModel @Inject constructor(
                 reduce {
                     state.copy(pet = it)
                 }
-                widgetManager.updateWidgetPet(it.type.toString(), it.level)
+                widgetManager.updateWidgetPet(it.type, it.level)
             }.onFailure {
                 if (it is HttpException) {
                     postSideEffect(HomeSideEffect.NetworkError(it.code()))

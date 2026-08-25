@@ -58,8 +58,6 @@ import com.ddanddan.ddanddan.util.event.MainTabEvent
 import com.ddanddan.ddanddan.util.event.MyPageEvent
 import com.ddanddan.ddanddan.util.event.OnboardingEvent
 import com.ddanddan.ddanddan.util.event.SignUpEvent
-import com.ddanddan.domain.enums.PetTypeEnum
-import com.ddanddan.domain.enums.toPetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanOneButtonDialog
 import com.ddanddan.ui.ext.sharedViewModel
@@ -308,11 +306,10 @@ fun MainScreen(
                         type = NavType.IntType; defaultValue = 0
                     },
                     navArgument("petType") {
-                        type = NavType.StringType; defaultValue = PetTypeEnum.CAT.name
+                        type = NavType.StringType; defaultValue = "CAT"
                     })
             ) {
-                val petTypeString = it.arguments?.getString("petType") ?: PetTypeEnum.CAT.name
-                val petType = PetTypeEnum.valueOf(petTypeString)
+                val petType = it.arguments?.getString("petType") ?: "CAT"
                 LevelUpRoute(
                     level = it.arguments?.getInt("level") ?: 1,
                     petType = petType,
@@ -502,7 +499,7 @@ fun MainScreen(
                     }
                 )
             ) {
-                val type = navBackStackEntry?.arguments?.getString("type")?.toPetTypeEnum() ?: PetTypeEnum.CAT
+                val type = navBackStackEntry?.arguments?.getString("type") ?: "CAT"
                 val level = navBackStackEntry?.arguments?.getInt("level") ?: 1
                 AddedFriendScreen(
                     friendPetType = type,

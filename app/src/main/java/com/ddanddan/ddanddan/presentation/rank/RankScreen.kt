@@ -67,7 +67,6 @@ import com.ddanddan.ddanddan.presentation.friends.ProfileDialog
 import com.ddanddan.ddanddan.util.event.RankingEvent
 import com.ddanddan.ddanddan.util.toAnimal
 import com.ddanddan.ddanddan.util.toColor
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -583,7 +582,7 @@ fun TopRankerView(
     rank: Int = 1,
     nickname: String? = "일이삼등입니다다다다다다",
     contents: Int? = 1024,
-    mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
+    mainPetType: String? = "CAT",
     petLevel: Int? = 1,
     isCenter: Boolean = false
 ) {
@@ -662,7 +661,7 @@ fun SimpleRankerView(
     rank: Int = 4,
     nickname: String? = "일이삼사오육칠팔구십",
     contents: Int? = 987,
-    mainPetType: PetTypeEnum? = PetTypeEnum.CAT,
+    mainPetType: String? = "CAT",
     petLevel: Int? = 1,
     isBottomSheet: Boolean = false,
     isMyRecord: Boolean = false

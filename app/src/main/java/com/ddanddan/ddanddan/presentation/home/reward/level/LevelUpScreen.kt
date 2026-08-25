@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ddanddan.base.R
 import com.ddanddan.ddanddan.util.toAnimal
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
@@ -33,7 +32,7 @@ import com.ddanddan.ui.compose.theme.DDanDDanTheme
 @Composable
 fun LevelUpRoute(
     level: Int,
-    petType: PetTypeEnum,
+    petType: String,
     onButtonClick: () -> Unit,
     navigateToNetPet: () -> Unit
 ) {
@@ -56,7 +55,7 @@ fun LevelUpRoute(
 fun LevelUpScreen(
     isPetLevelUpCompleted: Boolean = false,
     level: Int = 1,
-    petType: PetTypeEnum = PetTypeEnum.CAT,
+    petType: String = "CAT",
     onButtonClick: () -> Unit = {}
 ) {
     Scaffold(

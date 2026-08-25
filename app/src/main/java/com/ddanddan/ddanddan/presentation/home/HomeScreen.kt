@@ -230,7 +230,7 @@ fun HomeRoute(
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is HomeSideEffect.NavigateLevelUp -> {
-                onNavigateLevelUp(sideEffect.level, sideEffect.petType.name)
+                onNavigateLevelUp(sideEffect.level, sideEffect.petType)
             }
 
             is HomeSideEffect.NetworkError -> {

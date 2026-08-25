@@ -46,7 +46,6 @@ import com.ddanddan.ddanddan.presentation.widget.DDanWidgetPreferences.CALORIES_
 import com.ddanddan.ddanddan.presentation.widget.DDanWidgetPreferences.PET_LEVEL_VALUE
 import com.ddanddan.ddanddan.presentation.widget.DDanWidgetPreferences.PET_TYPE_VALUE
 import com.ddanddan.ddanddan.util.toAnimal
-import com.ddanddan.domain.enums.PetTypeEnum
 
 object DDanWidgetPreferences {
     val CALORIES_VALUE = intPreferencesKey("CALORIES_VALUE")
@@ -122,7 +121,7 @@ class DDanWidget : GlanceAppWidget() {
                 Image(
                     modifier = GlanceModifier.defaultWeight(),
                     provider = ImageProvider(
-                        resId = PetTypeEnum.valueOf(petTypeValue).toAnimal(petLevelValue)
+                        resId = petTypeValue.toAnimal(petLevelValue)
                     ),
                     contentDescription = null
                 )
