@@ -3,6 +3,7 @@ package com.ddanddan.ddanddan.di
 import android.content.Context
 import com.ddanddan.data.provider.KakaoProvider
 import com.ddanddan.ddanddan.presentation.widget.WidgetManager
+import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +20,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWidgetManager(@ApplicationContext context: Context): WidgetManager {
-        return WidgetManager(context)
+    fun provideWidgetManager(
+        @ApplicationContext context: Context,
+        getLocalCatalogUseCase: GetLocalCatalogUseCase
+    ): WidgetManager {
+        return WidgetManager(context, getLocalCatalogUseCase)
     }
 }
