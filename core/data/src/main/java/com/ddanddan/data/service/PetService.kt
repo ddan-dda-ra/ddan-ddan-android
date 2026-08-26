@@ -30,7 +30,7 @@ interface PetService {
         @Body petType: RequestTypePet
     ): ResponsePet
 
-    @POST("/v1/pets/me/random")
+    @POST("/v1/pets/me/gacha")
     suspend fun postRandomPet(): ResponsePet
 
     // X-Pet-Catalog-Version 헤더는 PetCatalogInterceptor가 모든 요청에 일괄 설정한다
