@@ -12,6 +12,9 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import coil.Coil
+import coil.ImageLoader
+import coil.decode.SvgDecoder
 import com.chottulink.lib.ChottuLink
 import com.ddanddan.ddanddan.BuildConfig.DEBUG
 import com.ddanddan.ddanddan.BuildConfig.KAKAO_APP_KEY
@@ -34,6 +37,13 @@ class MyApp : Application(), LifecycleObserver {
         KakaoSdk.init(applicationContext, KAKAO_APP_KEY)
         ChottuLink.init(this, BuildConfig.CHOTTULINK_KEY)
         appContext = applicationContext
+
+        // 펫 카탈로그의 imageUrl이 전부 .svg라 Coil 기본 디코더로는 못 읽는다
+        Coil.setImageLoader(
+            ImageLoader.Builder(this)
+                .components { add(SvgDecoder.Factory()) }
+                .build()
+        )
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
