@@ -615,6 +615,7 @@ fun TopRankerView(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 16.dp)
             ,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             PetLottie(
