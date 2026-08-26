@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -61,7 +63,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -91,14 +92,16 @@ import com.ddanddan.ddanddan.presentation.component.EggGachaCard
 import com.ddanddan.ddanddan.service.PhoneDataLayerService
 import com.ddanddan.ddanddan.util.event.HomeEvent
 import com.ddanddan.ddanddan.util.colorFor
+import com.ddanddan.ddanddan.util.colorHexFor
 import com.ddanddan.ddanddan.util.lottieUrlFor
-import com.ddanddan.ddanddan.util.toBackgroundImage
 import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.domain.entity.Pet
 import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
+import com.ddanddan.ui.compose.component.PetBackground
+import com.ddanddan.ui.compose.component.PetBackgroundShape
 import com.ddanddan.ui.compose.component.DDanActionButton
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanLoadingDialog
@@ -548,13 +551,13 @@ private fun PetContent(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(homeState.pet?.type.toBackgroundImage()),
-            contentScale = ContentScale.FillHeight,
-            contentDescription = "동물 이미지",
+        PetBackground(
+            mainColorHex = homeState.catalog.colorHexFor(homeState.pet?.type),
+            shape = PetBackgroundShape.STAR,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxHeight()
                 .padding(horizontal = 20.dp)
+                .aspectRatio(320f / 370f)
         )
 
         DDanAnimationTooltip(

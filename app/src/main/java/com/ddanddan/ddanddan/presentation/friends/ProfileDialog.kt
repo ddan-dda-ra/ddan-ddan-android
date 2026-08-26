@@ -26,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,9 +38,9 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.friends.fireworks.FireworkEffect
+import com.ddanddan.ddanddan.util.colorHexFor
 import com.ddanddan.ddanddan.util.lottieUrlFor
 import com.ddanddan.ddanddan.util.toLottie
-import com.ddanddan.ddanddan.util.toRectBackgroundImage
 import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.UserDetail
 import com.ddanddan.ui.compose.DDanDDanColorPalette
@@ -49,6 +48,8 @@ import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.component.DDanMarginHorizontalSpacer
 import com.ddanddan.ui.compose.component.DDanMarginVerticalSpacer
+import com.ddanddan.ui.compose.component.PetBackground
+import com.ddanddan.ui.compose.component.PetBackgroundShape
 import com.ddanddan.ui.ext.noRippleClickable
 
 /**
@@ -110,10 +111,9 @@ fun ProfileDialog(
                             .fillMaxWidth()
                             .height(200.dp)
                     ) {
-                        Image(
-                            painter = painterResource(id = userDetail.mainPet.type.toRectBackgroundImage()),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
+                        PetBackground(
+                            mainColorHex = catalog.colorHexFor(userDetail.mainPet.type),
+                            shape = PetBackgroundShape.RECT,
                             modifier = Modifier.fillMaxSize()
                         )
 

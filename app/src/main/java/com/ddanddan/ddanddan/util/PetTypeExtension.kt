@@ -169,28 +169,6 @@ fun String?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
     }
 }
 
-fun String?.toBackgroundImage(): Int {
-    return when (this) {
-        "CAT" -> R.drawable.ic_bg_cat
-        "DOG" -> R.drawable.ic_bg_dog
-        "PENGUIN" -> R.drawable.ic_bg_penguin
-        "HAMSTER" -> R.drawable.ic_bg_hamster
-        "MOLE" -> R.drawable.ic_bg_mole
-        else -> R.drawable.ic_bg_transparent
-    }
-}
-
-fun String?.toRectBackgroundImage(): Int {
-    return when (this) {
-        "CAT" -> R.drawable.ic_bg_cat_rect
-        "DOG" -> R.drawable.ic_bg_dog_rect
-        "PENGUIN" -> R.drawable.ic_bg_penguin_rect
-        "HAMSTER" -> R.drawable.ic_bg_hamster_rect
-        "MOLE" -> R.drawable.ic_bg_mole_rect
-        else -> R.drawable.ic_bg_cat_rect
-    }
-}
-
 fun String?.toColor(): Color {
     return when (this) {
         "CAT" -> Color(0xFFFD85FF)
@@ -215,3 +193,16 @@ fun PetCatalog?.imageUrlFor(type: String?, level: Int?): String? =
 
 fun PetCatalog?.lottieUrlFor(type: String?, level: Int?, isPlayEat: Boolean): String? =
     if (type == null || level == null) null else this?.findLottieUrl(type, level, isPlayEat)
+
+// PetBackground처럼 원본 hex 문자열이 필요한 곳을 위한 버전. 카탈로그에 없으면 toColor()와 같은 기본값의 hex 표현을 쓴다.
+fun String?.toColorHex(): String = when (this) {
+    "CAT" -> "#FD85FF"
+    "DOG" -> "#9B6CFF"
+    "PENGUIN" -> "#4E95FF"
+    "HAMSTER" -> "#46F8A2"
+    "MOLE" -> "#D0DAE4"
+    else -> "#FD85FF"
+}
+
+fun PetCatalog?.colorHexFor(type: String?): String =
+    type?.let { this?.findColorHex(it) } ?: type.toColorHex()

@@ -62,7 +62,7 @@ fun PetBackground(
     val shadowColor = remember(mainColor) { mainColor.toShadowColor() }
 
     Canvas(
-        modifier = modifier.size(shape.viewportWidth.dp, shape.viewportHeight.dp)
+        modifier = modifier
     ) {
         val scaleX = size.width / shape.viewportWidth
         val scaleY = size.height / shape.viewportHeight
