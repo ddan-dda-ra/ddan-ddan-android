@@ -52,12 +52,17 @@ object RetrofitModule {
     fun provideOkHttpClient(
         @Logger loggingInterceptor: Interceptor,
         @Auth authInterceptor: Interceptor,
+        petCatalogInterceptor: PetCatalogInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
-        .addNetworkInterceptor(FlipperUtil.flipperInterceptor)
+        .apply {
+            if (BuildConfig.DEBUG) {
+                addNetworkInterceptor(FlipperUtil.flipperInterceptor)
+            }
+        }
         .addInterceptor(loggingInterceptor)
         .addInterceptor(authInterceptor)
+        .addInterceptor(petCatalogInterceptor)
         .build()
-
 
     @Provides
     @Singleton
@@ -67,21 +72,5 @@ object RetrofitModule {
         .baseUrl(BASE_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    @Mobile
-    fun provideOkHttpClient(
-        @Logger loggingInterceptor: Interceptor,
-        @Auth authInterceptor: Interceptor,
-        petCatalogInterceptor: PetCatalogInterceptor,  // 추가
-    ): OkHttpClient = OkHttpClient.Builder()
-        .apply {
-            if (BuildConfig.DEBUG) {
-                addNetworkInterceptor(FlipperUtil.flipperInterceptor)
-            }
-        }
-        .addInterceptor(loggingInterceptor)
-        .addInterceptor(authInterceptor)
-        .addInterceptor(petCatalogInterceptor)  // 추가
         .build()
 }
