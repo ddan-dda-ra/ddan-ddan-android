@@ -7,7 +7,7 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
 import androidx.glance.state.PreferencesGlanceStateDefinition
 import com.ddanddan.ddanddan.util.imageUrlFor
-import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @Singleton
 class WidgetManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val getLocalCatalogUseCase: GetLocalCatalogUseCase
+    private val syncPetCatalogUseCase: SyncPetCatalogUseCase
 ) {
     suspend fun updateWidgetCalories(calories: Int) {
         try {
@@ -41,7 +41,7 @@ class WidgetManager @Inject constructor(
 
     suspend fun updateWidgetPet(petType: String, petLevel: Int) {
         try {
-            val imageUrl = runCatching { getLocalCatalogUseCase() }
+            val imageUrl = runCatching { syncPetCatalogUseCase() }
                 .getOrNull()
                 .imageUrlFor(petType, petLevel)
 

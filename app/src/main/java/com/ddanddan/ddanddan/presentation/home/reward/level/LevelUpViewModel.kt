@@ -1,7 +1,7 @@
 package com.ddanddan.ddanddan.presentation.home.reward.level
 
 import androidx.lifecycle.ViewModel
-import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -11,17 +11,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LevelUpViewModel @Inject constructor(
-    private val getLocalCatalogUseCase: GetLocalCatalogUseCase
+    private val syncPetCatalogUseCase: SyncPetCatalogUseCase
 ) : ViewModel(), ContainerHost<LevelUpState, Unit> {
     override val container = container<LevelUpState, Unit>(LevelUpState())
 
     init {
-        loadCatalog()
+        syncCatalog()
     }
 
-    private fun loadCatalog() = intent {
+    private fun syncCatalog() = intent {
         runCatching {
-            getLocalCatalogUseCase()
+            syncPetCatalogUseCase()
         }.onSuccess { catalog ->
             reduce { state.copy(catalog = catalog) }
         }

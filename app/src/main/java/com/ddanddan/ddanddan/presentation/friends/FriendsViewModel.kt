@@ -15,12 +15,12 @@ import com.ddanddan.domain.usecase.DeleteFriendUseCase
 import com.ddanddan.domain.usecase.GetFriendByCodeUseCase
 import com.ddanddan.domain.usecase.GetFriendsListUseCase
 import com.ddanddan.domain.usecase.GetInviteCodeUseCase
-import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetUserDetailUseCase
 import com.ddanddan.domain.usecase.GetUserInfoUseCase
 import com.ddanddan.domain.usecase.PostCheersUseCase
 import com.ddanddan.domain.usecase.PostInviteFriendUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -44,7 +44,7 @@ class FriendsViewModel @Inject constructor(
     private val getUserDetailUseCase: GetUserDetailUseCase,
     private val getMainPetUseCase: GetMainPetUseCase,
     private val getFriendByCodeUseCase: GetFriendByCodeUseCase,
-    private val getLocalCatalogUseCase: GetLocalCatalogUseCase,
+    private val syncPetCatalogUseCase: SyncPetCatalogUseCase,
     private val analyticsManager: AnalyticsManager,
     ) : ViewModel(), ContainerHost<FriendsState, FriendsSideEffect> {
 
@@ -54,15 +54,15 @@ class FriendsViewModel @Inject constructor(
     private val inviteCode: String? = savedStateHandle["inviteCode"]
 
     init {
-        loadCatalog()
+        syncCatalog()
         inviteCode?.let {
             getFriendByCode(it)
         }
     }
 
-    private fun loadCatalog() = intent {
+    private fun syncCatalog() = intent {
         runCatching {
-            getLocalCatalogUseCase()
+            syncPetCatalogUseCase()
         }.onSuccess { catalog ->
             reduce { state.copy(catalog = catalog) }
         }

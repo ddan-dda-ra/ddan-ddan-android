@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import com.ddanddan.ddanddan.util.AnalyticsEvent
 import com.ddanddan.ddanddan.util.AnalyticsManager
 import com.ddanddan.ddanddan.util.toBaseErrorResponse
-import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
 import com.ddanddan.domain.usecase.GetRankingUseCase
 import com.ddanddan.domain.usecase.GetUserDetailUseCase
 import com.ddanddan.domain.usecase.PatchDailyCaloriesUseCase
 import com.ddanddan.domain.usecase.PostCheersUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -24,7 +24,7 @@ class RankViewModel @Inject constructor(
     private val patchDailyCaloriesUseCase: PatchDailyCaloriesUseCase,
     private val postCheersUseCase: PostCheersUseCase,
     private val getUserDetailUseCase: GetUserDetailUseCase,
-    private val getLocalCatalogUseCase: GetLocalCatalogUseCase,
+    private val syncPetCatalogUseCase: SyncPetCatalogUseCase,
     private val analyticsManager: AnalyticsManager,
     ) : ViewModel(), ContainerHost<RankState, RankSideEffect> {
 
@@ -32,12 +32,12 @@ class RankViewModel @Inject constructor(
         container<RankState, RankSideEffect>(RankState())
 
     init {
-        loadCatalog()
+        syncCatalog()
     }
 
-    private fun loadCatalog() = intent {
+    private fun syncCatalog() = intent {
         runCatching {
-            getLocalCatalogUseCase()
+            syncPetCatalogUseCase()
         }.onSuccess { catalog ->
             reduce { state.copy(catalog = catalog) }
         }

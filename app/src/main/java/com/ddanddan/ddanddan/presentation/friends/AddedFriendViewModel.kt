@@ -1,7 +1,7 @@
 package com.ddanddan.ddanddan.presentation.friends
 
 import androidx.lifecycle.ViewModel
-import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -11,17 +11,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddedFriendViewModel @Inject constructor(
-    private val getLocalCatalogUseCase: GetLocalCatalogUseCase
+    private val syncPetCatalogUseCase: SyncPetCatalogUseCase
 ) : ViewModel(), ContainerHost<AddedFriendState, Unit> {
     override val container = container<AddedFriendState, Unit>(AddedFriendState())
 
     init {
-        loadCatalog()
+        syncCatalog()
     }
 
-    private fun loadCatalog() = intent {
+    private fun syncCatalog() = intent {
         runCatching {
-            getLocalCatalogUseCase()
+            syncPetCatalogUseCase()
         }.onSuccess { catalog ->
             reduce { state.copy(catalog = catalog) }
         }

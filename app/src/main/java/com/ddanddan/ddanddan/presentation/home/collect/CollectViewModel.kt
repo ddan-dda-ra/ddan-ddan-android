@@ -1,10 +1,10 @@
 package com.ddanddan.ddanddan.presentation.home.collect
 
 import androidx.lifecycle.ViewModel
-import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
 import com.ddanddan.domain.usecase.GetMainPetUseCase
 import com.ddanddan.domain.usecase.GetPetListUseCase
 import com.ddanddan.domain.usecase.PostMainPetUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -19,18 +19,18 @@ class CollectViewModel @Inject constructor(
     private val getPetListUseCase: GetPetListUseCase,
     private val postMainPetUseCase: PostMainPetUseCase,
     private val getMainPetUseCase: GetMainPetUseCase,
-    private val getLocalCatalogUseCase: GetLocalCatalogUseCase
+    private val syncPetCatalogUseCase: SyncPetCatalogUseCase
 ) : ContainerHost<PetCollectionState, PetCollectionSideEffect>, ViewModel() {
     override val container =
         container<PetCollectionState, PetCollectionSideEffect>(PetCollectionState())
 
     init {
-        loadCatalog()
+        syncCatalog()
     }
 
-    private fun loadCatalog() = intent {
+    private fun syncCatalog() = intent {
         runCatching {
-            getLocalCatalogUseCase()
+            syncPetCatalogUseCase()
         }.onSuccess { catalog ->
             reduce { state.copy(catalog = catalog) }
         }

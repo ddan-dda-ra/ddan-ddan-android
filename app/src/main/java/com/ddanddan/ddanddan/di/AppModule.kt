@@ -3,7 +3,7 @@ package com.ddanddan.ddanddan.di
 import android.content.Context
 import com.ddanddan.data.provider.KakaoProvider
 import com.ddanddan.ddanddan.presentation.widget.WidgetManager
-import com.ddanddan.domain.usecase.GetLocalCatalogUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,8 +22,8 @@ object AppModule {
     @Singleton
     fun provideWidgetManager(
         @ApplicationContext context: Context,
-        getLocalCatalogUseCase: GetLocalCatalogUseCase
+        syncPetCatalogUseCase: SyncPetCatalogUseCase
     ): WidgetManager {
-        return WidgetManager(context, getLocalCatalogUseCase)
+        return WidgetManager(context, syncPetCatalogUseCase)
     }
 }
