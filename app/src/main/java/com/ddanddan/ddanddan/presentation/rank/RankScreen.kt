@@ -719,7 +719,7 @@ fun SimpleRankerView(
             text = nickname?:"",
             style = DDanDDanTypo.current.Body1,
             fontFamily = Pretendard,
-            color = DDanDDanColorPalette.current.color_text_body_teritary
+            color = DDanDDanColorPalette.current.color_text_body_secondary
         )
         if (isMyRecord) {
             DDanMarginHorizontalSpacer(8)
