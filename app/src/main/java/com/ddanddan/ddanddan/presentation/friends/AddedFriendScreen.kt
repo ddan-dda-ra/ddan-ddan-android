@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -134,7 +135,8 @@ fun AddedFriendScreen(
                     petType = friendPetType,
                     level = friendPetLevel,
                     catalog = catalog,
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
                 )
             }
 

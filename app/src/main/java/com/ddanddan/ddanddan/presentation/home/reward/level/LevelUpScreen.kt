@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -99,12 +100,14 @@ fun LevelUpScreen(
                     level = level,
                     catalog = catalog,
                     contentDescription = "배경 이미지",
-                    modifier = Modifier.constrainAs(overlayImage) {
-                        top.linkTo(backgroundImage.top, margin = 40.dp)
-                        start.linkTo(backgroundImage.start)
-                        bottom.linkTo(backgroundImage.bottom, margin = 20.dp)
-                        end.linkTo(backgroundImage.end)
-                    }
+                    modifier = Modifier
+                        .size(100.dp)
+                        .constrainAs(overlayImage) {
+                            top.linkTo(backgroundImage.top, margin = 40.dp)
+                            start.linkTo(backgroundImage.start)
+                            bottom.linkTo(backgroundImage.bottom, margin = 20.dp)
+                            end.linkTo(backgroundImage.end)
+                        }
                 )
             }
             Spacer(modifier = Modifier.height(32.dp))

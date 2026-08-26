@@ -64,6 +64,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.component.PetImage
+import com.ddanddan.ddanddan.presentation.component.PetLottie
 import com.ddanddan.ddanddan.presentation.friends.ProfileDialog
 import com.ddanddan.ddanddan.util.colorFor
 import com.ddanddan.ddanddan.util.event.RankingEvent
@@ -705,12 +706,11 @@ fun SimpleRankerView(
                 .background(catalog.colorFor(mainPetType)),
             contentAlignment = Alignment.Center
         ) {
-            PetImage(
+            PetLottie(
                 petType = mainPetType,
                 level = petLevel,
                 catalog = catalog,
-                contentDescription = "왕관 이미지",
-                modifier = Modifier.size(42.dp)
+                modifier = Modifier.size(36.dp)
             )
         }
         DDanMarginHorizontalSpacer(12)
