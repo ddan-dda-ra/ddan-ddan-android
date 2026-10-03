@@ -3,6 +3,7 @@ package com.ddanddan.ddanddan.di
 import com.ddanddan.data.interceptor.AppVersionInterceptor
 import com.ddanddan.data.interceptor.AuthInterceptor
 import com.ddanddan.data.interceptor.PetCatalogInterceptor
+import com.ddanddan.data.interceptor.UpdateRequiredInterceptor
 import com.ddanddan.ddanddan.BuildConfig
 import com.ddanddan.ddanddan.BuildConfig.BASE_URL
 import com.ddanddan.ddanddan.FlipperUtil
@@ -54,6 +55,7 @@ object RetrofitModule {
         @Logger loggingInterceptor: Interceptor,
         @Auth authInterceptor: Interceptor,
         petCatalogInterceptor: PetCatalogInterceptor,
+        updateRequiredInterceptor: UpdateRequiredInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
         .apply {
             if (BuildConfig.DEBUG) {
@@ -64,6 +66,7 @@ object RetrofitModule {
         .addInterceptor(loggingInterceptor)
         .addInterceptor(authInterceptor)
         .addInterceptor(petCatalogInterceptor)
+        .addInterceptor(updateRequiredInterceptor)
         .build()
 
     @Provides
