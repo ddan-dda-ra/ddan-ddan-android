@@ -1,5 +1,6 @@
 package com.ddanddan.ddanddan.di
 
+import com.ddanddan.data.interceptor.AppVersionInterceptor
 import com.ddanddan.data.interceptor.AuthInterceptor
 import com.ddanddan.data.interceptor.PetCatalogInterceptor
 import com.ddanddan.ddanddan.BuildConfig
@@ -59,6 +60,7 @@ object RetrofitModule {
                 addNetworkInterceptor(FlipperUtil.flipperInterceptor)
             }
         }
+        .addInterceptor(AppVersionInterceptor(BuildConfig.VERSION_NAME))
         .addInterceptor(loggingInterceptor)
         .addInterceptor(authInterceptor)
         .addInterceptor(petCatalogInterceptor)
