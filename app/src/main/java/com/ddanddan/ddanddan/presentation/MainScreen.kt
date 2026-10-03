@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ddanddan.ddanddan.di.AnalyticsEntryPoint
+import com.ddanddan.ddanddan.di.UpdateRequiredEntryPoint
 import com.ddanddan.ddanddan.presentation.error.ErrorScreen
 import com.ddanddan.ddanddan.presentation.friends.AddedFriendRoute
 import com.ddanddan.ddanddan.presentation.friends.FriendsRoute
@@ -89,6 +90,11 @@ fun MainScreen(
         AnalyticsEntryPoint::class.java
     ).analyticsManager()
 
+    val isUpdateRequired by EntryPointAccessors.fromActivity(
+        LocalContext.current as Activity,
+        UpdateRequiredEntryPoint::class.java
+    ).updateRequiredNotifier().updateRequired.collectAsState()
+
     LaunchedEffect(inviteCode) {
         inviteCode?.let {
             navController.navigate("${DDanDDanRoute.FRIENDS.route}?inviteCode=$it") {
@@ -111,6 +117,17 @@ fun MainScreen(
             title = "앱 업데이트",
             content = forceDialogMsg,
             buttonText = "업데이트 하러가기",
+            onClickConfirm = { goToPlayStore() }
+        )
+    }
+
+    // 서버가 426(Upgrade Required)을 내려준 경우 — API가 막히므로 닫을 수 없게 한다
+    if (isUpdateRequired) {
+        DDanOneButtonDialog(
+            title = "앱 업데이트",
+            content = "새로운 버전이 출시되었습니다. 원활한 사용을 위해 업데이트해 주세요.",
+            buttonText = "업데이트 하러가기",
+            dismissible = false,
             onClickConfirm = { goToPlayStore() }
         )
     }
