@@ -23,3 +23,16 @@ data class PetCatalogLevel(
     val localLottieDefaultPath: String? = null,
     val localLottiePlayEatPath: String? = null
 )
+
+fun PetCatalog.findImageUrl(type: String, level: Int): String? =
+    pets.find { it.type == type }
+        ?.levels?.find { it.level == level }
+        ?.imageUrl
+
+fun PetCatalog.findLottieUrl(type: String, level: Int, isPlayEat: Boolean): String? {
+    val petLevel = pets.find { it.type == type }?.levels?.find { it.level == level }
+    return if (isPlayEat) petLevel?.lottiePlayEatUrl else petLevel?.lottieDefaultUrl
+}
+
+fun PetCatalog.findColorHex(type: String): String? =
+    pets.find { it.type == type }?.colorCode
