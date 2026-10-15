@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -34,12 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import coil.compose.AsyncImage
 import com.ddanddan.ddanddan.R
 import com.ddanddan.ddanddan.presentation.theme.DDanDDanTheme
-import com.ddanddan.ddanddan.util.PetTypeEnum
 import com.ddanddan.ddanddan.util.toAnimal
-import com.ddanddan.ddanddan.util.toBackgroundImage
-import com.ddanddan.ddanddan.util.toPetType
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.ext.noRippleClickable
@@ -54,15 +53,16 @@ fun CalorieRoute(
     val todayCalories by viewModel.caloriesValue.collectAsState()
     val goalCalories by viewModel.targetCalories.collectAsState()
     val petType by viewModel.petType.collectAsState()
-    val petTypeEnum = petType.toPetType()
     val petLevel by viewModel.petLevel.collectAsState()
+    val petImageUrl by viewModel.petImageUrl.collectAsState()
 
     Timber.tag("kangmi").d("todayCalories: $todayCalories, goalCalories: $goalCalories")
     CalorieScreen(
         todayCalories = todayCalories,
         goalCalories = goalCalories.toDouble(),
-        petType = petTypeEnum,
+        petType = petType,
         petLevel = petLevel,
+        petImageUrl = petImageUrl,
         isCalorieTextDisplay = isCalorieTextDisplay,
         onDisplayStateChanged = { isCalorieTextDisplay = !isCalorieTextDisplay }
     )
@@ -73,8 +73,9 @@ fun CalorieScreen(
     modifier: Modifier = Modifier,
     todayCalories: Double = 0.0,
     goalCalories: Double = 400.0,
-    petType: PetTypeEnum = PetTypeEnum.CAT,
+    petType: String = "CAT",
     petLevel: Int = 1,
+    petImageUrl: String? = null,
     isCalorieTextDisplay: Boolean = true,
     onDisplayStateChanged: () -> Unit = {}
 ) {
@@ -108,10 +109,22 @@ fun CalorieScreen(
 
         }
         else {
-            Image(
-                painter = painterResource(id = petType.toAnimal(petLevel)),
-                contentDescription = "Pet Image"
-            )
+            val bundledPet = painterResource(id = petType.toAnimal(petLevel))
+            if (petImageUrl != null) {
+                // 서버 카탈로그 이미지. 로딩 중이거나 받기 실패하면 번들 이미지로 대체한다
+                AsyncImage(
+                    model = petImageUrl,
+                    contentDescription = "Pet Image",
+                    placeholder = bundledPet,
+                    error = bundledPet,
+                    modifier = Modifier.size(100.dp)
+                )
+            } else {
+                Image(
+                    painter = bundledPet,
+                    contentDescription = "Pet Image"
+                )
+            }
         }
     }
 }
