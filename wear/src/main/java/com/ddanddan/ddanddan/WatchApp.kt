@@ -3,6 +3,9 @@ package com.ddanddan.ddanddan
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import coil.Coil
+import coil.ImageLoader
+import coil.decode.SvgDecoder
 import com.ddanddan.ddanddan.util.WorkerUtils
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -15,6 +18,12 @@ class WatchApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+
+        Coil.setImageLoader(
+            ImageLoader.Builder(this)
+                .components { add(SvgDecoder.Factory()) }
+                .build()
+        )
 
         WorkerUtils.run {
             setupDailyMidnightResetWorker(this@WatchApp) // 자정에 칼로리 초기화

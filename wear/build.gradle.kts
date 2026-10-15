@@ -85,6 +85,8 @@ dependencies {
 
     // Compose UI dependencies
     implementation(libs.bundles.compose)
+    // 펫 카탈로그 이미지가 전부 SVG라 Coil에 SVG 디코더가 필요하다
+    implementation(libs.coil.svg)
 
     // Health Services
     implementation(libs.androidx.health.services)
