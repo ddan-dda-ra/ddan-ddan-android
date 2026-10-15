@@ -18,21 +18,21 @@ interface DdanDdanService {
     /**
      * 내 정보 조회
      */
-    @GET("/v1/user/me")
+    @GET("/v1/users/me")
     suspend fun getUser(
     ): ResponseUser
 
     /**
      * 메인 펫 조회
      */
-    @GET("/v1/user/me/main-pet")
+    @GET("/v1/users/me/main-pet")
     suspend fun getMainPet(
     ): ResponseMainPet
 
     /**
      * 일일 칼로리 갱신
      */
-    @PATCH("/v1/user/me/daily-calorie")
+    @PATCH("/v1/users/me/daily-calorie")
     suspend fun patchDailyCalorie(
         @Body requestBody: RequestDailyCalorie
     ): ResponseDailyCalorie
