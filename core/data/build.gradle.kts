@@ -3,6 +3,7 @@ plugins {
     id("ddanddan.android.library")
     kotlin("plugin.serialization") version libs.versions.kotlinVersion
     alias(libs.plugins.androidKotlin)
+    kotlin("kapt") // 추가
 }
 
 android {
@@ -45,4 +46,8 @@ dependencies {
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.prefenrences.android)
     implementation(libs.kotlin.coroutines)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 }

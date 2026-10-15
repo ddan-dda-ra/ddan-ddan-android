@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -61,7 +63,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -90,13 +91,17 @@ import com.ddanddan.ddanddan.presentation.component.EggCounterBadge
 import com.ddanddan.ddanddan.presentation.component.EggGachaCard
 import com.ddanddan.ddanddan.service.PhoneDataLayerService
 import com.ddanddan.ddanddan.util.event.HomeEvent
-import com.ddanddan.ddanddan.util.toBackgroundImage
-import com.ddanddan.ddanddan.util.toColor
+import com.ddanddan.ddanddan.util.colorFor
+import com.ddanddan.ddanddan.util.colorHexFor
+import com.ddanddan.ddanddan.util.lottieUrlFor
 import com.ddanddan.ddanddan.util.toLottie
 import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
+import com.ddanddan.ui.compose.component.PetBackground
+import com.ddanddan.ui.compose.component.PetBackgroundShape
 import com.ddanddan.ui.compose.component.DDanActionButton
 import com.ddanddan.ui.compose.component.DDanAnimationTooltip
 import com.ddanddan.ui.compose.component.DDanLoadingDialog
@@ -165,14 +170,19 @@ fun HomeRoute(
 
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(
+    val catalogLottieUrl = homeState.catalog.lottieUrlFor(
+        homeState.pet?.type,
+        homeState.pet?.level,
+        homeState.isPlayAndEatLottie
+    )
+    val compositionSpec = catalogLottieUrl?.let { LottieCompositionSpec.Url(it) }
+        ?: LottieCompositionSpec.RawRes(
             homeState.pet?.type.toLottie(
                 homeState.pet?.level,
                 homeState.isPlayAndEatLottie
             )
         )
-    )
+    val composition by rememberLottieComposition(compositionSpec)
 
     val vibrator = remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -230,7 +240,7 @@ fun HomeRoute(
     homeViewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is HomeSideEffect.NavigateLevelUp -> {
-                onNavigateLevelUp(sideEffect.level, sideEffect.petType.name)
+                onNavigateLevelUp(sideEffect.level, sideEffect.petType)
             }
 
             is HomeSideEffect.NetworkError -> {
@@ -422,8 +432,9 @@ fun HomeScreen(
         if (homeState.isShowingEggAnimation) {
             EggGachaAnimation(
                 modifier = Modifier.align(Alignment.TopCenter).padding(top = 203.dp),
-                petColor = homeState.pet?.type?.toColor() ?: Color(0xFFFD85FF),
+                petColor = homeState.catalog.colorFor(homeState.pet?.type),
                 newPet = homeState.newPet,
+                catalog = homeState.catalog,
                 onAnimationComplete = onEggAnimationComplete,
                 onGrowClick = onGrowClick
             )
@@ -540,13 +551,13 @@ private fun PetContent(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(homeState.pet?.type.toBackgroundImage()),
-            contentScale = ContentScale.FillHeight,
-            contentDescription = "동물 이미지",
+        PetBackground(
+            mainColorHex = homeState.catalog.colorHexFor(homeState.pet?.type),
+            shape = PetBackgroundShape.STAR,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxHeight()
                 .padding(horizontal = 20.dp)
+                .aspectRatio(320f / 370f)
         )
 
         DDanAnimationTooltip(
@@ -636,6 +647,7 @@ fun EggGachaAnimation(
     modifier: Modifier,
     petColor: Color,
     newPet: Pet?,
+    catalog: PetCatalog?,
     onAnimationComplete: () -> Unit,
     onGrowClick: () -> Unit
 ) {
@@ -716,7 +728,8 @@ fun EggGachaAnimation(
                         this.rotationY = if (isAnimating) rotationY else 0f
                         cameraDistance = 12f * density
                     },
-                pet = newPet
+                pet = newPet,
+                catalog = catalog
             )
 
             // 애니메이션이 끝난 후 나타나는 UI

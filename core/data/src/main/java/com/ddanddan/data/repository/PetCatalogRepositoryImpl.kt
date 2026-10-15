@@ -1,0 +1,53 @@
+package com.ddanddan.data.repository
+
+import com.ddanddan.data.datasource.remote.RemotePetDataSource
+import com.ddanddan.data.local.PetCatalogDao
+import com.ddanddan.data.local.toEntityList
+import com.ddanddan.data.local.toLevelEntityList
+import com.ddanddan.data.local.toPetCatalog
+import com.ddanddan.domain.ddanddanDataStore
+import com.ddanddan.domain.entity.PetCatalog
+import com.ddanddan.domain.repository.PetCatalogRepository
+import com.ddanddan.model.response.toPetCatalog
+import javax.inject.Inject
+
+class PetCatalogRepositoryImpl @Inject constructor(
+    private val remotePetDataSource: RemotePetDataSource,
+    private val petCatalogDao: PetCatalogDao,
+    private val dataStore: ddanddanDataStore
+) : PetCatalogRepository {
+
+    override suspend fun getPetCatalog(): PetCatalog {
+        // /v1/pets/catalog는 항상 200을 반환하므로, 갱신 필요 여부는
+        // X-Pet-Catalog-Download-Required 응답 헤더로 판단한다 (304 아님)
+        val response = remotePetDataSource.getPetCatalog()
+        val needsDownload = response.headers()["X-Pet-Catalog-Download-Required"]?.toBoolean() ?: true
+
+        return if (!needsDownload) {
+            // 변경 없으면 로컬에서 반환
+            getLocalCatalog()
+        } else {
+            // 새 데이터 저장 후 반환
+            val catalog = response.body()!!.toPetCatalog()
+            saveCatalog(catalog)
+            catalog
+        }
+    }
+
+    override suspend fun saveCatalog(catalog: PetCatalog) {
+        petCatalogDao.deleteAllPets()
+        petCatalogDao.deleteAllLevels()
+        petCatalogDao.insertPets(catalog.pets.toEntityList(catalog.revision))
+        petCatalogDao.insertLevels(catalog.pets.toLevelEntityList())
+        dataStore.petCatalogRevision = catalog.revision  // 추가!
+    }
+
+    override suspend fun getLocalCatalog(): PetCatalog {
+        val pets = petCatalogDao.getAllPets()
+        val levels = pets.map { pet ->
+            petCatalogDao.getLevelsByPetType(pet.type)
+        }
+        return pets.toPetCatalog(levels)
+    }
+
+}

@@ -164,7 +164,7 @@ class PhoneDataLayerService : WearableListenerService() {
                 // JSON 형식으로 데이터 생성
                 val jsonData = """
                     {
-                        "pet_type": "${pet.type.name}",
+                        "pet_type": "${pet.type}",
                         "pet_level": ${pet.level},
                         "target_calories": ${user.purposeCalorie}
                     }

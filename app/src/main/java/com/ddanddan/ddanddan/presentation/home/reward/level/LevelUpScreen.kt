@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,26 +24,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.base.R
-import com.ddanddan.ddanddan.util.toAnimal
-import com.ddanddan.domain.enums.PetTypeEnum
+import com.ddanddan.ddanddan.presentation.component.PetImage
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.NeoDgm
 import com.ddanddan.ui.compose.theme.DDanDDanTheme
+import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun LevelUpRoute(
     level: Int,
-    petType: PetTypeEnum,
+    petType: String,
     onButtonClick: () -> Unit,
-    navigateToNetPet: () -> Unit
+    navigateToNetPet: () -> Unit,
+    levelUpViewModel: LevelUpViewModel = hiltViewModel()
 ) {
+    val levelUpState by levelUpViewModel.collectAsState()
     val isPetLevelUpCompleted = level == 5
     LevelUpScreen(
         isPetLevelUpCompleted = isPetLevelUpCompleted,
         level = level,
         petType = petType,
+        catalog = levelUpState.catalog,
         onButtonClick = {
             if (!isPetLevelUpCompleted) {
                 onButtonClick()
@@ -56,7 +63,8 @@ fun LevelUpRoute(
 fun LevelUpScreen(
     isPetLevelUpCompleted: Boolean = false,
     level: Int = 1,
-    petType: PetTypeEnum = PetTypeEnum.CAT,
+    petType: String = "CAT",
+    catalog: PetCatalog? = null,
     onButtonClick: () -> Unit = {}
 ) {
     Scaffold(
@@ -87,15 +95,19 @@ fun LevelUpScreen(
                     }
                 )
 
-                Image(
-                    painter = painterResource(id = petType.toAnimal(level)),
+                PetImage(
+                    petType = petType,
+                    level = level,
+                    catalog = catalog,
                     contentDescription = "배경 이미지",
-                    modifier = Modifier.constrainAs(overlayImage) {
-                        top.linkTo(backgroundImage.top, margin = 40.dp)
-                        start.linkTo(backgroundImage.start)
-                        bottom.linkTo(backgroundImage.bottom, margin = 20.dp)
-                        end.linkTo(backgroundImage.end)
-                    }
+                    modifier = Modifier
+                        .size(100.dp)
+                        .constrainAs(overlayImage) {
+                            top.linkTo(backgroundImage.top, margin = 40.dp)
+                            start.linkTo(backgroundImage.start)
+                            bottom.linkTo(backgroundImage.bottom, margin = 20.dp)
+                            end.linkTo(backgroundImage.end)
+                        }
                 )
             }
             Spacer(modifier = Modifier.height(32.dp))

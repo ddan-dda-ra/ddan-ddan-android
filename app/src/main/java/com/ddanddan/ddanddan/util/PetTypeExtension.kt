@@ -2,11 +2,14 @@ package com.ddanddan.ddanddan.util
 
 import androidx.compose.ui.graphics.Color
 import com.ddanddan.ddanddan.R
-import com.ddanddan.domain.enums.PetTypeEnum
+import com.ddanddan.domain.entity.PetCatalog
+import com.ddanddan.domain.entity.findColorHex
+import com.ddanddan.domain.entity.findImageUrl
+import com.ddanddan.domain.entity.findLottieUrl
 
-fun PetTypeEnum?.toAnimal(level: Int?): Int {
+fun String?.toAnimal(level: Int?): Int {
     return when (this) {
-        PetTypeEnum.CAT -> {
+        "CAT" -> {
             when (level) {
                 1 -> R.drawable.ic_cat_level1
                 2 -> R.drawable.ic_cat_level2
@@ -16,7 +19,7 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
             }
         }
 
-        PetTypeEnum.DOG -> {
+        "DOG" -> {
             when (level) {
                 1 -> R.drawable.ic_dog_level1
                 2 -> R.drawable.ic_dog_level2
@@ -26,7 +29,7 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
             }
         }
 
-        PetTypeEnum.PENGUIN -> {
+        "PENGUIN" -> {
             when (level) {
                 1 -> R.drawable.ic_penguin_level1
                 2 -> R.drawable.ic_penguin_level2
@@ -36,7 +39,7 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
             }
         }
 
-        PetTypeEnum.HAMSTER -> {
+        "HAMSTER" -> {
             when (level) {
                 1 -> R.drawable.ic_hamster_level1
                 2 -> R.drawable.ic_hamster_level2
@@ -46,7 +49,7 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
             }
         }
 
-        PetTypeEnum.MOLE -> {
+        "MOLE" -> {
             when (level) {
                 1 -> R.drawable.ic_mole_level1
                 2 -> R.drawable.ic_mole_level2
@@ -60,9 +63,9 @@ fun PetTypeEnum?.toAnimal(level: Int?): Int {
     }
 }
 
-fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
+fun String?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
     return when (this) {
-        PetTypeEnum.CAT -> {
+        "CAT" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_cat_level1_default
@@ -82,7 +85,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        PetTypeEnum.DOG -> {
+        "DOG" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_puppy_level1_default
@@ -102,7 +105,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        PetTypeEnum.PENGUIN -> {
+        "PENGUIN" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_penguin_level1_default
@@ -122,7 +125,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        PetTypeEnum.HAMSTER -> {
+        "HAMSTER" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_hamster_level1_default
@@ -142,7 +145,7 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
             }
         }
 
-        PetTypeEnum.MOLE -> {
+        "MOLE" -> {
             when (isPlayAndEatLottie) {
                 false -> when (level) {
                     1 -> R.raw.motion_mole_level1_default
@@ -166,35 +169,40 @@ fun PetTypeEnum?.toLottie(level: Int?, isPlayAndEatLottie: Boolean): Int {
     }
 }
 
-fun PetTypeEnum?.toBackgroundImage(): Int {
+fun String?.toColor(): Color {
     return when (this) {
-        PetTypeEnum.CAT -> R.drawable.ic_bg_cat
-        PetTypeEnum.DOG -> R.drawable.ic_bg_dog
-        PetTypeEnum.PENGUIN -> R.drawable.ic_bg_penguin
-        PetTypeEnum.HAMSTER -> R.drawable.ic_bg_hamster
-        PetTypeEnum.MOLE -> R.drawable.ic_bg_mole
-        else -> R.drawable.ic_bg_transparent
-    }
-}
-
-fun PetTypeEnum?.toRectBackgroundImage(): Int {
-    return when (this) {
-        PetTypeEnum.CAT -> R.drawable.ic_bg_cat_rect
-        PetTypeEnum.DOG -> R.drawable.ic_bg_dog_rect
-        PetTypeEnum.PENGUIN -> R.drawable.ic_bg_penguin_rect
-        PetTypeEnum.HAMSTER -> R.drawable.ic_bg_hamster_rect
-        PetTypeEnum.MOLE -> R.drawable.ic_bg_mole_rect
-        else -> R.drawable.ic_bg_cat_rect
-    }
-}
-
-fun PetTypeEnum?.toColor(): Color {
-    return when (this) {
-        PetTypeEnum.CAT -> Color(0xFFFD85FF)
-        PetTypeEnum.DOG -> Color(0xFF9B6CFF)
-        PetTypeEnum.PENGUIN -> Color(0xFF4E95FF)
-        PetTypeEnum.HAMSTER -> Color(0xFF46F8A2)
-        PetTypeEnum.MOLE -> Color(0xFFD0DAE4)
+        "CAT" -> Color(0xFFFD85FF)
+        "DOG" -> Color(0xFF9B6CFF)
+        "PENGUIN" -> Color(0xFF4E95FF)
+        "HAMSTER" -> Color(0xFF46F8A2)
+        "MOLE" -> Color(0xFFD0DAE4)
         else -> Color(0xFFFD85FF)
     }
 }
+
+// 펫 카탈로그의 colorCode("#RRGGBB")를 파싱한다. 알 수 없는 포맷이면 null을 반환해 호출부가 로컬 기본값으로 폴백하게 한다.
+fun String?.toColorFromHex(): Color? =
+    this?.let { runCatching { Color(android.graphics.Color.parseColor(it)) }.getOrNull() }
+
+// 카탈로그에 해당 타입/레벨이 있으면 그 값을, 없으면(카탈로그 미로딩·새 타입 등) 번들 리소스 기반 기본값을 쓴다.
+fun PetCatalog?.colorFor(type: String?): Color =
+    type?.let { this?.findColorHex(it)?.toColorFromHex() } ?: type.toColor()
+
+fun PetCatalog?.imageUrlFor(type: String?, level: Int?): String? =
+    if (type == null || level == null) null else this?.findImageUrl(type, level)
+
+fun PetCatalog?.lottieUrlFor(type: String?, level: Int?, isPlayEat: Boolean): String? =
+    if (type == null || level == null) null else this?.findLottieUrl(type, level, isPlayEat)
+
+// PetBackground처럼 원본 hex 문자열이 필요한 곳을 위한 버전. 카탈로그에 없으면 toColor()와 같은 기본값의 hex 표현을 쓴다.
+fun String?.toColorHex(): String = when (this) {
+    "CAT" -> "#FD85FF"
+    "DOG" -> "#9B6CFF"
+    "PENGUIN" -> "#4E95FF"
+    "HAMSTER" -> "#46F8A2"
+    "MOLE" -> "#D0DAE4"
+    else -> "#FD85FF"
+}
+
+fun PetCatalog?.colorHexFor(type: String?): String =
+    type?.let { this?.findColorHex(it) } ?: type.toColorHex()

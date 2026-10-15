@@ -2,6 +2,8 @@ package com.ddanddan.ddanddan.presentation.widget
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -22,8 +24,10 @@ import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
+import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.background
 import androidx.glance.currentState
+import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -46,20 +50,30 @@ import com.ddanddan.ddanddan.presentation.widget.DDanWidgetPreferences.CALORIES_
 import com.ddanddan.ddanddan.presentation.widget.DDanWidgetPreferences.PET_LEVEL_VALUE
 import com.ddanddan.ddanddan.presentation.widget.DDanWidgetPreferences.PET_TYPE_VALUE
 import com.ddanddan.ddanddan.util.toAnimal
-import com.ddanddan.domain.enums.PetTypeEnum
+import coil.imageLoader
+import coil.request.ImageRequest
 
 object DDanWidgetPreferences {
     val CALORIES_VALUE = intPreferencesKey("CALORIES_VALUE")
     val PET_TYPE_VALUE = stringPreferencesKey("PET_TYPE_VALUE")
     val PET_LEVEL_VALUE = intPreferencesKey("PET_LEVEL_VALUE")
+    val PET_IMAGE_URL_VALUE = stringPreferencesKey("PET_IMAGE_URL_VALUE")
 }
 
 class DDanWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance (context: Context, id: GlanceId) {
+        val prefs = getAppWidgetState(context, PreferencesGlanceStateDefinition, id)
+        val petImageUrl = prefs[DDanWidgetPreferences.PET_IMAGE_URL_VALUE]
+        val petBitmap = petImageUrl?.let { url ->
+            runCatching {
+                val request = ImageRequest.Builder(context).data(url).build()
+                (context.imageLoader.execute(request).drawable as? BitmapDrawable)?.bitmap
+            }.getOrNull()
+        }
+
         provideContent {
-//            val caloriesValue = prefs.getInt("CALORIES_VALUE", 0)
-            DdanWidgetLayout()
+            DdanWidgetLayout(petBitmap)
         }
     }
 
@@ -73,7 +87,7 @@ class DDanWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun DdanWidgetLayout() {
+    fun DdanWidgetLayout(petBitmap: Bitmap? = null) {
         val caloriesValue = currentState(key = CALORIES_VALUE) ?: 0
         val petTypeValue = currentState(key = PET_TYPE_VALUE) ?: "CAT"
         val petLevelValue = currentState(key = PET_LEVEL_VALUE) ?: 1
@@ -121,9 +135,11 @@ class DDanWidget : GlanceAppWidget() {
                 }
                 Image(
                     modifier = GlanceModifier.defaultWeight(),
-                    provider = ImageProvider(
-                        resId = PetTypeEnum.valueOf(petTypeValue).toAnimal(petLevelValue)
-                    ),
+                    provider = if (petBitmap != null) {
+                        ImageProvider(petBitmap)
+                    } else {
+                        ImageProvider(resId = petTypeValue.toAnimal(petLevelValue))
+                    },
                     contentDescription = null
                 )
                 Spacer(modifier = GlanceModifier.height(5.dp))

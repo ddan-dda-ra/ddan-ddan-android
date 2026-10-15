@@ -2,8 +2,8 @@ package com.ddanddan.ddanddan.presentation.home
 
 import androidx.compose.runtime.Immutable
 import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.User
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.ui.enums.TooltipType
 
 @Immutable
@@ -26,12 +26,13 @@ data class HomeState(
     val isShowGuideline: Boolean = false,
     val isShowPermissionDialog: Boolean = false,
     val hasPermission: Boolean = true,
-    val isShowPermissionTooltip: Boolean = false
+    val isShowPermissionTooltip: Boolean = false,
+    val catalog: PetCatalog? = null,  // 추가
 )
 
 sealed class HomeSideEffect {
     data class NetworkError(val code: Int?) : HomeSideEffect()
-    data class NavigateLevelUp(val level: Int, val petType: PetTypeEnum) : HomeSideEffect()
+    data class NavigateLevelUp(val level: Int, val petType: String) : HomeSideEffect()
     data object AskNotification : HomeSideEffect()
     data class SnackBarMsg(val msg: String) : HomeSideEffect()
 }

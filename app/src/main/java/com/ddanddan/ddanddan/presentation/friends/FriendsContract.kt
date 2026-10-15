@@ -2,8 +2,8 @@ package com.ddanddan.ddanddan.presentation.friends
 
 import androidx.compose.runtime.Immutable
 import com.ddanddan.domain.entity.Friend
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.UserDetail
-import com.ddanddan.domain.enums.PetTypeEnum
 
 @Immutable
 data class FriendsState(
@@ -15,12 +15,13 @@ data class FriendsState(
     val chosenUserDetail: UserDetail? = null,
     val showFireworks: Boolean = false,
     val isCheeredToday: Boolean = false,
-    val pendingInviteCode: String? = null
+    val pendingInviteCode: String? = null,
+    val catalog: PetCatalog? = null
 )
 
 sealed class FriendsSideEffect {
     object RefreshList : FriendsSideEffect()
-    data class NavigateAddedFriend(val type: PetTypeEnum, val level: Int) : FriendsSideEffect()
+    data class NavigateAddedFriend(val type: String, val level: Int) : FriendsSideEffect()
     data class CopyInviteLink(val link: String) : FriendsSideEffect()
     object ShowDeleteFriendsSnackBar : FriendsSideEffect()
     object FailCheers : FriendsSideEffect()

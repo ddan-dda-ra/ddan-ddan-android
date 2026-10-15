@@ -39,8 +39,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddanddan.base.R
-import com.ddanddan.ddanddan.util.toAnimal
+import com.ddanddan.ddanddan.presentation.component.PetImage
 import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.compose.component.DDanSnackBar
@@ -170,6 +171,7 @@ fun PetCollectionScreen(
                         PetItem(
                             pet = petCollectionState.pets.getOrNull(index),
                             selectedPetId = petCollectionState.selectedPetId,
+                            catalog = petCollectionState.catalog,
                             onSelectId = onSelectId,
                             onOtherItemClick = onSnackBarEvent
                         )
@@ -184,6 +186,7 @@ fun PetCollectionScreen(
 fun PetItem(
     pet: Pet?,
     selectedPetId: String,
+    catalog: PetCatalog? = null,
     onSelectId: (String) -> Unit = {},
     onOtherItemClick: (String, Int) -> Unit = { _, _ -> }
 ) {
@@ -196,8 +199,10 @@ fun PetItem(
                 onOtherItemClick("새로운 펫을 준비중이에요", R.drawable.ic_clock_fill)
             }
         }) {
-        Image(
-            painter = painterResource(id = pet?.type.toAnimal(pet?.level)),
+        PetImage(
+            petType = pet?.type,
+            level = pet?.level,
+            catalog = catalog,
             contentDescription = "Pet",
             modifier = Modifier
                 .fillMaxSize()

@@ -6,9 +6,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.ddanddan.data.local.DdanDdanDataStoreImpl
+import com.ddanddan.data.local.DdanDdanDatabase
+import com.ddanddan.data.local.PetCatalogDao
 import com.ddanddan.ddanddan.BuildConfig
 import com.ddanddan.domain.ddanddanDataStore
 import dagger.Module
@@ -49,5 +52,21 @@ object DataStoreModule {
         return PreferenceDataStoreFactory.create(
             produceFile = { context.dataStoreFile("app_data.preferences_pb") }
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): DdanDdanDatabase {
+        return Room.databaseBuilder(
+            context,
+            DdanDdanDatabase::class.java,
+            "ddanddan_database"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun providePetCatalogDao(database: DdanDdanDatabase): PetCatalogDao {
+        return database.petCatalogDao()
     }
 }

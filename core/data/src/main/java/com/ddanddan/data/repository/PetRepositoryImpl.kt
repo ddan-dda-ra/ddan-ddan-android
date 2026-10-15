@@ -2,8 +2,8 @@ package com.ddanddan.data.repository
 
 import com.ddanddan.data.datasource.remote.RemotePetDataSource
 import com.ddanddan.domain.entity.Pet
+import com.ddanddan.domain.entity.PetCatalog
 import com.ddanddan.domain.entity.UserPet
-import com.ddanddan.domain.enums.PetTypeEnum
 import com.ddanddan.domain.repository.PetRepository
 import javax.inject.Inject
 
@@ -22,11 +22,23 @@ class PetRepositoryImpl @Inject constructor(
         return petDataSource.postFoodPet(petId).toUserPet()
     }
 
-    override suspend fun postTypePet(petTypeEnum: PetTypeEnum): Pet {
-        return petDataSource.postTypePet(petTypeEnum.toString()).toPet()
+    override suspend fun postTypePet(petType: String): Pet {
+        return petDataSource.postTypePet(petType).toPet()
     }
 
     override suspend fun postRandomPet(): Pet {
         return petDataSource.postRandomPet().toPet()
+    }
+
+    override suspend fun getPetCatalog(): PetCatalog {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun savePetCatalog(catalog: PetCatalog) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCachedCatalogRevision(): String? {
+        TODO("Not yet implemented")
     }
 }

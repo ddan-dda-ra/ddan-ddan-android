@@ -23,8 +23,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ddanddan.ddanddan.di.AnalyticsEntryPoint
+import com.ddanddan.ddanddan.di.UpdateRequiredEntryPoint
 import com.ddanddan.ddanddan.presentation.error.ErrorScreen
-import com.ddanddan.ddanddan.presentation.friends.AddedFriendScreen
+import com.ddanddan.ddanddan.presentation.friends.AddedFriendRoute
 import com.ddanddan.ddanddan.presentation.friends.FriendsRoute
 import com.ddanddan.ddanddan.presentation.home.GrantedNotRoute
 import com.ddanddan.ddanddan.presentation.home.HomeRoute
@@ -58,8 +59,6 @@ import com.ddanddan.ddanddan.util.event.MainTabEvent
 import com.ddanddan.ddanddan.util.event.MyPageEvent
 import com.ddanddan.ddanddan.util.event.OnboardingEvent
 import com.ddanddan.ddanddan.util.event.SignUpEvent
-import com.ddanddan.domain.enums.PetTypeEnum
-import com.ddanddan.domain.enums.toPetTypeEnum
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.component.DDanOneButtonDialog
 import com.ddanddan.ui.ext.sharedViewModel
@@ -91,6 +90,11 @@ fun MainScreen(
         AnalyticsEntryPoint::class.java
     ).analyticsManager()
 
+    val isUpdateRequired by EntryPointAccessors.fromActivity(
+        LocalContext.current as Activity,
+        UpdateRequiredEntryPoint::class.java
+    ).updateRequiredNotifier().updateRequired.collectAsState()
+
     LaunchedEffect(inviteCode) {
         inviteCode?.let {
             navController.navigate("${DDanDDanRoute.FRIENDS.route}?inviteCode=$it") {
@@ -113,6 +117,17 @@ fun MainScreen(
             title = "앱 업데이트",
             content = forceDialogMsg,
             buttonText = "업데이트 하러가기",
+            onClickConfirm = { goToPlayStore() }
+        )
+    }
+
+    // 서버가 426(Upgrade Required)을 내려준 경우 — API가 막히므로 닫을 수 없게 한다
+    if (isUpdateRequired) {
+        DDanOneButtonDialog(
+            title = "앱 업데이트",
+            content = "새로운 버전이 출시되었습니다. 원활한 사용을 위해 업데이트해 주세요.",
+            buttonText = "업데이트 하러가기",
+            dismissible = false,
             onClickConfirm = { goToPlayStore() }
         )
     }
@@ -308,11 +323,10 @@ fun MainScreen(
                         type = NavType.IntType; defaultValue = 0
                     },
                     navArgument("petType") {
-                        type = NavType.StringType; defaultValue = PetTypeEnum.CAT.name
+                        type = NavType.StringType; defaultValue = "CAT"
                     })
             ) {
-                val petTypeString = it.arguments?.getString("petType") ?: PetTypeEnum.CAT.name
-                val petType = PetTypeEnum.valueOf(petTypeString)
+                val petType = it.arguments?.getString("petType") ?: "CAT"
                 LevelUpRoute(
                     level = it.arguments?.getInt("level") ?: 1,
                     petType = petType,
@@ -502,9 +516,9 @@ fun MainScreen(
                     }
                 )
             ) {
-                val type = navBackStackEntry?.arguments?.getString("type")?.toPetTypeEnum() ?: PetTypeEnum.CAT
+                val type = navBackStackEntry?.arguments?.getString("type") ?: "CAT"
                 val level = navBackStackEntry?.arguments?.getInt("level") ?: 1
-                AddedFriendScreen(
+                AddedFriendRoute(
                     friendPetType = type,
                     friendPetLevel = level,
                     onNavigateFriends = {

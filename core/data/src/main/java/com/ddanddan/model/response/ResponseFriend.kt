@@ -1,7 +1,6 @@
 package com.ddanddan.model.response
 
 import com.ddanddan.domain.entity.Friend
-import com.ddanddan.domain.enums.PetTypeEnum
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,6 +11,6 @@ data class ResponseFriend(
     val petLevel: Int
 ) {
     fun toFriend(): Friend {
-        return Friend(id, name, PetTypeEnum.valueOf(mainPetType), petLevel)
+        return Friend(id, name, mainPetType, petLevel)
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.ddanddan.base.R
 import com.ddanddan.ui.compose.DDanDDanColorPalette
 import com.ddanddan.ui.compose.DDanDDanTypo
@@ -36,11 +37,16 @@ fun DDanOneButtonDialog(
     content: String,
     buttonText: String = "획득하기",
     imageSource: Int? = null,
+    dismissible: Boolean = true,
     onClickCancel: () -> Unit = {},
     onClickConfirm: () -> Unit = {}
 ) {
     Dialog(
-        onDismissRequest = { onClickCancel() }
+        onDismissRequest = { onClickCancel() },
+        properties = DialogProperties(
+            dismissOnBackPress = dismissible,
+            dismissOnClickOutside = dismissible
+        )
     ) {
         Card(
             modifier = Modifier

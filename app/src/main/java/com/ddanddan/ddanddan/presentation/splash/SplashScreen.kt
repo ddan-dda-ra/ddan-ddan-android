@@ -51,7 +51,10 @@ fun SplashRoute(
 
     SplashScreen(
         snackBarHostState = snackBarHostState,
-        onCheckNavigate = splashViewModel::isFirstAfterInstall,
+        onCheckNavigate = {
+            splashViewModel.fetchPetCatalog()
+            splashViewModel.isFirstAfterInstall()
+        },
         onNetworkDisconnected = splashViewModel::disconnectedNetwork,
     )
 }
@@ -61,7 +64,8 @@ fun SplashRoute(
 fun SplashScreen(
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onCheckNavigate: () -> Unit = { },
-    onNetworkDisconnected: () -> Unit = { }
+    onNetworkDisconnected: () -> Unit = { },
+    onFetchPetCatalog: suspend () -> Unit = { }  // 추가
 ) {
     val context = LocalContext.current
 
@@ -71,6 +75,7 @@ fun SplashScreen(
             return@LaunchedEffect
         }
         delay(3000)
+        onFetchPetCatalog()  // 추가
         onCheckNavigate()
     }
 

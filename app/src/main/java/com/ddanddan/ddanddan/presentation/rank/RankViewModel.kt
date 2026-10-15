@@ -8,6 +8,7 @@ import com.ddanddan.domain.usecase.GetRankingUseCase
 import com.ddanddan.domain.usecase.GetUserDetailUseCase
 import com.ddanddan.domain.usecase.PatchDailyCaloriesUseCase
 import com.ddanddan.domain.usecase.PostCheersUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -23,11 +24,24 @@ class RankViewModel @Inject constructor(
     private val patchDailyCaloriesUseCase: PatchDailyCaloriesUseCase,
     private val postCheersUseCase: PostCheersUseCase,
     private val getUserDetailUseCase: GetUserDetailUseCase,
+    private val syncPetCatalogUseCase: SyncPetCatalogUseCase,
     private val analyticsManager: AnalyticsManager,
     ) : ViewModel(), ContainerHost<RankState, RankSideEffect> {
 
     override val container =
         container<RankState, RankSideEffect>(RankState())
+
+    init {
+        syncCatalog()
+    }
+
+    private fun syncCatalog() = intent {
+        runCatching {
+            syncPetCatalogUseCase()
+        }.onSuccess { catalog ->
+            reduce { state.copy(catalog = catalog) }
+        }
+    }
 
     fun logEvent(event: AnalyticsEvent) {
         analyticsManager.logEvent(event)

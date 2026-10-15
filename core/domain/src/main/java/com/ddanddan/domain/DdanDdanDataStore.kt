@@ -18,5 +18,8 @@ interface ddanddanDataStore {
     val caloriesFlow: Flow<Float>
     var calories: Float
 
+    var petCatalogRevision: String?
+    var isPetCatalogUpdateRequired: Boolean
+
     fun clearLocalPref()
 }

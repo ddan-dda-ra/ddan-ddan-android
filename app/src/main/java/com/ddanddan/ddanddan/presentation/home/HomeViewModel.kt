@@ -15,6 +15,7 @@ import com.ddanddan.domain.usecase.PostMainPetUseCase
 import com.ddanddan.domain.usecase.PostPlayPetUseCase
 import com.ddanddan.domain.usecase.PostRandomPetUseCase
 import com.ddanddan.domain.usecase.SetNotificationAskedUseCase
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import com.ddanddan.ui.enums.TooltipType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -40,7 +41,8 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val ddanddanDataStore: ddanddanDataStore,
     private val widgetManager: WidgetManager,
-    private val analyticsManager: AnalyticsManager
+    private val analyticsManager: AnalyticsManager,
+    private val syncPetCatalogUseCase: SyncPetCatalogUseCase,
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container =
         container<HomeState, HomeSideEffect>(HomeState())
@@ -48,11 +50,22 @@ class HomeViewModel @Inject constructor(
     private val isNewPet = savedStateHandle["isNewPet"] ?: false
 
     init {
+        syncCatalog()
         getNotificationAsked()
         getHomeInfo()
         observeCalories()
 
         animationEggCounterBadge()
+    }
+
+    // 캐시된 리비전이 최신이면 로컬 카탈로그만, 서버가 X-Pet-Catalog-Download-Required로
+    // 갱신이 필요하다고 알려온 상태면 네트워크에서 다시 받아온 뒤 반영한다
+    private fun syncCatalog() = intent {
+        runCatching {
+            syncPetCatalogUseCase()
+        }.onSuccess { catalog ->
+            reduce { state.copy(catalog = catalog) }
+        }
     }
 
     fun logEvent(event: AnalyticsEvent) {
@@ -103,7 +116,7 @@ class HomeViewModel @Inject constructor(
                 reduce {
                     state.copy(pet = it)
                 }
-                widgetManager.updateWidgetPet(it.type.toString(), it.level)
+                widgetManager.updateWidgetPet(it.type, it.level)
             }.onFailure {
                 if (it is HttpException) {
                     postSideEffect(HomeSideEffect.NetworkError(it.code()))
@@ -235,6 +248,13 @@ class HomeViewModel @Inject constructor(
         if (state.newPet == null) {
             postRandomPetUseCase()
                 .onSuccess { newPet ->
+                    // 뽑기 응답이 로컬에 없는 새 타입을 내려줄 수 있으니, 새 펫을 화면에 반영하기 전에
+                    // 카탈로그부터 최신화한다 (서버가 X-Pet-Catalog-Download-Required로 알려준 경우)
+                    runCatching {
+                        syncPetCatalogUseCase()
+                    }.onSuccess { catalog ->
+                        reduce { state.copy(catalog = catalog) }
+                    }
                     reduce {
                         state.copy(newPet = newPet)
                     }
