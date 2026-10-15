@@ -65,12 +65,14 @@ class DataLayerListenerService : WearableListenerService() {
                     val petType = jsonObject.getString("pet_type")
                     val petLevel = jsonObject.getInt("pet_level")
                     val targetCalories = jsonObject.getInt("target_calories")
+                    // 폰이 카탈로그에서 못 찾았거나 구버전 폰이면 필드가 없다
+                    val petImageUrl = jsonObject.optString("pet_image_url").takeIf { it.isNotBlank() }
 
                     Timber.tag("kangmi")
-                        .d("petType: $petType, petLevel: $petLevel, targetCalories: $targetCalories")
+                        .d("petType: $petType, petLevel: $petLevel, targetCalories: $targetCalories, petImageUrl: $petImageUrl")
                     // 유저 정보 저장
                     serviceScope.launch {
-                        saveUserInfo(petType, petLevel, targetCalories)
+                        saveUserInfo(petType, petLevel, targetCalories, petImageUrl)
                         Timber.d("User info saved successfully")
                     }
                 } catch (e: Exception) {
@@ -99,14 +101,25 @@ class DataLayerListenerService : WearableListenerService() {
     /**
      * 받은 유저 정보 로컬에 저장
      */
-    private suspend fun saveUserInfo(petType: String, petLevel: Int, targetCalories: Int) {
+    private suspend fun saveUserInfo(
+        petType: String,
+        petLevel: Int,
+        targetCalories: Int,
+        petImageUrl: String?
+    ) {
         try {
             dataStore.edit { preferences ->
                 preferences[PreferencesKeys.PET_TYPE] = petType
                 preferences[PreferencesKeys.PET_LEVEL] = petLevel
                 preferences[PreferencesKeys.TARGET_CALORIES] = targetCalories
+                // 펫이 바뀌었는데 URL이 없으면 이전 펫의 URL이 남지 않도록 지운다
+                if (petImageUrl != null) {
+                    preferences[PreferencesKeys.PET_IMAGE_URL] = petImageUrl
+                } else {
+                    preferences.remove(PreferencesKeys.PET_IMAGE_URL)
+                }
             }
-            Timber.d("User info saved: petType=$petType, petLevel=$petLevel, targetCalories=$targetCalories")
+            Timber.d("User info saved: petType=$petType, petLevel=$petLevel, targetCalories=$targetCalories, petImageUrl=$petImageUrl")
             
             // 여기에서 필요한 경우 UI 업데이트를 위한 브로드캐스트나 이벤트를 발생시킬 수 있습니다.
         } catch (e: Exception) {
