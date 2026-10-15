@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.ddanddan.ddanddan.BuildConfig
 import com.ddanddan.ddanddan.data.model.response.ResponseAuthToken
 import com.ddanddan.ddanddan.util.PreferencesKeys
 import com.ddanddan.ddanddan.util.WatchToPhoneUtils
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import timber.log.Timber
@@ -71,10 +73,16 @@ class AuthorizationInterceptor @Inject constructor(
                 return null
             }
 
+            // 폰의 AuthInterceptor와 같은 방식: 리프레시 토큰("Bearer " 제외)을 JSON 바디로 보낸다
+            val refreshTokenJson = """
+                {
+                    "refreshToken": "${refreshToken.removePrefix("Bearer ")}"
+                }
+            """.trimIndent()
+
             val refreshTokenRequest = chain.request().newBuilder()
-                .url("${BASE_URL}/v1/auth/reissue")
-                .post("".toRequestBody())
-                .addHeader("Authorization-Refresh", refreshToken)
+                .url("${BuildConfig.BASE_URL}/v1/auth/reissue")
+                .post(refreshTokenJson.toRequestBody(MEDIA_TYPE_JSON))
                 .build()
 
             val refreshTokenResponse = chain.proceed(refreshTokenRequest)
@@ -83,19 +91,22 @@ class AuthorizationInterceptor @Inject constructor(
                 val responseToken = json.decodeFromString(
                     refreshTokenResponse.body?.string().orEmpty()
                 ) as ResponseAuthToken
+                refreshTokenResponse.close()
+
+                val newAccessToken = "Bearer ${responseToken.accessToken}"
+                val newRefreshToken = "Bearer ${responseToken.refreshToken}"
 
                 // DataStore에 갱신된 토큰 저장
                 runBlocking {
                     dataStore.edit { preferences ->
-                        preferences[PreferencesKeys.ACCESS_TOKEN_KEY] =
-                            "Bearer ${responseToken.accessToken}" //todo - bearer 체크
-                        preferences[PreferencesKeys.REFRESH_TOKEN_KEY] =
-                            "Bearer ${responseToken.refreshToken}"
+                        preferences[PreferencesKeys.ACCESS_TOKEN_KEY] = newAccessToken
+                        preferences[PreferencesKeys.REFRESH_TOKEN_KEY] = newRefreshToken
                     }
                 }
 
-                Timber.d("토큰 갱신 성공: ${responseToken.accessToken}")
-                return responseToken.accessToken
+                Timber.d("토큰 갱신 성공")
+                // 저장된 값과 같은 "Bearer ..." 형태로 재요청해야 한다
+                return newAccessToken
             } else {
                 Timber.e("토큰 갱신 실패: HTTP ${refreshTokenResponse.code}")
                 handleTokenExpired(context)
@@ -115,6 +126,6 @@ class AuthorizationInterceptor @Inject constructor(
     }
 
     companion object {
-        private const val BASE_URL = "https://ddan-ddan.com"
+        private val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
     }
 }
