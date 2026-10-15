@@ -12,7 +12,9 @@ import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.util.imageUrlFor
 import com.ddanddan.domain.repository.UserRepository
+import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -24,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,6 +34,9 @@ import javax.inject.Inject
 class PhoneDataLayerService : WearableListenerService() {
     @Inject
     lateinit var userRepository: UserRepository
+
+    @Inject
+    lateinit var syncPetCatalogUseCase: SyncPetCatalogUseCase
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val tag = "kangmi"
@@ -158,17 +164,19 @@ class PhoneDataLayerService : WearableListenerService() {
                 // 유저 정보 가져오기
                 val user = userRepository.getUser()
                 val pet = userRepository.getMainPet()
+                val petImageUrl = runCatching { syncPetCatalogUseCase() }
+                    .getOrNull()
+                    .imageUrlFor(pet.type, pet.level)
 
-                Timber.tag(tag).d("Sending user info to watch: $user, $pet")
-                
-                // JSON 형식으로 데이터 생성
-                val jsonData = """
-                    {
-                        "pet_type": "${pet.type}",
-                        "pet_level": ${pet.level},
-                        "target_calories": ${user.purposeCalorie}
-                    }
-                """.trimIndent()
+                Timber.tag(tag).d("Sending user info to watch: $user, $pet, imageUrl=$petImageUrl")
+
+                // JSON 형식으로 데이터 생성 (카탈로그에 없는 펫이면 pet_image_url은 생략)
+                val jsonData = JSONObject().apply {
+                    put("pet_type", pet.type)
+                    put("pet_level", pet.level)
+                    put("target_calories", user.purposeCalorie)
+                    petImageUrl?.let { put("pet_image_url", it) }
+                }.toString()
 
                 Timber.tag(tag).d("Sending JSON data: $jsonData")
 
