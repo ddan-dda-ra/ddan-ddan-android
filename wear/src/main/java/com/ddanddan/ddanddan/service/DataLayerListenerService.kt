@@ -67,12 +67,13 @@ class DataLayerListenerService : WearableListenerService() {
                     val targetCalories = jsonObject.getInt("target_calories")
                     // 폰이 카탈로그에서 못 찾았거나 구버전 폰이면 필드가 없다
                     val petImageUrl = jsonObject.optString("pet_image_url").takeIf { it.isNotBlank() }
+                    val petColor = jsonObject.optString("pet_color").takeIf { it.isNotBlank() }
 
                     Timber.tag("kangmi")
-                        .d("petType: $petType, petLevel: $petLevel, targetCalories: $targetCalories, petImageUrl: $petImageUrl")
+                        .d("petType: $petType, petLevel: $petLevel, targetCalories: $targetCalories, petImageUrl: $petImageUrl, petColor: $petColor")
                     // 유저 정보 저장
                     serviceScope.launch {
-                        saveUserInfo(petType, petLevel, targetCalories, petImageUrl)
+                        saveUserInfo(petType, petLevel, targetCalories, petImageUrl, petColor)
                         Timber.d("User info saved successfully")
                     }
                 } catch (e: Exception) {
@@ -105,7 +106,8 @@ class DataLayerListenerService : WearableListenerService() {
         petType: String,
         petLevel: Int,
         targetCalories: Int,
-        petImageUrl: String?
+        petImageUrl: String?,
+        petColor: String?
     ) {
         try {
             dataStore.edit { preferences ->
@@ -118,8 +120,13 @@ class DataLayerListenerService : WearableListenerService() {
                 } else {
                     preferences.remove(PreferencesKeys.PET_IMAGE_URL)
                 }
+                if (petColor != null) {
+                    preferences[PreferencesKeys.PET_COLOR] = petColor
+                } else {
+                    preferences.remove(PreferencesKeys.PET_COLOR)
+                }
             }
-            Timber.d("User info saved: petType=$petType, petLevel=$petLevel, targetCalories=$targetCalories, petImageUrl=$petImageUrl")
+            Timber.d("User info saved: petType=$petType, petLevel=$petLevel, targetCalories=$targetCalories, petImageUrl=$petImageUrl, petColor=$petColor")
             
             // 여기에서 필요한 경우 UI 업데이트를 위한 브로드캐스트나 이벤트를 발생시킬 수 있습니다.
         } catch (e: Exception) {

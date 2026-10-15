@@ -44,6 +44,9 @@ import com.ddanddan.ui.compose.DDanDDanTypo
 import com.ddanddan.ui.ext.noRippleClickable
 import timber.log.Timber
 
+// 펫 색을 받지 못했을 때(구버전 폰 등) 쓰는 기본 진행 바 색
+private val DefaultProgressColor = Color(0xFFF8A5FF)
+
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CalorieRoute(
@@ -55,6 +58,11 @@ fun CalorieRoute(
     val petType by viewModel.petType.collectAsState()
     val petLevel by viewModel.petLevel.collectAsState()
     val petImageUrl by viewModel.petImageUrl.collectAsState()
+    val petColorHex by viewModel.petColor.collectAsState()
+    // 파싱에 실패하면 null이 되어 기본 색(핑크)으로 그려진다
+    val petColor = remember(petColorHex) {
+        petColorHex?.let { runCatching { Color(android.graphics.Color.parseColor(it)) }.getOrNull() }
+    }
 
     Timber.tag("kangmi").d("todayCalories: $todayCalories, goalCalories: $goalCalories")
     CalorieScreen(
@@ -63,6 +71,7 @@ fun CalorieRoute(
         petType = petType,
         petLevel = petLevel,
         petImageUrl = petImageUrl,
+        petColor = petColor,
         isCalorieTextDisplay = isCalorieTextDisplay,
         onDisplayStateChanged = { isCalorieTextDisplay = !isCalorieTextDisplay }
     )
@@ -76,6 +85,7 @@ fun CalorieScreen(
     petType: String = "CAT",
     petLevel: Int = 1,
     petImageUrl: String? = null,
+    petColor: Color? = null,
     isCalorieTextDisplay: Boolean = true,
     onDisplayStateChanged: () -> Unit = {}
 ) {
@@ -83,6 +93,7 @@ fun CalorieScreen(
     CircularProgressWatchFace(
         modifier = modifier,
         progress = progress,
+        progressColor = petColor ?: DefaultProgressColor,
         onDisplayStateChanged = onDisplayStateChanged
     ) {
         if (isCalorieTextDisplay) {
@@ -133,7 +144,7 @@ fun CalorieScreen(
 fun CircularProgressWatchFace(
     modifier: Modifier = Modifier,
     progress: Double = 0.1, // 0.0 ~ 1.0 범위의 진행도
-    progressColor: Color = Color(0xFFF8A5FF), // 핑크색 프로그레스 바
+    progressColor: Color = DefaultProgressColor, // 핑크색 프로그레스 바
     backgroundColor: Color = Color(0xFF333333), // 배경색 (어두운 회색)
     strokeWidth: Dp = 8.dp, // 프로그레스 바 두께
     onDisplayStateChanged: () -> Unit = {},

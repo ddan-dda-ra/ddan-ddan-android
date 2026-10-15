@@ -37,6 +37,11 @@ class CalorieViewModel @Inject constructor(
             preferences[PreferencesKeys.PET_IMAGE_URL]
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
+    val petColor = dataStore.data
+        .map { preferences ->
+            preferences[PreferencesKeys.PET_COLOR]
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
     val targetCalories = dataStore.data
         .map { preferences ->
             preferences[PreferencesKeys.TARGET_CALORIES] ?: 0

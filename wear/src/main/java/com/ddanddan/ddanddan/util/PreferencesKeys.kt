@@ -14,5 +14,6 @@ object PreferencesKeys {
     val PET_TYPE = stringPreferencesKey("pet_type")
     val PET_LEVEL = intPreferencesKey("pet_level")
     val PET_IMAGE_URL = stringPreferencesKey("pet_image_url")
+    val PET_COLOR = stringPreferencesKey("pet_color")
     val TARGET_CALORIES = intPreferencesKey("target_calories")
 }
