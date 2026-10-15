@@ -104,7 +104,7 @@ dependencies {
     kapt(libs.hiltAndroidCompiler)
     kapt(libs.hiltWorkManagerCompiler)
 
-    implementation(libs.okhttp.bom)
+    implementation(platform(libs.okhttp.bom))
     implementation(libs.bundles.okhttp)
     implementation(libs.bundles.androidx)
     implementation(libs.bundles.kotlin)
