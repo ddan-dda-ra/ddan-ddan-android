@@ -12,6 +12,7 @@ import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.ddanddan.ddanddan.R
+import com.ddanddan.ddanddan.util.colorHexFor
 import com.ddanddan.ddanddan.util.imageUrlFor
 import com.ddanddan.domain.repository.UserRepository
 import com.ddanddan.domain.usecase.SyncPetCatalogUseCase
@@ -164,11 +165,12 @@ class PhoneDataLayerService : WearableListenerService() {
                 // 유저 정보 가져오기
                 val user = userRepository.getUser()
                 val pet = userRepository.getMainPet()
-                val petImageUrl = runCatching { syncPetCatalogUseCase() }
-                    .getOrNull()
-                    .imageUrlFor(pet.type, pet.level)
+                val catalog = runCatching { syncPetCatalogUseCase() }.getOrNull()
+                val petImageUrl = catalog.imageUrlFor(pet.type, pet.level)
+                // 카탈로그를 못 받았어도 기본 5종은 번들 색을 돌려주므로 항상 값이 있다
+                val petColor = catalog.colorHexFor(pet.type)
 
-                Timber.tag(tag).d("Sending user info to watch: $user, $pet, imageUrl=$petImageUrl")
+                Timber.tag(tag).d("Sending user info to watch: $user, $pet, imageUrl=$petImageUrl, color=$petColor")
 
                 // JSON 형식으로 데이터 생성 (카탈로그에 없는 펫이면 pet_image_url은 생략)
                 val jsonData = JSONObject().apply {
@@ -176,6 +178,7 @@ class PhoneDataLayerService : WearableListenerService() {
                     put("pet_level", pet.level)
                     put("target_calories", user.purposeCalorie)
                     petImageUrl?.let { put("pet_image_url", it) }
+                    put("pet_color", petColor)
                 }.toString()
 
                 Timber.tag(tag).d("Sending JSON data: $jsonData")
